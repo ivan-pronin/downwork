@@ -32,5 +32,6 @@ public class WebDriverProvider
     public static void stopDriver()
     {
         instance.quit();
+        instance = null;
     }
 }

@@ -15,12 +15,10 @@ jar{
 }
 
 dependencies {
-	classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
-	
+	compile 'org.apache.commons:commons-csv:1.4'	
 	compile 'org.seleniumhq.selenium:selenium-java:3.0.1'
 	
     testCompile 'junit:junit:4.12'
 }
 
-apply plugin: 'com.github.johnrengelman.shadow'
 

@@ -4,7 +4,6 @@ import com.upwork.ivan.pronin.ElementActions;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class TopCashBackPage extends BasicLandingPage
 {

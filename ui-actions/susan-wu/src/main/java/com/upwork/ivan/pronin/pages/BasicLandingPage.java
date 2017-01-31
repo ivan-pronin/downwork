@@ -15,6 +15,7 @@ public class BasicLandingPage
     {
         this.driver = driver;
         this.elementActions = elementActions;
+        System.out.println("Current page is: " + driver.getCurrentUrl());
     }
 
     protected void login(String emailId, String passId, String email, String password, String submitId)
