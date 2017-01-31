@@ -1,0 +1,140 @@
+D:\Users\ipronin\Downloads>java -jar wu3.jar
+
+=================Starting iteration #1===================
+
+Printing CSV row data for this iteration: STORE_NAME=Gap1, ACCOUNT_NUMBER=6003860000000000, PIN=733, COST_PRICE=25, PRIC
+E=24
+Starting ChromeDriver 2.27.440174 (e97a722caafc2d3a8b807ee115bfb307f7d2cfd9) on port 35743
+Only local connections are allowed.
+Jan 31, 2017 4:32:03 PM org.openqa.selenium.remote.ProtocolHandshake createSession
+INFO: Attempting bi-dialect session, assuming Postel's Law holds true on the remote end
+Jan 31, 2017 4:32:05 PM org.openqa.selenium.remote.ProtocolHandshake createSession
+INFO: Detected dialect: OSS
+Current page is: https://www.topcashback.com/login
+Entering text: smicschool@gmail.com
+Entering text: smicschool
+Clicked on element with locator: By.id: ctl00_GeckoOneColPrimary_Login_Loginbtn
+Waiting for page to load: https://www.topcashback.com/account/overview/
+Page loaded
+Current page is: https://www.raise.com/user/sign_in
+Entering text: smicschool@gmail.com
+Entering text: smicschool_1234
+Clicked on element with locator: By.id: login-button
+Clicked on element with locator: By.xpath: //a[contains(@id,'ctl00_GeckoTwoColPrimary_merchantPnl_rMerchantOffers') and
+text()='Get Cashback']
+Entering text: Gap1
+Clicked on element with locator: By.xpath: //input[@value='Get Started']
+Suggestion appeared, clicking on it
+Entering text: 6003860000000000
+Entering text: 733
+Entering text: 25
+Entering text: 24
+Clicked on element with locator: By.id: new-listing-next-step
+Waiting for page to load: https://www.raise.com/listings/8174703/verification/edit
+Page loaded
+====================ITERATION ENDED======================
+
+=================Starting iteration #2===================
+
+Printing CSV row data for this iteration: STORE_NAME=Gap2, ACCOUNT_NUMBER=6003260000000000, PIN=212, COST_PRICE=25, PRIC
+E=24
+Starting ChromeDriver 2.27.440174 (e97a722caafc2d3a8b807ee115bfb307f7d2cfd9) on port 21886
+Only local connections are allowed.
+Jan 31, 2017 4:32:34 PM org.openqa.selenium.remote.ProtocolHandshake createSession
+INFO: Attempting bi-dialect session, assuming Postel's Law holds true on the remote end
+Jan 31, 2017 4:32:35 PM org.openqa.selenium.remote.ProtocolHandshake createSession
+INFO: Detected dialect: OSS
+Current page is: https://www.topcashback.com/login
+Entering text: smicschool@gmail.com
+Entering text: smicschool
+Clicked on element with locator: By.id: ctl00_GeckoOneColPrimary_Login_Loginbtn
+Waiting for page to load: https://www.topcashback.com/account/overview/
+Page loaded
+Current page is: https://www.raise.com/user/sign_in
+Entering text: smicschool@gmail.com
+Entering text: smicschool_1234
+Clicked on element with locator: By.id: login-button
+Clicked on element with locator: By.xpath: //a[contains(@id,'ctl00_GeckoTwoColPrimary_merchantPnl_rMerchantOffers') and
+text()='Get Cashback']
+Entering text: Gap2
+Clicked on element with locator: By.xpath: //input[@value='Get Started']
+Suggestion appeared, clicking on it
+Entering text: 6003260000000000
+Entering text: 212
+Entering text: 25
+Entering text: 24
+Clicked on element with locator: By.id: new-listing-next-step
+Waiting for page to load: https://www.raise.com/listings/8174705/verification/edit
+Page loaded
+====================ITERATION ENDED======================
+
+=================Starting iteration #3===================
+
+Printing CSV row data for this iteration: STORE_NAME=Gap3, ACCOUNT_NUMBER=6003860000000000, PIN=328, COST_PRICE=25, PRIC
+E=24
+Starting ChromeDriver 2.27.440174 (e97a722caafc2d3a8b807ee115bfb307f7d2cfd9) on port 38371
+Only local connections are allowed.
+Jan 31, 2017 4:33:02 PM org.openqa.selenium.remote.ProtocolHandshake createSession
+INFO: Attempting bi-dialect session, assuming Postel's Law holds true on the remote end
+Jan 31, 2017 4:33:03 PM org.openqa.selenium.remote.ProtocolHandshake createSession
+INFO: Detected dialect: OSS
+Current page is: https://www.topcashback.com/login
+Entering text: smicschool@gmail.com
+Entering text: smicschool
+Clicked on element with locator: By.id: ctl00_GeckoOneColPrimary_Login_Loginbtn
+Waiting for page to load: https://www.topcashback.com/account/overview/
+Page loaded
+Current page is: https://www.raise.com/user/sign_in
+Entering text: smicschool@gmail.com
+Entering text: smicschool_1234
+Clicked on element with locator: By.id: login-button
+Clicked on element with locator: By.xpath: //a[contains(@id,'ctl00_GeckoTwoColPrimary_merchantPnl_rMerchantOffers') and
+text()='Get Cashback']
+Entering text: Gap3
+Clicked on element with locator: By.xpath: //input[@value='Get Started']
+Suggestion appeared, clicking on it
+Entering text: 6003860000000000
+Entering text: 328
+Entering text: 25
+Entering text: 24
+Clicked on element with locator: By.id: new-listing-next-step
+Waiting for page to load: https://www.raise.com/listings/8174706/verification/edit
+Page loaded
+====================ITERATION ENDED======================
+
+=================Starting iteration #4===================
+
+Printing CSV row data for this iteration: STORE_NAME=Gap4, ACCOUNT_NUMBER=6003810000000000, PIN=318, COST_PRICE=25, PRIC
+E=24
+Starting ChromeDriver 2.27.440174 (e97a722caafc2d3a8b807ee115bfb307f7d2cfd9) on port 40301
+Only local connections are allowed.
+Jan 31, 2017 4:33:31 PM org.openqa.selenium.remote.ProtocolHandshake createSession
+INFO: Attempting bi-dialect session, assuming Postel's Law holds true on the remote end
+Jan 31, 2017 4:33:32 PM org.openqa.selenium.remote.ProtocolHandshake createSession
+INFO: Detected dialect: OSS
+Current page is: https://www.topcashback.com/login
+Entering text: smicschool@gmail.com
+Entering text: smicschool
+Clicked on element with locator: By.id: ctl00_GeckoOneColPrimary_Login_Loginbtn
+Waiting for page to load: https://www.topcashback.com/account/overview/
+Page loaded
+Current page is: https://www.raise.com/user/sign_in
+Entering text: smicschool@gmail.com
+Entering text: smicschool_1234
+Clicked on element with locator: By.id: login-button
+Clicked on element with locator: By.xpath: //a[contains(@id,'ctl00_GeckoTwoColPrimary_merchantPnl_rMerchantOffers') and
+text()='Get Cashback']
+Entering text: Gap4
+Clicked on element with locator: By.xpath: //input[@value='Get Started']
+Suggestion appeared, clicking on it
+Entering text: 6003810000000000
+Entering text: 318
+Entering text: 25
+Entering text: 24
+Clicked on element with locator: By.id: new-listing-next-step
+Waiting for page to load: https://www.raise.com/listings/8174708/verification/edit
+Page loaded
+====================ITERATION ENDED======================
+Finished all iterations, total time taken: 118 seconds.
+
+D:\Users\ipronin\Downloads>

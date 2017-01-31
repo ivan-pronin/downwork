@@ -48,7 +48,7 @@ public class ElementActions
     public void enterTextById(String id, String text)
     {
         WebElement element = waitForElement(id);
-        enterTextToElement(id, element);
+        enterTextToElement(text, element);
     }
 
     public void click(By locator)
