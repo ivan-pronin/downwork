@@ -1,14 +1,13 @@
 package com.upwork.ivan.pronin;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class Application
 {
@@ -19,7 +18,6 @@ public class Application
         WebDriver driver = WebDriverProvider.getDriverInstance();
         
         driver.navigate().to(TOP_CASHBACK + "login");
-//        WebDriverUtil.waitForPageToLoad(driver);
         login(driver, "ctl00_GeckoOneColPrimary_Login_txtEmail", "ctl00_GeckoOneColPrimary_Login_txtPassword",
                 "smicschool@gmail.com", "smicschool", "ctl00_GeckoOneColPrimary_Login_Loginbtn");
 
