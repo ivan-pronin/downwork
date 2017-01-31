@@ -1,5 +1,7 @@
 package com.upwork.ivan.pronin;
 
+import java.util.List;
+
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
@@ -26,5 +28,16 @@ public final class WebDriverUtil
         String script = "window.open('%s','_blank');";
         ((JavascriptExecutor) driver).executeScript(String.format(script, url));
         waitForPageToLoad(driver);
+    }
+    
+    public static void switchToOtherTab(WebDriver driver, List<String> prevoiusTabs)
+    {
+        for (String tab : driver.getWindowHandles())
+        {
+            if (!prevoiusTabs.contains(tab))
+            {
+                driver.switchTo().window(tab);
+            }
+        }
     }
 }
