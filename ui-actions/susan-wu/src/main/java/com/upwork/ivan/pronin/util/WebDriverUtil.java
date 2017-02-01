@@ -1,4 +1,4 @@
-package com.upwork.ivan.pronin;
+package com.upwork.ivan.pronin.util;
 
 import java.util.List;
 
