@@ -1,6 +1,7 @@
 # Ivan Pronin's script for listing gift cards on Raise.com
 To compile source code and create eclipse project use gradle command:
 ```gradle build eclipse```
+
 To create a runnable jar file run:
 ```gradle shadowJar```
 This file will be created under <project_location>/build/libs directory
@@ -21,6 +22,9 @@ The script should start running, you'll see its output in the console:
 ``` 
 D:\Users\ipronin\Downloads>java -jar susan-wu.jar
 
+You may need to use a key parameter to specify path to chromedriver executable:
+``` java -jar susan-wu.jar -Dwebdriver.chrome.driver=D:\webdrivers\chromedriver.exe```
+
 =================Starting iteration #1===================
 
 Printing CSV row data for this iteration: STORE_NAME=Gap1, ACCOUNT_NUMBER=6003860000000000, PIN=733, COST_PRICE=25, PRIC
@@ -33,3 +37,10 @@ Jan 31, 2017 4:32:05 PM org.openqa.selenium.remote.ProtocolHandshake createSessi
 INFO: Detected dialect: OSS
 Current page is: https://www.topcashback.com/login 
 ```
+
+**Automating run**
+A simple bash script can be used to run the whole thing:
+```#!/bin/bash
+cd Downloads/ListRaise
+java -jar ListRaise.jar -Dwebdriver.chrome.driver=chromedriver```
+Assuming all required files are located under ```Downloads/ListRaise``` directory
