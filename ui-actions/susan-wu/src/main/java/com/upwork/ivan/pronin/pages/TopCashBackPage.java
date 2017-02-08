@@ -4,9 +4,11 @@ import com.upwork.ivan.pronin.ElementActions;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class TopCashBackPage extends BasicLandingPage
 {
+    private static final String GET_CASHBACK_BUTTON_LOCATOR = "//a[contains(@id,'ctl00_GeckoTwoColPrimary_merchantPnl_rMerchantOffers') and text()='Get Cashback']";
     private ElementActions elementActions;
 
     public TopCashBackPage(WebDriver driver, ElementActions elementActions)
@@ -23,8 +25,11 @@ public class TopCashBackPage extends BasicLandingPage
 
     public void clickFirstCashBack()
     {
-        elementActions.click(By.xpath(
-                "//a[contains(@id,'ctl00_GeckoTwoColPrimary_merchantPnl_rMerchantOffers') and text()='Get Cashback']"));
+        elementActions.click(By.xpath(GET_CASHBACK_BUTTON_LOCATOR));
     }
 
+    public void clickGetCashBackButtonByIndex(int index)
+    {
+        elementActions.click(By.xpath("(" + GET_CASHBACK_BUTTON_LOCATOR + ")" + "[" + index + "]"));
+    }
 }
