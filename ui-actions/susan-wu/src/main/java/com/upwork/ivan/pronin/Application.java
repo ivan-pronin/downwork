@@ -9,9 +9,9 @@ import com.upwork.ivan.pronin.model.User;
 import com.upwork.ivan.pronin.pages.RaisePage;
 import com.upwork.ivan.pronin.pages.TopCashBackPage;
 import com.upwork.ivan.pronin.util.CsvUtil;
+import com.upwork.ivan.pronin.util.CsvUtil.CsvColumn;
 import com.upwork.ivan.pronin.util.PropertiesLoader;
 import com.upwork.ivan.pronin.util.WebDriverUtil;
-import com.upwork.ivan.pronin.util.CsvUtil.CsvColumn;
 
 import org.apache.commons.csv.CSVRecord;
 import org.openqa.selenium.WebDriver;
@@ -38,7 +38,8 @@ public class Application
                     record.get(CsvColumn.PIN), record.get(CsvColumn.COST_PRICE), record.get(CsvColumn.PRICE));
             User topcashUser = new User(props.getProperty("topcashLogin"), props.getProperty("topcashPass"));
             User raiseUser = new User(props.getProperty("raiseLogin"), props.getProperty("raisePass"));
-            executeIteration(listing, topcashUser, raiseUser);
+            int getCashBackButtonIndex = Integer.parseInt(props.getProperty("getCashBackButtonIndex", "1"));
+            executeIteration(listing, topcashUser, raiseUser, getCashBackButtonIndex);
             System.out.println("====================ITERATION ENDED======================");
         }
         long endTime = System.currentTimeMillis();
@@ -46,7 +47,7 @@ public class Application
         System.out.println("Finished all iterations, total time taken: " + seconds + " seconds.");
     }
 
-    private static void executeIteration(Listing listing, User topcashUser, User raiseUser)
+    private static void executeIteration(Listing listing, User topcashUser, User raiseUser, int getCashBackButtonIndex)
     {
         WebDriver driver = WebDriverProvider.getDriverInstance();
 
@@ -65,7 +66,9 @@ public class Application
         WebDriverUtil.switchToOtherTab(driver, Arrays.asList(secondTab));
 
         driver.navigate().to(TOP_CASHBACK + "raise");
-        topCashBackPage.clickFirstCashBack();
+        //
+        topCashBackPage.clickGetCashBackButtonByIndex(getCashBackButtonIndex);
+        //
         WebDriverUtil.switchToOtherTab(driver, Arrays.asList(firstTab, secondTab));
 
         raisePage.getStartedWithNewStore(listing.getStoreName());
