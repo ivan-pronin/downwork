@@ -1,0 +1,49 @@
+<h3 class="dashboardBlockHeader">Allocated Jobs</h3>
+<div class="dashboardBlockContent">
+	<div class="view view-fl-job-allocation view-id-fl_job_allocation view-display-id-page_1 view-dom-id-1"> 
+		<div class="view-content"> 
+			<table class="views-table cols-1"> 
+				<thead> 
+					<tr> 
+						<th class="views-field views-field-title"> Job code </th> 
+						<th class="views-field views-field-phpcode-4"> Deadline </th> 
+						<th class="views-field views-field-field-enquiry-service-nid"> Service </th> 
+						<th class="views-field views-field-phpcode-5"> Units </th> 
+						<th class="views-field views-field-phpcode-7"> Process instructions </th> 
+						<th class="views-field views-field-phpcode-2"> Job files </th> 
+						<th class="views-field views-field-phpcode-3"> Fees </th> 
+						<th class="views-field views-field-phpcode-1"> Actions </th> 
+					</tr> 
+				</thead> 
+				<tbody> 
+					<tr class="odd views-row-first views-row-last"> 
+						<td class="views-field views-field-title">
+							<strong>JCDLQ_1</strong> (Edit) </td> 
+						<td class="views-field views-field-phpcode-4"> Fri, 10 Feb 2017 22:30 GMT
+							<div class="time_away">
+        3d 11h 10m away
+							</div>
+						</td> 
+						<td class="views-field views-field-field-enquiry-service-nid"> Standard Editing </td> 
+						<td class="views-field views-field-phpcode-5"> 3,500 Word </td> 
+						<td class="views-field views-field-phpcode-7">
+							<span class="show_more"/>
+						</td> 
+						<td class="views-field views-field-phpcode-2">
+							<a href="/dashboard/freelancer/view-work-files/17244373/JCDLQ_1/2901029-0" id="freelancerJobFiles" class="automodal">View files</a>
+						</td> 
+						<td class="views-field views-field-phpcode-3"> 44.625 USD<br>
+								<a href="/dashboard/freelancer/view-fee/17253754/17253779" id="freelancerJobFee" class="automodal">Details</a>
+								<br>
+								</td> 
+								<td class="views-field views-field-phpcode-1">
+									<input type="button" data="17253754#17253779" tabindex="1" value="Accept" name="acceptJob" text="Accept" title="Accept" class="dashboardAcceptActions acceptJobButton">
+										<a href="/dashboard/freelancer/rejectJob/17253754/17253779" id="freelancerReject" title="Reject" tabindex="2" class="automodal freelancerRejectActions rejectJobLink">Reject</a>
+									</td> 
+								</tr> 
+							</tbody> 
+						</table> 
+					</div> 
+				</div> 
+			</div> 
+			<div class="dashboardBlockFooter"/>
