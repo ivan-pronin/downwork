@@ -89,7 +89,7 @@ public class ScheduledTask extends TimerTask
             List<Job> jobs = getOngoingJobs(document);
             jobs.forEach(e -> result.add(new WorkInProgress(e)));
             LOGGER.info("Printing Ongoing jobs:");
-            jobs.forEach(e -> LOGGER.info(e));
+            jobs.forEach(LOGGER::info);
             isOngoingJobsInitialized = true;
             return result;
         }
@@ -159,7 +159,7 @@ public class ScheduledTask extends TimerTask
                 jobs.add(new Job(nameValue, deadline, parseUnits(unitsValue)));
             }
             LOGGER.info("Printing Allocated Jobs...");
-            jobs.forEach(e -> LOGGER.info(e));
+            jobs.forEach(LOGGER::info);
             return jobs;
         }
         return Collections.emptyList();
