@@ -1,5 +1,8 @@
 package com.cactusglobal.whiteboard.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -7,6 +10,8 @@ import java.util.Properties;
 
 public class PropertiesLoader
 {
+    private static final Logger LOGGER = LogManager.getLogger(PropertiesLoader.class);
+    
     public static Properties props;
 
     public static Properties getProperties()
@@ -28,7 +33,7 @@ public class PropertiesLoader
         }
         catch (IOException e)
         {
-            System.out.println("Error while reading properties file: " + e.getMessage());
+            LOGGER.error("Error while reading properties file: {}", e);
             return null;
         }
         return props;

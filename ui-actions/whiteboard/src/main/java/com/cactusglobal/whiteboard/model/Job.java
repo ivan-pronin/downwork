@@ -1,6 +1,7 @@
 package com.cactusglobal.whiteboard.model;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Job
 {
@@ -49,5 +50,24 @@ public class Job
     public String toString()
     {
         return "Job [code=" + code + ", deadline=" + deadline + ", units=" + units + "]";
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(code, units);
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Job other = (Job) obj;
+        return Objects.equals(code, other.code) && units == other.units;
     }
 }

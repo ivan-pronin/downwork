@@ -1,12 +1,16 @@
 package com.cactusglobal.whiteboard;
 
+import com.cactusglobal.whiteboard.action.UiActions;
 import com.cactusglobal.whiteboard.calculator.CapacityCalculator;
 import com.cactusglobal.whiteboard.model.Job;
 import com.cactusglobal.whiteboard.model.JobField;
 import com.cactusglobal.whiteboard.model.WorkInProgress;
 import com.cactusglobal.whiteboard.util.DateTimeUtil;
 import com.cactusglobal.whiteboard.util.PropertiesLoader;
+import com.cactusglobal.whiteboard.util.WebDriverUtil;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,7 +20,6 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,8 +32,10 @@ import java.util.TimerTask;
 
 public class ScheduledTask extends TimerTask
 {
+    private static final Logger LOGGER = LogManager.getLogger(Application.class);
     private static final String CLASS = "class";
     private static final String RETURN = "\n";
+
     private Map<String, String> cookies = new HashMap<>();
     private Set<WorkInProgress> workInProgress = new HashSet<>();
     private boolean isOngoingJobsInitialized;
@@ -38,9 +43,9 @@ public class ScheduledTask extends TimerTask
     @Override
     public void run()
     {
-        System.out.println("Starting to poll the site at: " + getTimeStamp());
+        LOGGER.info("Starting to poll the site ...");
         Document doc = getDashboardDocument();
-        System.out.println("Polled site at:               " + getTimeStamp());
+        LOGGER.info("Polling the site finished ... ");
 
         workInProgress = initWorkInProgress(doc);
 
@@ -50,7 +55,8 @@ public class ScheduledTask extends TimerTask
         {
             System.out.println();
             System.out.println("=======================================");
-            System.out.println("!!! Found Allocated Jobs! Processing...");
+            LOGGER.info("!!! Found Allocated Jobs! Processing...");
+            WebDriverUtil.takeScreenShot();
             List<Job> jobs = getAllocatedJobs(allocatedJobs);
             writeTextToFile(doc.html());
             int dailyCapacity = Integer
@@ -61,13 +67,13 @@ public class ScheduledTask extends TimerTask
             {
                 if (calculator.canTakeJob(job))
                 {
-                    System.out.println("Trying to accept the job: " + job);
+                    LOGGER.info("Trying to accept the job: {}", job);
                     UiActions uiActions = new UiActions(WebDriverProvider.getDriverInstance());
                     if (uiActions.acceptJob(job))
                     {
                         workInProgress.add(new WorkInProgress(job));
-                        System.out.println("Add new job to Ongoing list: " + job);
-                        System.out.println("Current ongoing jobs count: " + workInProgress.size());
+                        LOGGER.info("Added new job to Ongoing list: {}", job);
+                        LOGGER.info("Current ongoing jobs count: {}", workInProgress.size());
                     }
                 }
             }
@@ -78,16 +84,16 @@ public class ScheduledTask extends TimerTask
     {
         if (!isOngoingJobsInitialized && workInProgress.isEmpty())
         {
-            System.out.println("Retrieving Ongoing Jobs list from the page...");
+            LOGGER.info("Retrieving Ongoing Jobs list from the page...");
             Set<WorkInProgress> result = new HashSet<>();
             List<Job> jobs = getOngoingJobs(document);
             jobs.forEach(e -> result.add(new WorkInProgress(e)));
-            System.out.println("Printing Ongoing jobs:");
-            jobs.forEach(e -> System.out.println(e));
+            LOGGER.info("Printing Ongoing jobs:");
+            jobs.forEach(e -> LOGGER.info(e));
             isOngoingJobsInitialized = true;
             return result;
         }
-        return Collections.emptySet();
+        return workInProgress;
     }
 
     private Document getDashboardDocument()
@@ -99,8 +105,7 @@ public class ScheduledTask extends TimerTask
         }
         catch (IOException e)
         {
-            System.out.println("Error while reading data from dashboard: " + e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("Error while reading data from dashboard: {}", e);
         }
         return null;
     }
@@ -153,8 +158,8 @@ public class ScheduledTask extends TimerTask
                 LocalDateTime deadline = DateTimeUtil.parseFromGMTString(deadlineValue);
                 jobs.add(new Job(nameValue, deadline, parseUnits(unitsValue)));
             }
-            System.out.println("Printing Allocated Jobs...");
-            jobs.forEach(e -> System.out.println(e));
+            LOGGER.info("Printing Allocated Jobs...");
+            jobs.forEach(e -> LOGGER.info(e));
             return jobs;
         }
         return Collections.emptyList();
@@ -170,7 +175,7 @@ public class ScheduledTask extends TimerTask
     {
         if (elements.isEmpty())
         {
-            System.out.println("Empty elements to parse field type: " + field + " / " + elements);
+            LOGGER.error("Empty elements to parse field type: {} / {}", field, elements);
             return null;
         }
         String result = null;
@@ -190,26 +195,19 @@ public class ScheduledTask extends TimerTask
 
     private void writeTextToFile(String text)
     {
-        Timestamp timestamp = getTimeStamp();
-        System.out.println(" ======= Appending new info at: " + timestamp);
+        LOGGER.info("Appending HTML code at file ...");
         StringBuilder builder = new StringBuilder();
-        builder.append(RETURN).append("========Appending info========").append(RETURN).append(timestamp).append(RETURN)
-                .append(text);
+        builder.append(RETURN).append("======== Appending info ========").append(RETURN)
+                .append(DateTimeUtil.getTimeStamp()).append(RETURN).append(text);
         try
         {
-            Files.write(FileSystems.getDefault().getPath("logs", "log.txt"), builder.toString().getBytes(),
+            Files.write(FileSystems.getDefault().getPath("logs", "html_src.txt"), builder.toString().getBytes(),
                     StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            LOGGER.error("Error while writing to file {}", e);
         }
-    }
-
-    public static Timestamp getTimeStamp()
-    {
-        java.util.Date date = new java.util.Date();
-        return new Timestamp(date.getTime());
     }
 
     public void setCookies(Map<String, String> cookies)

@@ -1,7 +1,10 @@
-package com.cactusglobal.whiteboard;
+package com.cactusglobal.whiteboard.action;
 
 import com.cactusglobal.whiteboard.model.Job;
+import com.cactusglobal.whiteboard.util.WebDriverUtil;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -14,6 +17,8 @@ import java.util.List;
 
 public class UiActions
 {
+    private static final Logger LOGGER = LogManager.getLogger(UiActions.class);
+    
     private WebDriver driver;
 
     public UiActions(WebDriver driver)
@@ -23,7 +28,7 @@ public class UiActions
 
     public boolean acceptJob(Job job)
     {
-        driver.navigate().refresh();
+        refreshPage();
         ElementActions actions = new ElementActions(driver, 10);
         WebElement div = actions.waitForElement("fl_job_allocation");
         List<WebElement> rows = div.findElements(By.xpath(".//table//tbody//tr"));
@@ -35,25 +40,37 @@ public class UiActions
                 if (acceptLink != null)
                 {
                     acceptLink.click();
+                    LOGGER.info("Clicked Accept link");
+                    WebDriverUtil.takeScreenShot();
                     WebDriverWait wait = new WebDriverWait(driver, 5);
                     try
                     {
                         Alert alert = wait.until(ExpectedConditions.alertIsPresent());
                         if (alert != null)
                         {
+                            LOGGER.info("Alert appeared");
+                            WebDriverUtil.takeScreenShot();
                             driver.switchTo().alert().accept();
-                            System.out.println(job + " has just been accepted!!!");
+                            LOGGER.info("Alert was accepted");
+                            LOGGER.info("The job has just been accepted: {}!!!", job);
+                            WebDriverUtil.takeScreenShot();
                             return true;
                         }
-                        
                     }
                     catch (TimeoutException e)
                     {
-                        System.err.println("Failed to wait for alert: " + e.getMessage());
+                        LOGGER.error("Failed to wait for alert: {}", e);
                     }
                 }
             }
         }
         return false;
+    }
+
+    private void refreshPage()
+    {
+        LOGGER.info("Refreshing current page in browser");
+        driver.navigate().refresh();
+        LOGGER.info("Page was refreshed");
     }
 }

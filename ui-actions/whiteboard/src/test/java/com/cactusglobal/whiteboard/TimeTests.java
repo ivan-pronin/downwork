@@ -31,4 +31,10 @@ public class TimeTests
         System.out.println(DateTimeUtil.parseFromGMTString(timeText));
         System.out.println(DateTimeUtil.parseFromGMTString(gmtText));
     }
+    
+    @Test
+    public void testName() throws Exception
+    {
+        System.out.println("Timestamp: " + DateTimeUtil.getTimeStamp());
+    }
 }
