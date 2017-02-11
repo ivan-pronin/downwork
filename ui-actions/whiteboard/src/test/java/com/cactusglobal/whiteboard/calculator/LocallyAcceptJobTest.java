@@ -1,15 +1,14 @@
 package com.cactusglobal.whiteboard.calculator;
 
 import com.cactusglobal.whiteboard.ScheduledTask;
-import com.cactusglobal.whiteboard.UiActions;
 import com.cactusglobal.whiteboard.WebDriverProvider;
+import com.cactusglobal.whiteboard.action.UiActions;
 import com.cactusglobal.whiteboard.model.Job;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
 import java.io.File;

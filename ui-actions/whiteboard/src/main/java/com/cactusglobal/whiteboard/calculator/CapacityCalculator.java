@@ -1,15 +1,20 @@
 package com.cactusglobal.whiteboard.calculator;
 
+import com.cactusglobal.whiteboard.model.Job;
+import com.cactusglobal.whiteboard.model.WorkInProgress;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.cactusglobal.whiteboard.model.Job;
-import com.cactusglobal.whiteboard.model.WorkInProgress;
-
 public class CapacityCalculator
 {
+    private static final Logger LOGGER = LogManager.getLogger(CapacityCalculator.class);
+
     private Set<WorkInProgress> workInProgress = new HashSet<>();
     private int dailyWorkloadCapacity;
 
@@ -20,9 +25,11 @@ public class CapacityCalculator
 
     public boolean canTakeJob(Job newJob)
     {
-        System.out.println("Deciding whether the job can be accepted...");
+        LOGGER.info("Deciding whether the job can be accepted...");
         Set<WorkInProgress> copyWorkInProgress = new HashSet<>(workInProgress);
         double workRateOfRemainingWork = 0;
+        LOGGER.info("Printing ongoing Work objects >>");
+        workInProgress.forEach(LOGGER::info);
         for (WorkInProgress work : copyWorkInProgress)
         {
             LocalDateTime startNow = LocalDateTime.now();
@@ -31,14 +38,14 @@ public class CapacityCalculator
             double remainingUnits = initialUnits - completedUnits;
             workRateOfRemainingWork = +getRateOfWork(remainingUnits, startNow, work.getJob().getDeadline());
         }
-        System.out.println("Work Rate of remaining Work : " + workRateOfRemainingWork);
+        LOGGER.info("Work Rate of remaining Work :{}", workRateOfRemainingWork);
         WorkInProgress tempWork = new WorkInProgress(LocalDateTime.now(), newJob);
         double rateOrWork = getRateOrWork(tempWork, tempWork.getStartTime());
-        System.out.println("Work Rate of new work: " + rateOrWork);
+        LOGGER.info("Work Rate of new work: {}", rateOrWork);
         double compare = (1 - workRateOfRemainingWork) - rateOrWork;
-        System.out.println("Comparison of work rates: " + compare);
+        LOGGER.info("Comparison of work rates: {}", compare);
         boolean canAcceptJob = compare > -0.02;
-        System.out.println("Can accept the job: " + canAcceptJob );
+        LOGGER.info("Can accept the job: {}", canAcceptJob);
         return canAcceptJob;
     }
 
