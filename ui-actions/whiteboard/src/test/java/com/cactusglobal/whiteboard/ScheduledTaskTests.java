@@ -1,13 +1,5 @@
 package com.cactusglobal.whiteboard;
 
-import com.cactusglobal.whiteboard.model.Job;
-import com.cactusglobal.whiteboard.model.WorkInProgress;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -17,69 +9,21 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.cactusglobal.whiteboard.model.Job;
+import com.cactusglobal.whiteboard.model.WorkInProgress;
+import com.cactusglobal.whiteboard.ui.DashboardPageProcessor;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.junit.Assert;
+import org.junit.Test;
+
 public class ScheduledTaskTests
 {
-
-    // @Test
-    public void testGetJobs()
-    {
-        Document doc;
-        try
-        {
-            doc = Jsoup.parse(new File("jobs.txt"), "utf-8");
-            ScheduledTask task = new ScheduledTask();
-            System.out.println(task.getAllocatedJobs(doc));
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    // @Test
-    public void testGetOngoingJObs() throws Exception
-    {
-        Document doc;
-        try
-        {
-            doc = Jsoup.parse(new File("ongoingJobs.txt"), "utf-8");
-            ScheduledTask task = new ScheduledTask();
-            System.out.println(task.getOngoingJobs(doc));
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testTimerThreadAddNewWork() throws Exception
-    {
-        TestTask task = new TestTask();
-        task.setStartTime(System.currentTimeMillis());
-        Timer timer = new Timer();
-        int timeoutSeconds = 1;
-        Thread mainThread = Thread.currentThread();
-        timer.schedule(task, 0, timeoutSeconds * 1000);
-        synchronized (mainThread)
-        {
-            mainThread.wait(timeoutSeconds * 1000 * 3);
-        }
-        System.out.println("Total jobs: " + task.workInProgress);
-        Assert.assertEquals(2, task.workInProgress.size());
-    }
-
     private class TestTask extends TimerTask
     {
         private Set<WorkInProgress> workInProgress = new HashSet<>();
         private long startTime;
-
-        private void setStartTime(long startTime)
-        {
-            this.startTime = startTime;
-        }
 
         @Override
         public void run()
@@ -111,8 +55,8 @@ public class ScheduledTaskTests
                 {
                     e1.printStackTrace();
                 }
-                ScheduledTask task = new ScheduledTask();
-                List<Job> jobs = task.getOngoingJobs(document);
+                DashboardPageProcessor dashboardPageProcessor = new DashboardPageProcessor(document);
+                List<Job> jobs = dashboardPageProcessor.getOngoingJobs();
                 jobs.forEach(e -> result.add(new WorkInProgress(e)));
                 System.out.println("Printing Ongoing jobs:");
                 jobs.forEach(e -> System.out.println(e));
@@ -121,6 +65,60 @@ public class ScheduledTaskTests
             System.out.println("No need to initizlize");
             return workInProgress;
         }
+
+        private void setStartTime(long startTime)
+        {
+            this.startTime = startTime;
+        }
+    }
+
+    @Test
+    public void testGetJobs()
+    {
+        Document doc;
+        try
+        {
+            doc = Jsoup.parse(new File("jobs.txt"), "utf-8");
+            DashboardPageProcessor dashboardPageProcessor = new DashboardPageProcessor(doc);
+            System.out.println(dashboardPageProcessor.getAllocatedJobs());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testGetOngoingJObs() throws Exception
+    {
+        Document doc;
+        try
+        {
+            doc = Jsoup.parse(new File("ongoingJobs.txt"), "utf-8");
+            DashboardPageProcessor dashboardPageProcessor = new DashboardPageProcessor(doc);
+            System.out.println(dashboardPageProcessor.getOngoingJobs());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testTimerThreadAddNewWork() throws Exception
+    {
+        TestTask task = new TestTask();
+        task.setStartTime(System.currentTimeMillis());
+        Timer timer = new Timer();
+        int timeoutSeconds = 1;
+        Thread mainThread = Thread.currentThread();
+        timer.schedule(task, 0, timeoutSeconds * 1000);
+        synchronized (mainThread)
+        {
+            mainThread.wait(timeoutSeconds * 1000 * 3);
+        }
+        System.out.println("Total jobs: " + task.workInProgress);
+        Assert.assertEquals(2, task.workInProgress.size());
     }
 
     private String currentThreadName()

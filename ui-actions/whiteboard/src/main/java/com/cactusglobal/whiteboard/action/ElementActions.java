@@ -25,16 +25,34 @@ public class ElementActions
         this.waitForElementTimeoutSeconds = waitForElementTimeout;
     }
 
-    public WebElement waitForElement(String elementId)
+    public void click(By locator)
     {
-        return waitForElement(elementId, waitForElementTimeoutSeconds);
+        WebElement element = driver.findElement(locator);
+        if (element != null)
+        {
+            element.click();
+            LOGGER.info("Clicked on element with locator: {}", locator);
+            return;
+        }
+        LOGGER.error(COULD_NOT_FIND_ELEMENT + "to click with locator: {}", locator);
     }
 
-    public WebElement waitForElement(String elementId, int seconds)
+    public void enterTextById(String id, String text)
     {
-        WebElement emailInput = (new WebDriverWait(driver, seconds))
-                .until(ExpectedConditions.presenceOfElementLocated(By.id(elementId)));
-        return emailInput;
+        WebElement element = waitForElement(id);
+        enterTextToElement(text, element);
+    }
+
+    public void enterTextToElement(String text, WebElement element)
+    {
+        if (element != null)
+        {
+            element.clear();
+            element.sendKeys(text);
+            LOGGER.info("Entering text: {}", text);
+            return;
+        }
+        LOGGER.error(COULD_NOT_FIND_ELEMENT + "to enter text: {}", text);
     }
 
     public WebElement waitForElement(By locator, int seconds)
@@ -51,33 +69,15 @@ public class ElementActions
         }
     }
 
-    public void enterTextById(String id, String text)
+    public WebElement waitForElement(String elementId)
     {
-        WebElement element = waitForElement(id);
-        enterTextToElement(text, element);
+        return waitForElement(elementId, waitForElementTimeoutSeconds);
     }
 
-    public void click(By locator)
+    public WebElement waitForElement(String elementId, int seconds)
     {
-        WebElement element = driver.findElement(locator);
-        if (element != null)
-        {
-            element.click();
-            LOGGER.info("Clicked on element with locator: {}", locator);
-            return;
-        }
-        LOGGER.error(COULD_NOT_FIND_ELEMENT + "to click with locator: {}", locator);
-    }
-
-    public void enterTextToElement(String text, WebElement element)
-    {
-        if (element != null)
-        {
-            element.clear();
-            element.sendKeys(text);
-            LOGGER.info("Entering text: {}", text);
-            return;
-        }
-        LOGGER.error(COULD_NOT_FIND_ELEMENT + "to enter text: {}", text);
+        WebElement emailInput = (new WebDriverWait(driver, seconds))
+                .until(ExpectedConditions.presenceOfElementLocated(By.id(elementId)));
+        return emailInput;
     }
 }

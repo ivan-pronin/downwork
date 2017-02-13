@@ -1,15 +1,15 @@
 package com.cactusglobal.whiteboard.calculator;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
+
 import com.cactusglobal.whiteboard.model.Job;
 import com.cactusglobal.whiteboard.model.WorkInProgress;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
 
 public class CapacityCalculatorTests
 {
@@ -27,14 +27,6 @@ public class CapacityCalculatorTests
     }
 
     @Test
-    public void testNoRunningJobsCanTakeNewJob()
-    {
-        capacityCalculator.setDailyWorkloadCapacity(DAILY_WORKLOAD);
-        Job job = new Job("job1", deadlineTimeThreeDays.plusHours(1), DAILY_WORKLOAD * 3);
-        Assert.assertTrue(capacityCalculator.canTakeJob(job));
-    }
-
-    @Test
     public void testNoRunningJobsCanNotTakeNewJob()
     {
         capacityCalculator.setDailyWorkloadCapacity(DAILY_WORKLOAD);
@@ -43,14 +35,11 @@ public class CapacityCalculatorTests
     }
 
     @Test
-    public void testOneRunningJobNotFullCapacityCanTakeNew()
+    public void testNoRunningJobsCanTakeNewJob()
     {
         capacityCalculator.setDailyWorkloadCapacity(DAILY_WORKLOAD);
-        Job jobInProgress = new Job("job1", deadlineTimeThreeDays, DAILY_WORKLOAD * 2);
-        WorkInProgress workInProgress = new WorkInProgress(startTimeYesterday, jobInProgress);
-        capacityCalculator.setWorkInProgress(new HashSet<>(Arrays.asList(workInProgress)));
-        Job newJob = new Job("job2", deadlineTimeThreeDays.plusHours(1), DAILY_WORKLOAD * 2);
-        Assert.assertTrue(capacityCalculator.canTakeJob(newJob));
+        Job job = new Job("job1", deadlineTimeThreeDays.plusHours(1), DAILY_WORKLOAD * 3);
+        Assert.assertTrue(capacityCalculator.canTakeJob(job));
     }
 
     @Test
@@ -62,6 +51,17 @@ public class CapacityCalculatorTests
         capacityCalculator.setWorkInProgress(new HashSet<>(Arrays.asList(workInProgress)));
         Job newJob = new Job("job2", deadlineTimeThreeDays.minusHours(2), DAILY_WORKLOAD * 2);
         Assert.assertFalse(capacityCalculator.canTakeJob(newJob));
+    }
+
+    @Test
+    public void testOneRunningJobNotFullCapacityCanTakeNew()
+    {
+        capacityCalculator.setDailyWorkloadCapacity(DAILY_WORKLOAD);
+        Job jobInProgress = new Job("job1", deadlineTimeThreeDays, DAILY_WORKLOAD * 2);
+        WorkInProgress workInProgress = new WorkInProgress(startTimeYesterday, jobInProgress);
+        capacityCalculator.setWorkInProgress(new HashSet<>(Arrays.asList(workInProgress)));
+        Job newJob = new Job("job2", deadlineTimeThreeDays.plusHours(1), DAILY_WORKLOAD * 2);
+        Assert.assertTrue(capacityCalculator.canTakeJob(newJob));
     }
 
     @Test

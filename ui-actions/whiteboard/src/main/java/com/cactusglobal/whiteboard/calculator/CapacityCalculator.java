@@ -1,15 +1,15 @@
 package com.cactusglobal.whiteboard.calculator;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.cactusglobal.whiteboard.model.Job;
 import com.cactusglobal.whiteboard.model.WorkInProgress;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 public class CapacityCalculator
 {
@@ -49,6 +49,29 @@ public class CapacityCalculator
         return canAcceptJob;
     }
 
+    public double getRateOfWork(double unitsToDo, LocalDateTime startTime, LocalDateTime deadline)
+    {
+        double hoursToCompleteWork = Duration.between(startTime, deadline).toHours();
+        double workRate = unitsToDo / hoursToCompleteWork;
+        return workRate / getHourlyCapacity();
+    }
+
+    public double getRateOrWork(WorkInProgress work, LocalDateTime startTime)
+    {
+        Job job = work.getJob();
+        return getRateOfWork(job.getUnits(), startTime, job.getDeadline());
+    }
+
+    public void setDailyWorkloadCapacity(int dailyWorkloadCapacity)
+    {
+        this.dailyWorkloadCapacity = dailyWorkloadCapacity;
+    }
+
+    public void setWorkInProgress(Set<WorkInProgress> workInProgress)
+    {
+        this.workInProgress = workInProgress;
+    }
+
     private double getHourlyCapacity()
     {
         return dailyWorkloadCapacity / 24;
@@ -59,28 +82,5 @@ public class CapacityCalculator
         LocalDateTime startTime = work.getStartTime();
         LocalDateTime endTime = LocalDateTime.now();
         return Duration.between(startTime, endTime).toHours();
-    }
-
-    public double getRateOrWork(WorkInProgress work, LocalDateTime startTime)
-    {
-        Job job = work.getJob();
-        return getRateOfWork(job.getUnits(), startTime, job.getDeadline());
-    }
-
-    public double getRateOfWork(double unitsToDo, LocalDateTime startTime, LocalDateTime deadline)
-    {
-        double hoursToCompleteWork = Duration.between(startTime, deadline).toHours();
-        double workRate = unitsToDo / hoursToCompleteWork;
-        return workRate / getHourlyCapacity();
-    }
-
-    public void setWorkInProgress(Set<WorkInProgress> workInProgress)
-    {
-        this.workInProgress = workInProgress;
-    }
-
-    public void setDailyWorkloadCapacity(int dailyWorkloadCapacity)
-    {
-        this.dailyWorkloadCapacity = dailyWorkloadCapacity;
     }
 }
