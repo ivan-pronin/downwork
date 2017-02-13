@@ -1,0 +1,12 @@
+#Ignore Gradle cache
+.gradle
+
+#Ignore IDE project files
+.settings
+.project
+.classpath
+*bin*
+*output*
+*build*
+*logs*
+*screenshots*
