@@ -16,48 +16,6 @@ public class Job
         this.units = units;
     }
 
-    public String getCode()
-    {
-        return code;
-    }
-
-    public void setCode(String code)
-    {
-        this.code = code;
-    }
-
-    public LocalDateTime getDeadline()
-    {
-        return deadline;
-    }
-
-    public void setDeadline(LocalDateTime deadline)
-    {
-        this.deadline = deadline;
-    }
-
-    public int getUnits()
-    {
-        return units;
-    }
-
-    public void setUnits(int units)
-    {
-        this.units = units;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "Job [code=" + code + ", deadline=" + deadline + ", units=" + units + "]";
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(code, units);
-    }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -69,5 +27,47 @@ public class Job
             return false;
         Job other = (Job) obj;
         return Objects.equals(code, other.code) && units == other.units;
+    }
+
+    public String getCode()
+    {
+        return code;
+    }
+
+    public LocalDateTime getDeadline()
+    {
+        return deadline;
+    }
+
+    public int getUnits()
+    {
+        return units;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(code, units);
+    }
+
+    public void setCode(String code)
+    {
+        this.code = code;
+    }
+
+    public void setDeadline(LocalDateTime deadline)
+    {
+        this.deadline = deadline;
+    }
+
+    public void setUnits(int units)
+    {
+        this.units = units;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Job [code=" + code + ", deadline=" + deadline + ", units=" + units + "]";
     }
 }

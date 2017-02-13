@@ -8,42 +8,16 @@ public class WorkInProgress
     private LocalDateTime startTime;
     private Job job;
 
-    public WorkInProgress(LocalDateTime startTime, Job job)
-    {
-        this.startTime = startTime;
-        this.job = job;
-    }
-    
     public WorkInProgress(Job job)
     {
         startTime = LocalDateTime.now();
         this.job = job;
     }
-
-    public LocalDateTime getStartTime()
-    {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime)
+    
+    public WorkInProgress(LocalDateTime startTime, Job job)
     {
         this.startTime = startTime;
-    }
-
-    public Job getJob()
-    {
-        return job;
-    }
-
-    public void setJob(Job job)
-    {
         this.job = job;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(job);
     }
 
     @Override
@@ -57,6 +31,32 @@ public class WorkInProgress
             return false;
         WorkInProgress other = (WorkInProgress) obj;
         return Objects.equals(job, other.job);
+    }
+
+    public Job getJob()
+    {
+        return job;
+    }
+
+    public LocalDateTime getStartTime()
+    {
+        return startTime;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(job);
+    }
+
+    public void setJob(Job job)
+    {
+        this.job = job;
+    }
+
+    public void setStartTime(LocalDateTime startTime)
+    {
+        this.startTime = startTime;
     }
 
     @Override

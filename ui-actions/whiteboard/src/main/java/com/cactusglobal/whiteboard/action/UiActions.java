@@ -1,5 +1,7 @@
 package com.cactusglobal.whiteboard.action;
 
+import java.util.List;
+
 import com.cactusglobal.whiteboard.model.Job;
 import com.cactusglobal.whiteboard.util.WebDriverUtil;
 
@@ -12,8 +14,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.List;
 
 public class UiActions
 {

@@ -1,5 +1,11 @@
 package com.cactusglobal.whiteboard;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.Timer;
+
 import com.cactusglobal.whiteboard.action.ElementActions;
 import com.cactusglobal.whiteboard.util.PropertiesLoader;
 import com.cactusglobal.whiteboard.util.WebDriverUtil;
@@ -9,12 +15,6 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Timer;
 
 public class Application
 {

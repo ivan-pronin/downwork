@@ -1,5 +1,9 @@
 package com.cactusglobal.whiteboard.util;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import com.cactusglobal.whiteboard.WebDriverProvider;
 
 import org.apache.commons.io.FileUtils;
@@ -10,29 +14,9 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 public final class WebDriverUtil
 {
     private static final Logger LOGGER = LogManager.getLogger(WebDriverUtil.class);
-
-    public static void waitForPageToLoad(WebDriver driver)
-    {
-        LOGGER.info("Waiting for page to load: {}", driver.getCurrentUrl());
-        long startTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startTime < 60)
-        {
-            String value = String.valueOf(((JavascriptExecutor) driver).executeScript("return document.readyState"));
-            if (value.equals("complete"))
-            {
-                LOGGER.info("Page loaded");
-                return;
-            }
-        }
-        LOGGER.error("Failed to load the page due to timeout");
-    }
 
     public static void openNewTab(WebDriver driver, String url)
     {
@@ -67,5 +51,21 @@ public final class WebDriverUtil
         {
             LOGGER.error("Error while copying screenshot file: {}", e);
         }
+    }
+
+    public static void waitForPageToLoad(WebDriver driver)
+    {
+        LOGGER.info("Waiting for page to load: {}", driver.getCurrentUrl());
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < 60)
+        {
+            String value = String.valueOf(((JavascriptExecutor) driver).executeScript("return document.readyState"));
+            if (value.equals("complete"))
+            {
+                LOGGER.info("Page loaded");
+                return;
+            }
+        }
+        LOGGER.error("Failed to load the page due to timeout");
     }
 }

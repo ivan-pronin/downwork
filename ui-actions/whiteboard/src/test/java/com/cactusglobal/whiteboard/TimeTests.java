@@ -1,26 +1,20 @@
 package com.cactusglobal.whiteboard;
 
-import com.cactusglobal.whiteboard.util.DateTimeUtil;
-
-import org.junit.Test;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import com.cactusglobal.whiteboard.util.DateTimeUtil;
+
+import org.junit.Test;
 
 public class TimeTests
 {
 
     @Test
-    public void testTime()
+    public void testName() throws Exception
     {
-        String rawDeadlineTime = "Fri, 10 Feb 2017 22:30 GMT";
-        LocalDateTime startTime = LocalDateTime.now();
-        LocalDateTime parsedDeadlineTime = LocalDateTime.parse(rawDeadlineTime, DateTimeFormatter.RFC_1123_DATE_TIME);
-        System.out.println(parsedDeadlineTime);
-        Duration duration = Duration.between(startTime, parsedDeadlineTime);
-        System.out.println(duration.toHours());
-
+        System.out.println("Timestamp: " + DateTimeUtil.getTimeStamp());
     }
 
     @Test
@@ -33,8 +27,14 @@ public class TimeTests
     }
     
     @Test
-    public void testName() throws Exception
+    public void testTime()
     {
-        System.out.println("Timestamp: " + DateTimeUtil.getTimeStamp());
+        String rawDeadlineTime = "Fri, 10 Feb 2017 22:30 GMT";
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime parsedDeadlineTime = LocalDateTime.parse(rawDeadlineTime, DateTimeFormatter.RFC_1123_DATE_TIME);
+        System.out.println(parsedDeadlineTime);
+        Duration duration = Duration.between(startTime, parsedDeadlineTime);
+        System.out.println(duration.toHours());
+
     }
 }
