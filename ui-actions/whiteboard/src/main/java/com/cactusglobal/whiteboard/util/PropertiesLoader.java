@@ -12,7 +12,7 @@ public class PropertiesLoader
 {
     private static final Logger LOGGER = LogManager.getLogger(PropertiesLoader.class);
     
-    public static Properties props;
+    private static Properties props;
 
     public static Properties getProperties()
     {
