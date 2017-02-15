@@ -13,6 +13,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 public final class WebDriverUtil
 {
@@ -44,16 +45,16 @@ public final class WebDriverUtil
         }
         String fileName = DateTimeUtil.getTimeStamp() + ".png";
         LOGGER.info("Taking screenshot with name: {}", fileName);
-        File scrFile = ((TakesScreenshot) WebDriverProvider.getDriverInstance()).getScreenshotAs(OutputType.FILE);
         try
         {
+            File scrFile = ((TakesScreenshot) WebDriverProvider.getDriverInstance()).getScreenshotAs(OutputType.FILE);
             File destFile = new File("screenshots/" + fileName);
             FileUtils.copyFile(scrFile, destFile);
             LOGGER.info("Screenshot saved successfully to path: {}", destFile.getAbsolutePath());
         }
-        catch (IOException e)
+        catch (WebDriverException | IOException e)
         {
-            LOGGER.error("Error while copying screenshot file: {}", e);
+            LOGGER.error("Error while taking screenshot: {}", e);
         }
     }
 
