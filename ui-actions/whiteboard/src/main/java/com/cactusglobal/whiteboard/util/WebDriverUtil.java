@@ -38,6 +38,10 @@ public final class WebDriverUtil
 
     public static void takeScreenShot()
     {
+        if (!Boolean.parseBoolean(PropertiesLoader.getProperties().getProperty("takeScreenshots", "false")))
+        {
+            return;
+        }
         String fileName = DateTimeUtil.getTimeStamp() + ".png";
         LOGGER.info("Taking screenshot with name: {}", fileName);
         File scrFile = ((TakesScreenshot) WebDriverProvider.getDriverInstance()).getScreenshotAs(OutputType.FILE);

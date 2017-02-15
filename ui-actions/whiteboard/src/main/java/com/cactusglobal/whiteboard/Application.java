@@ -27,14 +27,15 @@ public class Application
         Properties props = PropertiesLoader.getProperties();
         WebDriver driver = WebDriverProvider.getDriverInstance();
         driver.navigate().to(MAIN_PAGE);
-        
+
         ElementActions elementActions = new ElementActions(driver, 30);
         elementActions.enterTextById("edit-name-1", props.getProperty("login"));
         elementActions.enterTextById("edit-pass-1", props.getProperty("password"));
         elementActions.click(By.id("edit-submit-1"));
         WebDriverUtil.waitForPageToLoad(driver);
+        WebDriverUtil.takeScreenShot();
         Set<Cookie> cookies = driver.manage().getCookies();
-        
+
         Map<String, String> sessionCookies = new LinkedHashMap<>();
         for (Cookie cookie : cookies)
         {
