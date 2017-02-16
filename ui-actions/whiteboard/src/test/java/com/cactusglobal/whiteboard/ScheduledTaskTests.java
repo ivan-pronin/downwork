@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,6 +21,37 @@ import org.junit.Test;
 
 public class ScheduledTaskTests
 {
+    private class TestReturningTask extends TimerTask
+    {
+
+        @Override
+        public void run()
+        {
+            System.out.println("Running...");
+            int dice = new Random().nextInt(3);
+            if (dice == 0)
+            {
+                System.out.println("returning!!");
+                return;
+            }
+        }
+
+    }
+
+    @Test
+    public void testReturningTask() throws InterruptedException
+    {
+        TestReturningTask task = new TestReturningTask();
+        Timer timer = new Timer();
+        int timeoutSeconds = 1;
+        Thread mainThread = Thread.currentThread();
+        timer.schedule(task, 0, timeoutSeconds * 1000);
+        synchronized (mainThread)
+        {
+            mainThread.wait(timeoutSeconds * 1000 * 10);
+        }
+    }
+
     private class TestTask extends TimerTask
     {
         private Set<WorkInProgress> workInProgress = new HashSet<>();
@@ -72,7 +104,7 @@ public class ScheduledTaskTests
         }
     }
 
-    @Test
+    //@Test
     public void testGetJobs()
     {
         Document doc;
@@ -88,7 +120,7 @@ public class ScheduledTaskTests
         }
     }
 
-    @Test
+    //@Test
     public void testGetOngoingJObs() throws Exception
     {
         Document doc;
@@ -104,7 +136,7 @@ public class ScheduledTaskTests
         }
     }
 
-    @Test
+    //@Test
     public void testTimerThreadAddNewWork() throws Exception
     {
         TestTask task = new TestTask();

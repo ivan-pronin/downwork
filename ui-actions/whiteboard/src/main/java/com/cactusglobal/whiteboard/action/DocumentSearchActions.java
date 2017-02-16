@@ -22,10 +22,13 @@ public class DocumentSearchActions
 
     public Element getElementById(String id)
     {
-        Element element = document.getElementById(id);
-        if (!isNullElement(element))
+        if (document != null)
         {
-            return element;
+            Element element = document.getElementById(id);
+            if (!isNullElement(element))
+            {
+                return element;
+            }
         }
         return null;
     }
