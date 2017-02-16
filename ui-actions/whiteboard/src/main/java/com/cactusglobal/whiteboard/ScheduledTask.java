@@ -37,6 +37,12 @@ public class ScheduledTask extends TimerTask
         Document doc = getDashboardDocument();
         LOGGER.info("Polling the site finished ... ");
 
+        if (doc == null)
+        {
+            LOGGER.info("Could not fetch new data from site... Skipping this iteration!");
+            return;
+        }
+
         DashboardPageProcessor dashBoardProcessor = new DashboardPageProcessor(doc);
         workInProgress = initWorkInProgress(dashBoardProcessor);
 
