@@ -1,14 +1,13 @@
 package com.idealista.scraper.webdriver;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
-
 import com.idealista.scraper.proxy.ProxyAdapter;
 import com.idealista.scraper.proxy.ProxyProvider;
 import com.idealista.scraper.util.PropertiesLoader;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
 
 import org.openqa.selenium.WebDriver;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class WebDriverProvider implements IWebDriverProvider
 {
@@ -39,11 +38,14 @@ public class WebDriverProvider implements IWebDriverProvider
             WebDriver driver = null;
             if (useProxy())
             {
-                if (localProxy.get().equals(proxy))
+                synchronized (this)
                 {
-                    proxy = proxyProvider.getNextWorkingProxy();
+                    if (localProxy.get().equals(proxy))
+                    {
+                        proxy = proxyProvider.getNextWorkingProxy();
+                    }
+                    localProxy.set(proxy);
                 }
-                localProxy.set(proxy);
                 driver = webDriverFactory.create(proxy, type);
             }
             else

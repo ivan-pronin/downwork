@@ -3,6 +3,7 @@ package com.idealista.scraper.page;
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.model.RealtyType;
 import com.idealista.scraper.proxy.ProxyMonitor;
+import com.idealista.scraper.util.RegexUtils;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
@@ -34,10 +35,7 @@ public class AdvertismentExtractor implements Callable<Advertisment>
         LOGGER.info("AdvertismentExtractor is working at page: {}", pageUrl);
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to(pageUrl);
-        //synchronized (this)
-        //{
-         //   driver = proxyMonitor.checkForVerificationAndRestarttDriver(driver, webDriverProvider);
-        //}
+        driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
         AdvertismentPage page = new AdvertismentPage(driver);
         Advertisment ad = new Advertisment(pageUrl, page.getTitle(), type);
         ad.setAddress(page.getAddress());
@@ -48,6 +46,7 @@ public class AdvertismentExtractor implements Callable<Advertisment>
         ad.setBedRooms(Integer.parseInt(page.getBedrooms()));
         ad.setBathRooms(Integer.parseInt(page.getBathrooms()));
         ad.setSize(page.getSize());
+        ad.setPrice(page.getPrice());
         ad.setAgent(page.getListingAgent());
         ad.setHasImages(page.hasImages());
         return ad;

@@ -37,10 +37,7 @@ public class SearchPageProcessor implements Callable<Set<URL>>
         LOGGER.info("SearchPageProcessor is working at page: {}", pageUrl);
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to(pageUrl);
-        //synchronized (this)
-        //{
-            driver = proxyMonitor.checkForVerificationAndRestarttDriver(driver, webDriverProvider);
-        //}
+        driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
         WebElement divContainer = driver.findElement(By.xpath("//div[@class='items-container']"));
         if (divContainer != null)
         {
