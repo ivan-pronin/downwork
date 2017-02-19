@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
@@ -40,14 +41,17 @@ public class IdealistaScrappingService
     private WebDriverProvider webDriverProvider;
     private ExecutorService executor;
     private Properties props = PropertiesLoader.getProperties();
+    private BlockingQueue<Future<Advertisment>> advertismentExtractorTasks;
 
-    public IdealistaScrappingService(WebDriverProvider webDriverProvider)
+    public IdealistaScrappingService(WebDriverProvider webDriverProvider,
+            BlockingQueue<Future<Advertisment>> advertismentExtractorTasks)
     {
         this.webDriverProvider = webDriverProvider;
+        this.advertismentExtractorTasks = advertismentExtractorTasks;
         executor = ExecutorServiceProvider.getExecutor();
     }
 
-    public Set<Advertisment> scrapSite(SearchAttribute searchAttribute) throws InterruptedException
+    public void scrapSite(SearchAttribute searchAttribute) throws InterruptedException
     {
 
         int maxIterations = Integer.parseInt(props.getProperty("maxAdsToProcess", "100"));
@@ -62,8 +66,6 @@ public class IdealistaScrappingService
 
         categoriesUrls.forEach(e -> pagesToProcess.addAll(paginator.getAllPageUrls(driver, e.toString())));
 
-        // pagesToProcess.forEach(LOGGER::info);
-
         Queue<Callable<Set<URL>>> tasks = new ConcurrentLinkedQueue<>();
         for (int i = 0; i < maxIterations; i++)
         {
@@ -73,9 +75,7 @@ public class IdealistaScrappingService
                 tasks.add(new SearchPageProcessor(webDriverProvider, page));
             }
         }
-        LOGGER.info("INVOKING ..");
         List<Future<Set<URL>>> taskResults = executor.invokeAll(tasks);
-        LOGGER.info("INVOKING FINISHED! ");
 
         Set<URL> adUrls = new HashSet<>();
         taskResults.forEach(e ->
@@ -90,7 +90,6 @@ public class IdealistaScrappingService
             }
         });
 
-        Queue<Callable<Advertisment>> extractorTasks = new ConcurrentLinkedQueue<>();
         Iterator<URL> iterator = adUrls.iterator();
         for (int i = 0; i < maxIterations; i++)
         {
@@ -100,24 +99,9 @@ public class IdealistaScrappingService
                 AdvertismentExtractor extractor = new AdvertismentExtractor(webDriverProvider, page);
                 extractor.setState(searchAttribute.getLocation());
                 extractor.setType(RealtyType.fromString(searchAttribute.getTypology()));
-                extractorTasks.add(extractor);
+                advertismentExtractorTasks.put(executor.submit(extractor));
             }
         }
-        List<Future<Advertisment>> ads = executor.invokeAll(extractorTasks);
-        
-        return ads.stream().map(e ->
-        {
-            try
-            {
-                return e.get();
-            }
-            catch (InterruptedException | ExecutionException e1)
-            {
-                e1.printStackTrace();
-                return null;
-            }
-        }).collect(Collectors.toSet());
-
     }
 
     private Set<URL> getCategoriesUrls(SearchAttribute searchAttribute) throws InterruptedException
@@ -204,7 +188,6 @@ public class IdealistaScrappingService
             }
             catch (InterruptedException | ExecutionException e1)
             {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
                 return null;
             }

@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 
 public class ProxyMonitor
 {
-    public WebDriver checkForVerificationAndRestarttDriver(WebDriver driver, WebDriverProvider webDriverProvider)
+    public WebDriver checkForVerificationAndRestartDriver(WebDriver driver, WebDriverProvider webDriverProvider)
     {
         if (ifVerificationAppered(driver))
         {

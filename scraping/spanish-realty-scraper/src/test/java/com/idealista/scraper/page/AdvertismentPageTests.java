@@ -1,5 +1,7 @@
 package com.idealista.scraper.page;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -24,7 +26,7 @@ public class AdvertismentPageTests
         }
     }
 
-    @Test
+    //@Test
     public void testGetSpecificCharacteristics() throws Exception
     {
         WebDriver driver = new ChromeDriver();
@@ -32,5 +34,15 @@ public class AdvertismentPageTests
         List<WebElement> elements = driver
                 .findElements(By.xpath("//h2[contains(.,'Specific characteristics')]/..//ul"));
         System.out.println(elements.size());
+    }
+    
+    @Test
+    public void testGetPrice() throws Exception
+    {
+        WebDriver driver = new ChromeDriver();
+        driver.navigate().to("https://www.idealista.com/en/inmueble/26660304/");
+        AdvertismentPage p = new AdvertismentPage(driver);
+        System.out.println(p.getPrice());
+        
     }
 }

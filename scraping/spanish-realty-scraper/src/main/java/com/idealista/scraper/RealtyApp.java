@@ -7,6 +7,7 @@ import com.idealista.scraper.service.IdealistaScrappingService;
 import com.idealista.scraper.util.LoggingUtils;
 import com.idealista.scraper.util.PropertiesLoader;
 import com.idealista.scraper.webdriver.WebDriverProvider;
+import com.idealista.scraper.xls.TasksListener;
 import com.idealista.scraper.xls.XlsExporter;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,20 +15,15 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
 import java.util.Properties;
-import java.util.Queue;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Timer;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class RealtyApp
 {
-    private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
-
-    private static final int MAX_ITERATIONS = 10;
-
     static
     {
         LoggingUtils.turnOffHtmlUnitWarnings();
@@ -35,15 +31,6 @@ public class RealtyApp
 
     public static void main(String[] args) throws InterruptedException, IOException
     {
-        // open main page url
-        // perform selection of necessary categories, search for results
-        // results appeared - open them
-        // calculate total number of pages
-        // implement mechanism to generate each page url based on total pages
-        // process each results page and grab advertisments URLs - collect all URLs into single collection
-        // exclude unnecessary ads URLs from parsing
-        //
-
         String baseUrl = "https://www.idealista.com/en/";
         WebDriverProvider webDriverProvider = new WebDriverProvider();
         WebDriver driver = webDriverProvider.get();
@@ -55,30 +42,28 @@ public class RealtyApp
         String location = props.getProperty("location", null);
         SearchAttribute searchAttribute = new SearchAttribute(operation, typology, location);
 
-        IdealistaScrappingService idealistaService = new IdealistaScrappingService(webDriverProvider);
-        Set<Advertisment> ads = idealistaService.scrapSite(searchAttribute);
-        ExecutorServiceProvider.getExecutor().shutdown();
-        XlsExporter exporter = new XlsExporter();
-        exporter.exportToXls(ads, props.getProperty("xlsFileName", "Scraper.xlsx"));
+        BlockingQueue<Future<Advertisment>> advertismentExtractorTasks = new LinkedBlockingQueue<>();
+        IdealistaScrappingService idealistaService = new IdealistaScrappingService(webDriverProvider,
+                advertismentExtractorTasks);
+        idealistaService.scrapSite(searchAttribute);
+
+        XlsExporter xlsExporter = new XlsExporter(props.getProperty("xlsFileName", "Scraper.xlsx"));
+        TasksListener tasksListener = new TasksListener(advertismentExtractorTasks, xlsExporter);
+        Timer timer = new Timer();
+        ExecutorService executor = ExecutorServiceProvider.getExecutor();
+        executor.shutdown();
+        timer.schedule(tasksListener, 0, 30 * 1000);
+
+        RealtyApp app = new RealtyApp();
+        while (!executor.isTerminated() && !advertismentExtractorTasks.isEmpty())
+        {
+            synchronized (app)
+            {
+                app.wait(60000);
+            }
+        }
+        timer.cancel();
+        timer = null;
         webDriverProvider.destroy();
-    }
-
-    private static URL getRandomPage(Queue<URL> pagesToProcess)
-    {
-        Random rand = new Random();
-        int randomInt = rand.nextInt(100);
-        return (URL) pagesToProcess.toArray()[randomInt];
-    }
-
-    private static void printExecutionTime(String message, long startTime)
-    {
-        long endTime = System.currentTimeMillis();
-        int seconds = (int) ((endTime - startTime) / 1000);
-        LOGGER.info("{}. Total time taken: {} seconds", message, seconds);
-    }
-
-    private static <T> Set<T> newConcurrentHashSet()
-    {
-        return Collections.newSetFromMap(new ConcurrentHashMap<T, Boolean>());
     }
 }
