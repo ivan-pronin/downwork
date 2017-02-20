@@ -10,7 +10,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Set;
@@ -83,7 +82,7 @@ public class XlsExporter
         row.createCell(4).setCellValue("todo:number_of_views");
         row.createCell(5).setCellValue(ad.getAddress());
         row.createCell(6).setCellValue(ad.getState());
-        row.createCell(7).setCellValue("todo:city");
+        row.createCell(7).setCellValue(ad.getCity());
         row.createCell(8).setCellValue(ad.getPostalCode());
         row.createCell(9).setCellValue("todo:age");
         row.createCell(10).setCellValue(ad.getDescription());
@@ -91,10 +90,10 @@ public class XlsExporter
         row.createCell(12).setCellValue(ad.getBathRooms());
         row.createCell(13).setCellValue(ad.getSize());
         row.createCell(14).setCellValue(ad.getPrice());
-        row.createCell(15).setCellValue("todo:certificacion_energetica");
-        row.createCell(16).setCellValue("todo:professional_or_particular");
+        row.createCell(15).setCellValue(ad.getEnergyCertification());
+        row.createCell(16).setCellValue(ad.getProfessional());
         row.createCell(17).setCellValue(ad.getAgent());
-        row.createCell(18).setCellValue("todo:phone");
+        row.createCell(18).setCellValue(ad.getAgentPhone());
         row.createCell(19).setCellValue("todo:email_listing_agent");
         row.createCell(20).setCellValue(ad.getUrl().toString());
         row.createCell(21).setCellValue(ad.isHasImages());

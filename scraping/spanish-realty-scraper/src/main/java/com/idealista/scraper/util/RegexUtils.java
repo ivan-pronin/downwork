@@ -65,4 +65,33 @@ public final class RegexUtils
         }
         return -1;
     }
+
+    public static String extractTextAfterAnchor(String text, String anchor)
+    {
+        if (text == null)
+        {
+            return null;
+        }
+        String[] parts = text.split(anchor);
+        return getSecondArrayElement(parts);
+    }
+
+    public static String extractTextBetweenTwoNumbers(String text)
+    {
+        if (text == null)
+        {
+            return null;
+        }
+        String[] parts = text.split("\\d+");
+        return getSecondArrayElement(parts);
+    }
+
+    private static String getSecondArrayElement(String[] parts)
+    {
+        if (parts.length > 1)
+        {
+            return parts[1].trim();
+        }
+        return null;
+    }
 }

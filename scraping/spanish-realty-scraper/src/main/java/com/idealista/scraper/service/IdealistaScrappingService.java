@@ -1,20 +1,5 @@
 package com.idealista.scraper.service;
 
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-
 import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.model.RealtyType;
@@ -32,6 +17,21 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
+
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 public class IdealistaScrappingService
 {
@@ -67,7 +67,7 @@ public class IdealistaScrappingService
         categoriesUrls.forEach(e -> pagesToProcess.addAll(paginator.getAllPageUrls(driver, e.toString())));
 
         Queue<Callable<Set<URL>>> tasks = new ConcurrentLinkedQueue<>();
-        for (int i = 0; i < maxIterations; i++)
+        for (int i = 0; i < (maxIterations / 30) + 1; i++)
         {
             if (!pagesToProcess.isEmpty())
             {

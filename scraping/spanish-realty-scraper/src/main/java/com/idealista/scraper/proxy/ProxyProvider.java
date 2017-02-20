@@ -1,10 +1,5 @@
 package com.idealista.scraper.proxy;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import com.idealista.scraper.util.FileUtils;
 import com.idealista.scraper.webdriver.WebDriverFactory;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
@@ -12,11 +7,15 @@ import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public class ProxyProvider implements IProxyProvider
 {

@@ -8,7 +8,6 @@ import org.openqa.selenium.WebElement;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;

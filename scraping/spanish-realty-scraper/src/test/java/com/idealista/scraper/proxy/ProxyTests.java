@@ -1,5 +1,13 @@
 package com.idealista.scraper.proxy;
 
+import com.idealista.scraper.driver.TestWebDriverProvider;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -8,14 +16,6 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import com.idealista.scraper.driver.TestWebDriverProvider;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
-import org.openqa.selenium.WebDriver;
 
 public class ProxyTests
 {

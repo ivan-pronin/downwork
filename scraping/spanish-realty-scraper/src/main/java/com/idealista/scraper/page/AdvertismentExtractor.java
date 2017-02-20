@@ -3,7 +3,6 @@ package com.idealista.scraper.page;
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.model.RealtyType;
 import com.idealista.scraper.proxy.ProxyMonitor;
-import com.idealista.scraper.util.RegexUtils;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,16 +37,23 @@ public class AdvertismentExtractor implements Callable<Advertisment>
         driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
         AdvertismentPage page = new AdvertismentPage(driver);
         Advertisment ad = new Advertisment(pageUrl, page.getTitle(), type);
-        ad.setAddress(page.getAddress());
         ad.setDateOfListing(page.getListingDate());
+        // number_of_views
+        ad.setAddress(page.getAddress());
         ad.setState(state);
+        ad.setCity(page.getCity());
         ad.setPostalCode(page.getPostalCode());
+        // age
         ad.setDescription(page.getDescription());
         ad.setBedRooms(Integer.parseInt(page.getBedrooms()));
         ad.setBathRooms(Integer.parseInt(page.getBathrooms()));
         ad.setSize(page.getSize());
         ad.setPrice(page.getPrice());
+        ad.setEnergyCertification(page.getEnergyCertification());
+        ad.setProfessional(page.getProfessional());
         ad.setAgent(page.getListingAgent());
+        ad.setAgentPhone(page.getAgentPhone());
+        // agent email
         ad.setHasImages(page.hasImages());
         return ad;
     }

@@ -1,7 +1,5 @@
 package com.idealista.scraper.page;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

@@ -12,19 +12,19 @@ public class Advertisment
     //    Number of views - requires email registration, will add
     // ok Address +++
     // ok State = location? +++
-    //   City - not clear how to parse
+    // ok City 
     // ok Postal Code +++
-    //   Age - not clear where to take info?
+    //    Age - not clear where to take info?
     // ok  Description +++
     // ok  Bedrooms +++
     // ok Bathrooms +++
     // ok Size +++
     // ok Price +++
-    //   Certificacion energetica - not clear
-    //   Profesional or Particular +++
-    // ok  Listing Agent +++
-    //   Phone Listing Agent +++
-    //   Email Listing Agent -
+    // ok Certificacion energetica - not clear
+    // ok Profesional or Particular +++
+    // ok Listing Agent +++
+    // ok Phone Listing Agent +++
+    //    Email Listing Agent -
     // ok  Link +++
     // ok  Images (yes /no) +++
     // Tag1
@@ -45,8 +45,10 @@ public class Advertisment
     private int bathRooms;
     private int size;
     private int price;
+    private String energyCertification;
     private String professional;
     private String agent;
+    private String agentPhone;
     private boolean hasImages;
 
     public Advertisment(URL url, String title, RealtyType type)
@@ -250,5 +252,25 @@ public class Advertisment
     public void setHasImages(boolean hasImages)
     {
         this.hasImages = hasImages;
+    }
+
+    public String getEnergyCertification()
+    {
+        return energyCertification;
+    }
+
+    public void setEnergyCertification(String energyCertification)
+    {
+        this.energyCertification = energyCertification;
+    }
+
+    public String getAgentPhone()
+    {
+        return agentPhone;
+    }
+
+    public void setAgentPhone(String agentPhone)
+    {
+        this.agentPhone = agentPhone;
     }
 }

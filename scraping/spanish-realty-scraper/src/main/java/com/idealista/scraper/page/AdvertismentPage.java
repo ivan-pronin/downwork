@@ -1,15 +1,16 @@
 package com.idealista.scraper.page;
 
-import java.util.List;
-
 import com.idealista.scraper.search.SearchActions;
 import com.idealista.scraper.util.RegexUtils;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+
 public class AdvertismentPage
 {
+    private static final String ENERGY_CERTIFICATION = "Energy certification:";
     private SearchActions searchActions;
 
     public AdvertismentPage(WebDriver driver)
@@ -107,7 +108,25 @@ public class AdvertismentPage
             if (!stats.isEmpty())
             {
                 List<WebElement> p = searchActions.findElementsByTagName(stats, "p");
-                return searchActions.getElementText(p);
+                String text = searchActions.getElementText(p);
+                if (text != null)
+                {
+                    return text.replaceAll("Listing updated on ", "");
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getEnergyCertification()
+    {
+        List<WebElement> ulElements = searchActions.findElementsByXpath("//h2[contains(.,'Construction')]/..//ul//li");
+        for (WebElement item : ulElements)
+        {
+            String text = item.getText();
+            if (text.contains(ENERGY_CERTIFICATION))
+            {
+                return RegexUtils.extractTextAfterAnchor(text, ENERGY_CERTIFICATION);
             }
         }
         return null;
@@ -130,15 +149,37 @@ public class AdvertismentPage
 
     public String getPostalCode()
     {
+        return RegexUtils.extractPostalCode(getAdvertizerText());
+    }
+
+    private String getAdvertizerText()
+    {
         List<WebElement> container = findContainer();
         if (!container.isEmpty())
         {
-            List<WebElement> advertiser = searchActions.findElementsByXpath(container,
-                    "//div[@class='advertiser-name']");
-            String text = searchActions.getElementText(advertiser);
-            return RegexUtils.extractPostalCode(text);
+            return searchActions
+                    .getElementText(searchActions.findElementsByXpath(container, "//div[@class='advertiser-name']"));
         }
         return null;
+    }
 
+    public String getCity()
+    {
+        return RegexUtils.extractTextBetweenTwoNumbers(getAdvertizerText());
+    }
+
+    public String getProfessional()
+    {
+        String listingAgent = getListingAgent();
+        if (listingAgent != null)
+        {
+            return listingAgent.toLowerCase().contains("profes") ? "Professional" : "Private";
+        }
+        return null;
+    }
+
+    public String getAgentPhone()
+    {
+        return searchActions.getElementText(searchActions.findElementsByXpath("//div[@class='phone first-phone']"));
     }
 }
