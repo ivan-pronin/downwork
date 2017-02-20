@@ -1,9 +1,5 @@
 package com.idealista.scraper.page;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.Callable;
-
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.model.RealtyType;
 import com.idealista.scraper.webdriver.WebDriverProvider;
@@ -13,6 +9,10 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.Callable;
 
 public class AdvertismentExtractorTests
 {

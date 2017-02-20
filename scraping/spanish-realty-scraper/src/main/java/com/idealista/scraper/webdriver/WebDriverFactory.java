@@ -1,7 +1,5 @@
 package com.idealista.scraper.webdriver;
 
-import java.util.concurrent.TimeUnit;
-
 import com.idealista.scraper.proxy.ProxyAdapter;
 import com.machinepublishers.jbrowserdriver.JBrowserDriver;
 import com.machinepublishers.jbrowserdriver.ProxyConfig;
@@ -16,10 +14,11 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.util.concurrent.TimeUnit;
+
 public class WebDriverFactory implements IWebDriverFactory
 {
     private static final int PAGE_LOAD_TIMEOUT = 60;
-    private static final int ELEMENT_WAIT_TIMEOUT = 10;
     private static final TimeUnit TIME_UNIT_SECONDS = TimeUnit.SECONDS;
 
     @Override

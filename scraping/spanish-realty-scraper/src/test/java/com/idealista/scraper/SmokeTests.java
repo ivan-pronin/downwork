@@ -1,9 +1,5 @@
 package com.idealista.scraper;
 
-import java.net.URL;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import com.idealista.scraper.page.AdvertismentExtractor;
 import com.idealista.scraper.page.Paginator;
 import com.idealista.scraper.page.SearchPageProcessor;
@@ -11,6 +7,10 @@ import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+
+import java.net.URL;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SmokeTests
 {

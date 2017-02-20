@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
-import java.sql.Driver;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;

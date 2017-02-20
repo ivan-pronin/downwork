@@ -1,8 +1,5 @@
 package com.idealista.scraper;
 
-import static org.junit.Assert.*;
-
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.machinepublishers.jbrowserdriver.JBrowserDriver;
 
 import org.junit.Test;
