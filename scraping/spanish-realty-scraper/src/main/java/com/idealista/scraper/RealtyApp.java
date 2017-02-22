@@ -10,6 +10,8 @@ import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.xls.TasksListener;
 import com.idealista.scraper.xls.XlsExporter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
 import java.io.IOException;
@@ -22,6 +24,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class RealtyApp
 {
+    private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
+
     static
     {
         LoggingUtils.turnOffHtmlUnitWarnings();
@@ -29,6 +33,7 @@ public class RealtyApp
 
     public static void main(String[] args) throws InterruptedException, IOException
     {
+        LOGGER.info("Program started");
         String baseUrl = "https://www.idealista.com/en/";
         WebDriverProvider webDriverProvider = new WebDriverProvider();
         WebDriver driver = webDriverProvider.get();
@@ -63,5 +68,6 @@ public class RealtyApp
         timer.cancel();
         timer = null;
         webDriverProvider.destroy();
+        LOGGER.info("Program has finished working successfully!");
     }
 }

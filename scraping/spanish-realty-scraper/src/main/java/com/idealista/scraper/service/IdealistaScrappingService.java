@@ -59,8 +59,6 @@ public class IdealistaScrappingService
         driver.navigate().to(IDEALISTA_COM_EN);
         Set<URL> categoriesUrls = getCategoriesUrls(searchAttribute);
 
-        // Set<URL> categoriesUrls = FileUtils.readUrlsFromFile("cats_short.txt");
-
         Paginator paginator = new Paginator();
         Queue<URL> pagesToProcess = new ConcurrentLinkedQueue<>();
 
@@ -99,6 +97,7 @@ public class IdealistaScrappingService
                 AdvertismentExtractor extractor = new AdvertismentExtractor(webDriverProvider, page);
                 extractor.setState(searchAttribute.getLocation());
                 extractor.setType(RealtyType.fromString(searchAttribute.getTypology()));
+                extractor.setSubType(searchAttribute.getOperation());
                 advertismentExtractorTasks.put(executor.submit(extractor));
             }
         }

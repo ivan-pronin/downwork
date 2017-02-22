@@ -38,19 +38,20 @@ public class SearchPageProcessor implements Callable<Set<URL>>
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to(pageUrl);
         driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
-        WebElement divContainer = driver.findElement(By.xpath("//div[@class='items-container']"));
-        if (divContainer != null)
+        List<WebElement> divContainer = driver.findElements(By.xpath("//div[@class='items-container']"));
+        if (!divContainer.isEmpty())
         {
+            WebElement container = divContainer.get(0);
             LOGGER.info("Item container found: {}", divContainer);
-            List<WebElement> ads = divContainer.findElements(By.xpath(".//article[not(@class)]"));
+            List<WebElement> ads = container.findElements(By.xpath(".//article[not(@class)]"));
             Set<URL> adUrls = new HashSet<>();
             for (WebElement ad : ads)
             {
-                WebElement infoLink = ad
-                        .findElement(By.xpath(".//div[@class='item-info-container']//a[contains(@class,'item-link')]"));
-                if (infoLink != null)
+                List<WebElement> infoLink = ad.findElements(
+                        By.xpath(".//div[@class='item-info-container']//a[contains(@class,'item-link')]"));
+                if (!infoLink.isEmpty())
                 {
-                    String attribute = infoLink.getAttribute("href");
+                    String attribute = infoLink.get(0).getAttribute("href");
                     adUrls.add(URLUtils.generateUrl(attribute));
                 }
             }
