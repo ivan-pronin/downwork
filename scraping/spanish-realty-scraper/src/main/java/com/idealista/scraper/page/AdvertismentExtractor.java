@@ -21,6 +21,7 @@ public class AdvertismentExtractor implements Callable<Advertisment>
     private ProxyMonitor proxyMonitor = new ProxyMonitor();
     private RealtyType type;
     private String state;
+    private String subType;
 
     public AdvertismentExtractor(WebDriverProvider webDriverProvider, URL pageUrl)
     {
@@ -37,6 +38,7 @@ public class AdvertismentExtractor implements Callable<Advertisment>
         driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
         AdvertismentPage page = new AdvertismentPage(driver);
         Advertisment ad = new Advertisment(pageUrl, page.getTitle(), type);
+        ad.setSubType(subType);
         ad.setDateOfListing(page.getListingDate());
         // number_of_views
         ad.setAddress(page.getAddress());
@@ -55,6 +57,7 @@ public class AdvertismentExtractor implements Callable<Advertisment>
         ad.setAgentPhone(page.getAgentPhone());
         // agent email
         ad.setHasImages(page.hasImages());
+        ad.setTags(page.getTags());
         return ad;
     }
 
@@ -66,5 +69,10 @@ public class AdvertismentExtractor implements Callable<Advertisment>
     public void setState(String state)
     {
         this.state = state;
+    }
+
+    public void setSubType(String subType)
+    {
+        this.subType = subType;
     }
 }

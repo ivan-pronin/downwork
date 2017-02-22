@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 public class XlsExporter
@@ -77,7 +78,7 @@ public class XlsExporter
         }
         row.createCell(0).setCellValue(ad.getTitle());
         row.createCell(1).setCellValue(ad.getType().name());
-        row.createCell(2).setCellValue("todo:subtype");
+        row.createCell(2).setCellValue(ad.getSubType());
         row.createCell(3).setCellValue(ad.getDateOfListing());
         row.createCell(4).setCellValue("todo:number_of_views");
         row.createCell(5).setCellValue(ad.getAddress());
@@ -97,6 +98,17 @@ public class XlsExporter
         row.createCell(19).setCellValue("todo:email_listing_agent");
         row.createCell(20).setCellValue(ad.getUrl().toString());
         row.createCell(21).setCellValue(ad.isHasImages());
+        fillInTags(row, ad.getTags());
+    }
+
+    private void fillInTags(Row row, List<String> tags)
+    {
+        int index = 22;
+        for (String tag : tags)
+        {
+            row.createCell(index).setCellValue(tag);
+            index++;
+        }
     }
 
     private void createHeader(Row row)

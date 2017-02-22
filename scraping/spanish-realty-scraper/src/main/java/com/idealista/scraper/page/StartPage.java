@@ -29,10 +29,10 @@ public class StartPage
             LOGGER.info("Specified <operation> is null, skipping...");
             return;
         }
-        WebElement operationCombo = driver.findElement(By.id("operation-combo"));
-        if (operationCombo != null)
+        List<WebElement> operationCombo = driver.findElements(By.id("operation-combo"));
+        if (!operationCombo.isEmpty())
         {
-            List<WebElement> options = operationCombo.findElements(By.tagName("li"));
+            List<WebElement> options = operationCombo.get(0).findElements(By.tagName("li"));
             for (WebElement option : options)
             {
                 if (operation.equalsIgnoreCase(option.getText()))
@@ -46,10 +46,10 @@ public class StartPage
 
     public Set<String> getAvailableOperations()
     {
-        WebElement operationCombo = driver.findElement(By.id("operation-combo"));
-        if (operationCombo != null)
+        List<WebElement> operationCombo = driver.findElements(By.id("operation-combo"));
+        if (!operationCombo.isEmpty())
         {
-            List<WebElement> options = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
+            List<WebElement> options = operationCombo.get(0).findElements(By.xpath(".//li[@data-disabled='false']"));
             return options.stream().map(WebElement::getText).collect(Collectors.toSet());
         }
         return Collections.emptySet();
@@ -57,10 +57,10 @@ public class StartPage
 
     public Set<String> getAvailableTypologies()
     {
-        WebElement operationCombo = driver.findElement(By.id("typology-combo"));
-        if (operationCombo != null)
+        List<WebElement> operationCombo = driver.findElements(By.id("typology-combo"));
+        if (!operationCombo.isEmpty())
         {
-            List<WebElement> options = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
+            List<WebElement> options = operationCombo.get(0).findElements(By.xpath(".//li[@data-disabled='false']"));
             return options.stream().map(WebElement::getText).collect(Collectors.toSet());
         }
         return Collections.emptySet();
@@ -73,10 +73,10 @@ public class StartPage
             LOGGER.info("Specified <typology> is null, skipping...");
             return;
         }
-        WebElement operationCombo = driver.findElement(By.id("typology-combo"));
-        if (operationCombo != null)
+        List<WebElement> operationCombo = driver.findElements(By.id("typology-combo"));
+        if (!operationCombo.isEmpty())
         {
-            List<WebElement> options = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
+            List<WebElement> options = operationCombo.get(0).findElements(By.xpath(".//li[@data-disabled='false']"));
             for (WebElement option : options)
             {
                 if (typology.equalsIgnoreCase(option.getText()))
@@ -90,10 +90,11 @@ public class StartPage
 
     public Set<String> getAvailableLocations()
     {
-        WebElement operationCombo = driver.findElement(By.id("location-combo"));
-        if (operationCombo != null)
+        List<WebElement> operationCombo = driver.findElements(By.id("location-combo"));
+        if (!operationCombo.isEmpty())
         {
-            List<WebElement> availableOptions = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
+            List<WebElement> availableOptions = operationCombo.get(0)
+                    .findElements(By.xpath(".//li[@data-disabled='false']"));
             Set<String> results = availableOptions.stream().map(WebElement::getText).collect(Collectors.toSet());
             results.remove("International");
             return results;
@@ -103,10 +104,10 @@ public class StartPage
 
     public void selectLocation(String location)
     {
-        WebElement operationCombo = driver.findElement(By.id("location-combo"));
-        if (operationCombo != null)
+        List<WebElement> operationCombo = driver.findElements(By.id("location-combo"));
+        if (!operationCombo.isEmpty())
         {
-            List<WebElement> options = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
+            List<WebElement> options = operationCombo.get(0).findElements(By.xpath(".//li[@data-disabled='false']"));
             for (WebElement option : options)
             {
                 if (location.equalsIgnoreCase(option.getText()))
@@ -120,6 +121,12 @@ public class StartPage
 
     public void clickSearch()
     {
-        driver.findElement(By.xpath("//button[@class='btn action']")).click();
+        List<WebElement> link = driver.findElements(By.xpath("//button[@class='btn action']"));
+        if (!link.isEmpty())
+        {
+            link.get(0).click();
+            return;
+        }
+        LOGGER.warn("Failed to find <search> button");
     }
 }

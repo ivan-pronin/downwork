@@ -41,7 +41,7 @@ public final class RegexUtils
         {
             return -1;
         }
-        Pattern pattern = Pattern.compile("(\\d{2})");
+        Pattern pattern = Pattern.compile("(\\d+)");
         Matcher m = pattern.matcher(text);
         if (m.find())
         {

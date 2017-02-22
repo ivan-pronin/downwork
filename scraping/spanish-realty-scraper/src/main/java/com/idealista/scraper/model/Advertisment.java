@@ -1,13 +1,14 @@
 package com.idealista.scraper.model;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 
 public class Advertisment
 {
     // ok Title +++               
     // ok Type +++
-    //    Subtype ???
+    // ok Subtype - equals to <operation>
     // ok Date of listing +++111
     //    Number of views - requires email registration, will add
     // ok Address +++
@@ -27,13 +28,13 @@ public class Advertisment
     //    Email Listing Agent -
     // ok  Link +++
     // ok  Images (yes /no) +++
-    // Tag1
-    // Tag2
-    // .... more tags
+    // ok all Tags
+    // ok more tags
 
     private URL url;
     private String title;
     private RealtyType type;
+    private String subType;
     private String dateOfListing;
     private int numberOfViews;
     private String address;
@@ -43,13 +44,14 @@ public class Advertisment
     private String description;
     private int bedRooms;
     private int bathRooms;
-    private int size;
+    private String size;
     private int price;
     private String energyCertification;
     private String professional;
     private String agent;
     private String agentPhone;
     private boolean hasImages;
+    private List<String> tags;
 
     public Advertisment(URL url, String title, RealtyType type)
     {
@@ -204,12 +206,12 @@ public class Advertisment
         this.bathRooms = bathRooms;
     }
 
-    public int getSize()
+    public String getSize()
     {
         return size;
     }
 
-    public void setSize(int size)
+    public void setSize(String size)
     {
         this.size = size;
     }
@@ -272,5 +274,25 @@ public class Advertisment
     public void setAgentPhone(String agentPhone)
     {
         this.agentPhone = agentPhone;
+    }
+
+    public String getSubType()
+    {
+        return subType;
+    }
+
+    public void setSubType(String subType)
+    {
+        this.subType = subType;
+    }
+
+    public List<String> getTags()
+    {
+        return tags;
+    }
+
+    public void setTags(List<String> tags)
+    {
+        this.tags = tags;
     }
 }

@@ -6,10 +6,15 @@ import com.idealista.scraper.util.RegexUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AdvertismentPage
 {
+    private static final String M_2 = "m²";
+    private static final String BATHROOM = "bathroom";
+    private static final String BEDROOM = "bedroom";
     private static final String ENERGY_CERTIFICATION = "Energy certification:";
     private SearchActions searchActions;
 
@@ -32,19 +37,41 @@ public class AdvertismentPage
 
     public String getBedrooms()
     {
-        return extractSpecificCharacteristic("bedroom");
+        return extractSpecificCharacteristics(BEDROOM).isEmpty() ? "-1"
+                : extractSpecificCharacteristics(BEDROOM).get(0);
     }
 
     public String getBathrooms()
     {
-        return extractSpecificCharacteristic("bathroom");
+        return extractSpecificCharacteristics(BATHROOM).isEmpty() ? "-1"
+                : extractSpecificCharacteristics(BATHROOM).get(0);
     }
 
-    public int getSize()
+    public String getSize()
     {
-        String text = searchActions
-                .getElementText(searchActions.findElementsByXpath("//div[@class='info-data']//span[@class='txt-big']"));
-        return RegexUtils.extractNumber(text);
+        String text = searchActions.getElementText(
+                searchActions.findElementsByXpath("//div[@class='info-data']//span[@class='txt-big']/.."));
+        if (text == null || !text.contains(M_2))
+        {
+            return extractSpecificCharacteristics(M_2).toString();
+        }
+        return "" + RegexUtils.extractNumber(text);
+    }
+
+    public List<String> getTags()
+    {
+        List<WebElement> ulElements = searchActions
+                .findElementsByXpath("//h2[contains(.,'Specific characteristics')]/..//ul//li");
+        List<String> results = new ArrayList<>();
+        for (WebElement item : ulElements)
+        {
+            String text = item.getText().toLowerCase();
+            if (!text.contains(BEDROOM) && !text.contains(BATHROOM) && !text.contains(M_2))
+            {
+                results.add(text);
+            }
+        }
+        return results;
     }
 
     public int getPrice()
@@ -65,19 +92,24 @@ public class AdvertismentPage
         return searchActions.findElementsByXpath("//div[@id='main-multimedia']//img").size() > 0;
     }
 
-    private String extractSpecificCharacteristic(String type)
+    private List<String> extractSpecificCharacteristics(String type)
     {
         List<WebElement> ulElements = searchActions
                 .findElementsByXpath("//h2[contains(.,'Specific characteristics')]/..//ul//li");
+        List<String> results = new ArrayList<>();
         for (WebElement item : ulElements)
         {
             String text = item.getText().toLowerCase();
             if (text.contains(type))
             {
-                return RegexUtils.extractDigit(text);
+                if (type.equals(BEDROOM) || type.equals(BATHROOM))
+                {
+                    return Arrays.asList("" + RegexUtils.extractDigit(text));
+                }
+                results.add(text);
             }
         }
-        return null;
+        return results;
     }
 
     public String getTitle()

@@ -1,5 +1,7 @@
 package com.idealista.scraper.util;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -28,7 +30,7 @@ public class RegexUtilsTests
         }
     }
     
-    @Test
+    //@Test
     public void testExtractTextBetweenTwoNumbers() throws Exception
     {
         Pattern pattern = Pattern.compile("(?<=\\d+)(.*)(?=\\d+)");
@@ -41,5 +43,27 @@ public class RegexUtilsTests
 
         String[] parts = s2.split("(\\d+)");
         System.out.println(Arrays.toString(parts));
+    }
+    
+    //@Test
+    public void testExtractNumber()
+    {
+        String s1 = "ass 1 m2 asf2";
+        String s2 = "ass 22 m2  asf2";
+        String s3 = "ass 333 m2 asf2";
+        System.out.println("" + RegexUtils.extractBigNumber(s1));
+        System.out.println("" + RegexUtils.extractNumber(s1));
+        
+        System.out.println("" + RegexUtils.extractBigNumber(s2));
+        System.out.println("" + RegexUtils.extractNumber(s2));
+        
+        System.out.println("" + RegexUtils.extractBigNumber(s3));
+        System.out.println("" + RegexUtils.extractNumber(s3));
+    }
+    
+    @Test
+    public void testGetTags() throws Exception
+    {
+        
     }
 }
