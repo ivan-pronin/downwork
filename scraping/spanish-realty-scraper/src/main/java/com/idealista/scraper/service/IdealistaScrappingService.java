@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 public class IdealistaScrappingService
@@ -41,13 +42,14 @@ public class IdealistaScrappingService
     private WebDriverProvider webDriverProvider;
     private ExecutorService executor;
     private Properties props = PropertiesLoader.getProperties();
-    private BlockingQueue<Future<Advertisment>> advertismentExtractorTasks;
+    private BlockingQueue<Future<Advertisment>> advertismentExtractorResults;
+    private BlockingQueue<URL> advertismentUrlsInProgress = new LinkedBlockingQueue<>();
 
     public IdealistaScrappingService(WebDriverProvider webDriverProvider,
-            BlockingQueue<Future<Advertisment>> advertismentExtractorTasks)
+            BlockingQueue<Future<Advertisment>> advertismentExtractorResults)
     {
         this.webDriverProvider = webDriverProvider;
-        this.advertismentExtractorTasks = advertismentExtractorTasks;
+        this.advertismentExtractorResults = advertismentExtractorResults;
         executor = ExecutorServiceProvider.getExecutor();
     }
 
@@ -97,7 +99,8 @@ public class IdealistaScrappingService
                 extractor.setState(searchAttribute.getLocation());
                 extractor.setType(RealtyType.fromString(searchAttribute.getTypology()));
                 extractor.setSubType(searchAttribute.getOperation());
-                advertismentExtractorTasks.put(executor.submit(extractor));
+                advertismentExtractorResults.put(executor.submit(extractor));
+                advertismentUrlsInProgress.put(page);
             }
         }
     }
@@ -191,5 +194,10 @@ public class IdealistaScrappingService
             }
         }).collect(Collectors.toSet());
         return URLUtils.convertStringToUrls(stringUrls);
+    }
+
+    public BlockingQueue<URL> getAdvertismentUrlsInProgress()
+    {
+        return advertismentUrlsInProgress;
     }
 }
