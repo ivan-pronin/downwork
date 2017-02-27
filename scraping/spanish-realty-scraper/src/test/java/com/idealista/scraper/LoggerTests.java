@@ -1,7 +1,5 @@
 package com.idealista.scraper;
 
-import static org.junit.Assert.*;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -11,8 +9,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.concurrent.TimeUnit;
 
 public class LoggerTests
 {
@@ -22,7 +18,6 @@ public class LoggerTests
         System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
         System.setProperty("org.apache.logging.log4j.simplelog.level", "system.out");
         Logger LOGGER = LogManager.getLogger(LoggerTests.class);
-        WebDriver driver = new ChromeDriver();
         LOGGER.info("Driver started");
         LOGGER.error("This is error message");
         System.out.println(" SYS OUT message");
@@ -44,7 +39,7 @@ public class LoggerTests
         }
     }
 
-    @Test
+    //@Test
     public void testLoggerFormatting() throws Exception
     {
         Instant start = Instant.now();
@@ -59,6 +54,15 @@ public class LoggerTests
         }).start();
         Duration d = Duration.between(start, start.plus(2, ChronoUnit.HOURS).plus(5, ChronoUnit.MINUTES).plusSeconds(45));
         LOGGER.info("Total time taken: {} hrs {} mins {} sec", d.toHours(), d.toMinutes() % 60, d.getSeconds() % 60);
+    }
+    
+    @Test
+    public void testPrintEnvironmentInfo() throws Exception
+    {
+        System.getenv().forEach( (k,v) -> System.out.println(k + " = " + v));
+        System.out.println(" ++++++++++++++++++++++");
+        System.out.println(" ++++++++++++++++++++++");
+        System.getProperties().forEach( (k,v) -> System.out.println(k + " = " + v));
     }
 
 }
