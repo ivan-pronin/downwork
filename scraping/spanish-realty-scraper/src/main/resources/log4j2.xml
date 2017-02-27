@@ -53,7 +53,7 @@
 				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>
-		
+
 		<RollingFile name="errorLog" fileName="logs/error.log"
 			filePattern="logs/$${date:yyyy-MM-dd}/error_%d{yyyyMMdd-HH}-%i.log"
 			append="true">
@@ -63,10 +63,11 @@
 				<OnStartupTriggeringPolicy />
 				<TimeBasedTriggeringPolicy />
 			</Policies>
-		</RollingFile>		
+		</RollingFile>
 
 	</Appenders>
 	<Loggers>
+	
 		<Root level="INFO">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="realtyLog" />
@@ -80,14 +81,11 @@
 			level="info">
 			<appender-ref ref="adsExtractorLog" />
 		</Logger>
-		<Logger name="com.idealista.scraper.xls.XlsExporter"
-			level="info">
+		<Logger name="com.idealista.scraper.xls.XlsExporter" level="info">
 			<appender-ref ref="xlsReporterLog" />
-		</Logger>	
-		
-		<Logger name="com.idealista.scraper"
-			level="error">
-			<appender-ref ref="errorLog" />
+		</Logger>
+		<Logger name="errorLogger" additivity="false">
+			<appender-ref ref="errorLog" level="error" />
 		</Logger>
 
 	</Loggers>
