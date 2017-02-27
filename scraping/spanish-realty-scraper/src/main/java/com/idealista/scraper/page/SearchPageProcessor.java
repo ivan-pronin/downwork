@@ -55,7 +55,7 @@ public class SearchPageProcessor implements Callable<Set<URL>>
                 }
             }
             int adsCount = ads.size();
-            totalAdsCounter =+ adsCount;
+            totalAdsCounter += adsCount;
             LOGGER.info("Added new advertisment urls: {}, total ads count: {}", adsCount, totalAdsCounter);
             return adUrls;
         }

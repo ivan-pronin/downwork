@@ -45,6 +45,8 @@ public class RealtyApp
 
         XlsExporter xlsExporter = new XlsExporter(props.getProperty("xlsFileName", "Scraper.xlsx"));
         TasksListener tasksListener = new TasksListener(advertismentExtractorTasks, xlsExporter);
+        tasksListener.setAdUrlsInProgress(idealistaService.getAdvertismentUrlsInProgress());
+        
         Timer timer = new Timer();
         ExecutorService executor = ExecutorServiceProvider.getExecutor();
         executor.shutdown();
