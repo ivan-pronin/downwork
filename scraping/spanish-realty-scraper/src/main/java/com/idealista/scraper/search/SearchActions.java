@@ -1,8 +1,11 @@
 package com.idealista.scraper.search;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,11 +19,25 @@ public class SearchActions
         this.driver = driver;
     }
 
+    public WebElement waitForElement(By locator, int seconds)
+    {
+        try
+        {
+            WebElement element = (new WebDriverWait(driver, seconds))
+                    .until(ExpectedConditions.presenceOfElementLocated(locator));
+            return element;
+        }
+        catch (TimeoutException e)
+        {
+            return null;
+        }
+    }
+
     public List<WebElement> findElementsByXpath(String xpath)
     {
         return driver.findElements(By.xpath(xpath));
     }
-    
+
     public List<WebElement> findElementsByXpath(List<WebElement> rootElement, String xpath)
     {
         if (!rootElement.isEmpty())

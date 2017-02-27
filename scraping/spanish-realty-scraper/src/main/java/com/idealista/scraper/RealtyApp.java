@@ -4,7 +4,6 @@ import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.search.SearchAttribute;
 import com.idealista.scraper.service.IdealistaScrappingService;
-import com.idealista.scraper.util.LoggingUtils;
 import com.idealista.scraper.util.PropertiesLoader;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.xls.TasksListener;
@@ -12,9 +11,11 @@ import com.idealista.scraper.xls.XlsExporter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.WebDriver;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
@@ -26,19 +27,11 @@ public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
 
-    static
-    {
-        LoggingUtils.turnOffHtmlUnitWarnings();
-    }
-
     public static void main(String[] args) throws InterruptedException, IOException
     {
         LOGGER.info("Program started");
-        String baseUrl = "https://www.idealista.com/en/";
+        Instant startTime = Instant.now();
         WebDriverProvider webDriverProvider = new WebDriverProvider();
-        WebDriver driver = webDriverProvider.get();
-        driver.navigate().to(baseUrl);
-
         Properties props = PropertiesLoader.getProperties();
         String operation = props.getProperty("operation", null);
         String typology = props.getProperty("typology", null);
@@ -57,17 +50,29 @@ public class RealtyApp
         executor.shutdown();
         timer.schedule(tasksListener, 0, 30 * 1000);
 
-        RealtyApp app = new RealtyApp();
         while (!executor.isTerminated() && !advertismentExtractorTasks.isEmpty())
         {
-            synchronized (app)
-            {
-                app.wait(60000);
-            }
+            LOGGER.info("Waiting for remaining tasks to be finished...");
+            long start = System.currentTimeMillis();
+            while (System.currentTimeMillis() - start < 60000)
+                ;
         }
+        if (executor.isTerminated())
+        {
+            LOGGER.info("Executor has been terminated (all ads has been processed)");
+            LOGGER.info("Tasks list size: {}", advertismentExtractorTasks.size());
+            tasksListener.run();
+        }
+        LOGGER.info("Terminating TasksListener...");
         timer.cancel();
-        timer = null;
         webDriverProvider.destroy();
         LOGGER.info("Program has finished working successfully!");
+        printExecutionTime(startTime);
+    }
+
+    private static void printExecutionTime(Instant startTime)
+    {
+        Duration d = Duration.between(startTime, Instant.now());
+        LOGGER.info("Total time taken: {} hrs {} mins {} secs", d.toHours(), d.toMinutes() % 60, d.getSeconds() % 60);
     }
 }

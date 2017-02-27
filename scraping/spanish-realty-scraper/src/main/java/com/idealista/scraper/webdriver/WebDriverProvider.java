@@ -5,12 +5,17 @@ import com.idealista.scraper.proxy.ProxyProvider;
 import com.idealista.scraper.util.PropertiesLoader;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class WebDriverProvider implements IWebDriverProvider
 {
+    private static final Logger LOGGER = LogManager.getLogger(WebDriverProvider.class);
+    private static volatile int driverStartCounter;
+    
     private final ConcurrentLinkedQueue<WebDriver> webDrivers = new ConcurrentLinkedQueue<>();
     private final ThreadLocal<ProxyAdapter> localProxy = ThreadLocal.withInitial(ProxyAdapter::new);
 
@@ -53,6 +58,7 @@ public class WebDriverProvider implements IWebDriverProvider
                 driver = webDriverFactory.create(type);
             }
             webDrivers.add(driver);
+            LOGGER.info("Started new WebDriver instance. Start counter: {}", getStartCounterIndex());
             return driver;
         }
     };
@@ -63,6 +69,11 @@ public class WebDriverProvider implements IWebDriverProvider
         WebDriver webDriver = threadedWebDriver.get();
         isWebDriverInitialized.set(Boolean.TRUE);
         return webDriver;
+    }
+
+    private int getStartCounterIndex()
+    {
+        return ++driverStartCounter;
     }
 
     @Override

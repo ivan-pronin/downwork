@@ -35,16 +35,16 @@ public class AdvertismentPage
         return null;
     }
 
-    public String getBedrooms()
+    public int getBedrooms()
     {
-        return extractSpecificCharacteristics(BEDROOM).isEmpty() ? "-1"
-                : extractSpecificCharacteristics(BEDROOM).get(0);
+        return extractSpecificCharacteristics(BEDROOM).isEmpty() ? -1
+                : Integer.parseInt(extractSpecificCharacteristics(BEDROOM).get(0));
     }
 
-    public String getBathrooms()
+    public int getBathrooms()
     {
-        return extractSpecificCharacteristics(BATHROOM).isEmpty() ? "-1"
-                : extractSpecificCharacteristics(BATHROOM).get(0);
+        return extractSpecificCharacteristics(BATHROOM).isEmpty() ? -1
+                : Integer.parseInt(extractSpecificCharacteristics(BATHROOM).get(0));
     }
 
     public String getSize()

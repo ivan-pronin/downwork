@@ -53,7 +53,6 @@ public class IdealistaScrappingService
 
     public void scrapSite(SearchAttribute searchAttribute) throws InterruptedException
     {
-
         int maxIterations = Integer.parseInt(props.getProperty("maxAdsToProcess", "100"));
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to(IDEALISTA_COM_EN);
