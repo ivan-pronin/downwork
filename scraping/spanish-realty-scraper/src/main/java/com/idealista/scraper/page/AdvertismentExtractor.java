@@ -32,7 +32,7 @@ public class AdvertismentExtractor implements Callable<Advertisment>
     @Override
     public Advertisment call()
     {
-        LOGGER.info("AdvertismentExtractor is working at page: {}", pageUrl);
+        LOGGER.info("Scrapping the page: {}", pageUrl);
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to(pageUrl);
         driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
@@ -47,8 +47,8 @@ public class AdvertismentExtractor implements Callable<Advertisment>
         ad.setPostalCode(page.getPostalCode());
         // age
         ad.setDescription(page.getDescription());
-        ad.setBedRooms(Integer.parseInt(page.getBedrooms()));
-        ad.setBathRooms(Integer.parseInt(page.getBathrooms()));
+        ad.setBedRooms(page.getBedrooms());
+        ad.setBathRooms(page.getBathrooms());
         ad.setSize(page.getSize());
         ad.setPrice(page.getPrice());
         ad.setEnergyCertification(page.getEnergyCertification());

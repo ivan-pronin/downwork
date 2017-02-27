@@ -1,19 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
-  <Appenders>
-    <Console name="Console">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-    </Console>
-    <File name="File" fileName="logs/app.log">
-      <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-    </File>
-  </Appenders>
-  <Loggers>
-    <Root level="INFO">
-      <AppenderRef ref="Console"/>
-      <AppenderRef ref="File"/>
-    </Root>
-  </Loggers>
+
+	<Properties>
+		<Property name="mainPatternLayout">%d{HH:mm:ss.SSS} [%-15t] %-5level %-26C{1} - %msg%n
+		</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console">
+			<PatternLayout pattern="${mainPatternLayout}" />
+		</Console>
+		<RollingFile name="realtyLog" fileName="logs/realty_app.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/realty_app_%d{yyyyMMdd-HH}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+
+		<RollingFile name="searchPageProcessorLog" fileName="logs/searchProcessor.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/searchProcessor_%d{yyyyMMdd-HH}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+
+		<RollingFile name="adsExtractorLog" fileName="logs/adsExtractor.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/adsExtractor_%d{yyyyMMdd-HH}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+
+		<RollingFile name="xlsReporterLog" fileName="logs/xlsReporter.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/xlsReporter_%d{yyyyMMdd-HH}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+
+	</Appenders>
+	<Loggers>
+		<Root level="INFO">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="realtyLog" />
+		</Root>
+
+		<Logger name="com.idealista.scraper.page.SearchPageProcessor"
+			level="info">
+			<appender-ref ref="searchPageProcessorLog" />
+		</Logger>
+		<Logger name="com.idealista.scraper.page.AdvertismentExtractor"
+			level="info">
+			<appender-ref ref="adsExtractorLog" />
+		</Logger>
+		<Logger name="com.idealista.scraper.xls.XlsExporter"
+			level="info">
+			<appender-ref ref="xlsReporterLog" />
+		</Logger>		
+
+	</Loggers>
 </Configuration>

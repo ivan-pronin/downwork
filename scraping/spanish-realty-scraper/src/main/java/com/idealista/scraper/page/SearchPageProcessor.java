@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
 public class SearchPageProcessor implements Callable<Set<URL>>
 {
     private static final Logger LOGGER = LogManager.getLogger(SearchPageProcessor.class);
-    private static int requestsCounter;
+    private static volatile int totalAdsCounter;
     private WebDriverProvider webDriverProvider;
     private URL pageUrl;
     private ProxyMonitor proxyMonitor = new ProxyMonitor();
@@ -34,7 +34,7 @@ public class SearchPageProcessor implements Callable<Set<URL>>
     @Override
     public Set<URL> call()
     {
-        LOGGER.info("SearchPageProcessor is working at page: {}", pageUrl);
+        LOGGER.info("Processing search page: {}", pageUrl);
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to(pageUrl);
         driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
@@ -42,7 +42,6 @@ public class SearchPageProcessor implements Callable<Set<URL>>
         if (!divContainer.isEmpty())
         {
             WebElement container = divContainer.get(0);
-            LOGGER.info("Item container found: {}", divContainer);
             List<WebElement> ads = container.findElements(By.xpath(".//article[not(@class)]"));
             Set<URL> adUrls = new HashSet<>();
             for (WebElement ad : ads)
@@ -55,14 +54,11 @@ public class SearchPageProcessor implements Callable<Set<URL>>
                     adUrls.add(URLUtils.generateUrl(attribute));
                 }
             }
-            LOGGER.info("Ads count: {}", ads.size());
+            int adsCount = ads.size();
+            totalAdsCounter =+ adsCount;
+            LOGGER.info("Added new advertisment urls: {}, total ads count: {}", adsCount, totalAdsCounter);
             return adUrls;
         }
         return Collections.emptySet();
-    }
-
-    public static int getRequestsCounter()
-    {
-        return requestsCounter;
     }
 }

@@ -73,10 +73,6 @@ public class AdvertismentExtractorTests
         public Advertisment call()
         {
             driver.navigate().to(pageUrl);
-            // synchronized (this)
-            // {
-            // driver = proxyMonitor.checkForVerificationAndRestarttDriver(driver, webDriverProvider);
-            // }
             AdvertismentPage page = new AdvertismentPage(driver);
             Advertisment ad = new Advertisment(pageUrl, page.getTitle(), RealtyType.BUILDING);
             ad.setAddress(page.getAddress());
@@ -84,8 +80,8 @@ public class AdvertismentExtractorTests
             ad.setState("state");
             ad.setPostalCode(page.getPostalCode());
             ad.setDescription(page.getDescription());
-            ad.setBedRooms(Integer.parseInt(page.getBedrooms()));
-            ad.setBathRooms(Integer.parseInt(page.getBathrooms()));
+            ad.setBedRooms(page.getBedrooms());
+            ad.setBathRooms(page.getBathrooms());
             ad.setSize(page.getSize());
             ad.setAgent(page.getListingAgent());
             ad.setHasImages(page.hasImages());

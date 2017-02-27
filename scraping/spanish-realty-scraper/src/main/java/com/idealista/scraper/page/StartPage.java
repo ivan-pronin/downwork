@@ -6,6 +6,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import com.idealista.scraper.search.SearchActions;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -29,10 +31,12 @@ public class StartPage
             LOGGER.info("Specified <operation> is null, skipping...");
             return;
         }
-        List<WebElement> operationCombo = driver.findElements(By.id("operation-combo"));
-        if (!operationCombo.isEmpty())
+        SearchActions search = new SearchActions(driver);
+        WebElement operationCombo = search.waitForElement(By.id("operation-combo"), 10);
+        if (operationCombo != null)
+        
         {
-            List<WebElement> options = operationCombo.get(0).findElements(By.tagName("li"));
+            List<WebElement> options = operationCombo.findElements(By.tagName("li"));
             for (WebElement option : options)
             {
                 if (operation.equalsIgnoreCase(option.getText()))
@@ -46,10 +50,11 @@ public class StartPage
 
     public Set<String> getAvailableOperations()
     {
-        List<WebElement> operationCombo = driver.findElements(By.id("operation-combo"));
-        if (!operationCombo.isEmpty())
+        SearchActions search = new SearchActions(driver);
+        WebElement operationCombo = search.waitForElement(By.id("operation-combo"), 10);
+        if (operationCombo != null)
         {
-            List<WebElement> options = operationCombo.get(0).findElements(By.xpath(".//li[@data-disabled='false']"));
+            List<WebElement> options = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
             return options.stream().map(WebElement::getText).collect(Collectors.toSet());
         }
         return Collections.emptySet();
@@ -57,10 +62,11 @@ public class StartPage
 
     public Set<String> getAvailableTypologies()
     {
-        List<WebElement> operationCombo = driver.findElements(By.id("typology-combo"));
-        if (!operationCombo.isEmpty())
+        SearchActions search = new SearchActions(driver);
+        WebElement operationCombo = search.waitForElement(By.id("typology-combo"), 10);
+        if (operationCombo != null)
         {
-            List<WebElement> options = operationCombo.get(0).findElements(By.xpath(".//li[@data-disabled='false']"));
+            List<WebElement> options = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
             return options.stream().map(WebElement::getText).collect(Collectors.toSet());
         }
         return Collections.emptySet();

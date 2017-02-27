@@ -1,10 +1,15 @@
 package com.idealista.scraper.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class RegexUtils
 {
+    private static final Logger LOGGER = LogManager.getLogger(RegexUtils.class);
+    
     public static String extractPostalCode(String text)
     {
         if (text == null)
@@ -20,19 +25,20 @@ public final class RegexUtils
         return null;
     }
 
-    public static String extractDigit(String text)
+    public static int extractDigit(String text)
     {
         if (text == null)
         {
-            return null;
+            LOGGER.info("ExtractDigit: input string is null");
+            return -1;
         }
         Pattern pattern = Pattern.compile("(\\d{1})");
         Matcher m = pattern.matcher(text);
         if (m.find())
         {
-            return m.group(1);
+            return Integer.parseInt(m.group(1));
         }
-        return null;
+        return -1;
     }
 
     public static int extractNumber(String text)
