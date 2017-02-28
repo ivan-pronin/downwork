@@ -2,7 +2,8 @@ package com.idealista.scraper.page;
 
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.model.RealtyType;
-import com.idealista.scraper.proxy.ProxyMonitor;
+import com.idealista.scraper.webdriver.INavigateActions;
+import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +19,6 @@ public class AdvertismentExtractor implements Callable<Advertisment>
 
     private WebDriverProvider webDriverProvider;
     private URL pageUrl;
-    private ProxyMonitor proxyMonitor = new ProxyMonitor();
     private RealtyType type;
     private String state;
     private String subType;
@@ -34,8 +34,8 @@ public class AdvertismentExtractor implements Callable<Advertisment>
     {
         LOGGER.info("Scrapping the page: {}", pageUrl);
         WebDriver driver = webDriverProvider.get();
-        driver.navigate().to(pageUrl);
-        driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
+        INavigateActions navigateActions = new NavigateActions(webDriverProvider);
+        driver = navigateActions.get(pageUrl);
         AdvertismentPage page = new AdvertismentPage(driver);
         Advertisment ad = new Advertisment(pageUrl, page.getTitle(), type);
         ad.setSubType(subType);

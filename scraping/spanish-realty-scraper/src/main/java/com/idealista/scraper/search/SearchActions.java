@@ -62,7 +62,7 @@ public class SearchActions
         {
             return rootElement.get(0).findElements(By.id(id));
         }
-        return Collections.emptyList();
+        return driver.findElements(By.id(id));
     }
 
     public String getElementText(List<WebElement> rootElement)

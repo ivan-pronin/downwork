@@ -64,6 +64,17 @@
 				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>
+		
+		<RollingFile name="debugLog" fileName="logs/debug.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug_%d{yyyyMMdd-HH}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>		
 
 	</Appenders>
 	<Loggers>
@@ -72,21 +83,21 @@
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="realtyLog" />
 		</Root>
-
-		<Logger name="com.idealista.scraper.page.SearchPageProcessor"
-			level="info">
-			<appender-ref ref="searchPageProcessorLog" />
+		<Logger name="com.idealista.scraper">
+			<appender-ref ref="errorLog" level="error"/>
+		</Logger>	
+		<Logger name="com.idealista.scraper.page.SearchPageProcessor" level="info">
+			<appender-ref ref="searchPageProcessorLog" level="info"/>
 		</Logger>
-		<Logger name="com.idealista.scraper.page.AdvertismentExtractor"
-			level="info">
-			<appender-ref ref="adsExtractorLog" />
+		<Logger name="com.idealista.scraper.page.AdvertismentExtractor" level="info">
+			<appender-ref ref="adsExtractorLog" level="info"/>
 		</Logger>
-		<Logger name="com.idealista.scraper.xls.XlsExporter" level="info">
-			<appender-ref ref="xlsReporterLog" />
+		<Logger name="com.idealista.scraper.xls.XlsExporter" level="info" >
+			<appender-ref ref="xlsReporterLog" level="info"/>
 		</Logger>
-		<Logger name="errorLogger" additivity="false">
-			<appender-ref ref="errorLog" level="error" />
-		</Logger>
+		<Logger name="com.idealista.scraper.webdriver.NavigateActions"  level="debug" additivity="false">
+			<appender-ref ref="debugLog" />
+		</Logger>		
 
 	</Loggers>
 </Configuration>

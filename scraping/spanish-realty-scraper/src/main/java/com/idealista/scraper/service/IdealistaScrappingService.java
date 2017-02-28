@@ -11,6 +11,7 @@ import com.idealista.scraper.search.CategoriesChooser;
 import com.idealista.scraper.search.SearchAttribute;
 import com.idealista.scraper.util.PropertiesLoader;
 import com.idealista.scraper.util.URLUtils;
+import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,11 +55,12 @@ public class IdealistaScrappingService
         executor = ExecutorServiceProvider.getExecutor();
     }
 
-    public void scrapSite(SearchAttribute searchAttribute) throws InterruptedException
+    public void scrapSite(SearchAttribute searchAttribute) throws InterruptedException, MalformedURLException
     {
         int maxIterations = Integer.parseInt(props.getProperty("maxAdsToProcess", "100"));
         WebDriver driver = webDriverProvider.get();
-        driver.navigate().to(IDEALISTA_COM_EN);
+        NavigateActions navigateActions = new NavigateActions(driver);
+        navigateActions.get(new URL(IDEALISTA_COM_EN));
         Set<URL> categoriesUrls = getCategoriesUrls(searchAttribute);
 
         Paginator paginator = new Paginator();

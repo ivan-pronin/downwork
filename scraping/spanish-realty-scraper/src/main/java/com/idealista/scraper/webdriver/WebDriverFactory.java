@@ -1,6 +1,7 @@
 package com.idealista.scraper.webdriver;
 
 import com.idealista.scraper.proxy.ProxyAdapter;
+import com.idealista.scraper.util.PropertiesLoader;
 import com.machinepublishers.jbrowserdriver.JBrowserDriver;
 import com.machinepublishers.jbrowserdriver.ProxyConfig;
 import com.machinepublishers.jbrowserdriver.ProxyConfig.Type;
@@ -51,7 +52,10 @@ public class WebDriverFactory implements IWebDriverFactory
         Options manage = driver.manage();
         Timeouts timeouts = manage.timeouts();
         timeouts.pageLoadTimeout(PAGE_LOAD_TIMEOUT, TIME_UNIT_SECONDS);
-        manage.window().maximize();
+        if (Boolean.getBoolean(PropertiesLoader.getProperties().getProperty("maximizeBrowserWindow")))
+        {
+            manage.window().maximize();
+        }
         return driver;
     }
 
