@@ -95,7 +95,7 @@
 		<Logger name="com.idealista.scraper.xls.XlsExporter" level="info" >
 			<appender-ref ref="xlsReporterLog" level="info"/>
 		</Logger>
-		<Logger name="com.idealista.scraper.webdriver.NavigateActions"  level="debug" additivity="false">
+		<Logger name="com.idealista.scraper.webdriver" level="debug" additivity="false">
 			<appender-ref ref="debugLog" />
 		</Logger>		
 

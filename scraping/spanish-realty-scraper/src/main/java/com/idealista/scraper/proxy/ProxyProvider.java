@@ -58,10 +58,15 @@ public class ProxyProvider implements IProxyProvider
             {
                 fetchedProxies = new ProxyFetcher(getDriver()).fetchProxies();
             }
-            return getWorkingProxyFromSet(fetchedProxies);
+            workingProxy = getWorkingProxyFromSet(fetchedProxies);
+            if (workingProxy == null)
+            {
+                LOGGER.error("All proxy sources were consumed, returning NULL proxy...");
+                return null;
+            }
+            return workingProxy;
         }
-        LOGGER.error("All proxy sources were consumed, returning NULL proxy...");
-        return null;
+        return workingProxy;
     }
 
     private ProxyAdapter getWorkingProxyFromSet(Set<String> inputData)

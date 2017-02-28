@@ -13,6 +13,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Properties;
@@ -26,6 +28,11 @@ public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
     private static final String APP_VERSION = "beta-0.62";
+    
+    static
+    {
+        //System.setProperty("webdriver.chrome.logfile", "./chromedriver_" + getTimeStamp() + ".log");
+    }
 
     public static void main(String[] args) throws InterruptedException, IOException
     {
@@ -76,16 +83,20 @@ public class RealtyApp
 
     private static void printEnvironmentInfo()
     {
+        LOGGER.info("");
         LOGGER.info("=== === Printing execution environment info  === ===");
         System.getenv().forEach((k, v) -> logEntry(k, v));
         System.getProperties().forEach((k, v) -> logEntry(k, v));
         LOGGER.info("=== === === === === === === === === === ===  === ===");
+        LOGGER.info("");
     }
 
     private static void printProgramInfo(Properties props)
     {
         LOGGER.info("=== === Printing program info   === ===");
+        LOGGER.info("");
         LOGGER.info("App version: {}", APP_VERSION);
+        LOGGER.info("");
         LOGGER.info("... ... Printing App properties ... ... ");
         props.forEach((k, v) -> logEntry(k, v));
         LOGGER.info("... ... ... ... ... ... ... ... ... ... ");
@@ -100,5 +111,11 @@ public class RealtyApp
     private static void logEntry(Object k, Object v)
     {
         LOGGER.info("{} = {}", k, v);
+    }
+    
+    private static String getTimeStamp()
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd_HH-mm-ss_SSS");
+        return sdf.format(new Timestamp(new java.util.Date().getTime()));
     }
 }
