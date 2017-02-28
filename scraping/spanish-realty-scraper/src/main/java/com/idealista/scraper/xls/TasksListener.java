@@ -20,6 +20,7 @@ public class TasksListener extends TimerTask
     private BlockingQueue<Future<Advertisment>> advertismentExtractorResults;
     private BlockingQueue<URL> adUrlsInProgress;
     private int processedUrls;
+    private int failedUrls;
     XlsExporter xlsExporter;
 
     public TasksListener(BlockingQueue<Future<Advertisment>> advertismentExtractorResults, XlsExporter xlsExporter)
@@ -39,8 +40,6 @@ public class TasksListener extends TimerTask
             Future<Advertisment> task = iterator.next();
             if (task.isDone())
             {
-                iterator.remove();
-                processedUrls++;
                 try
                 {
                     advertisments.add(task.get());
@@ -48,7 +47,10 @@ public class TasksListener extends TimerTask
                 catch (InterruptedException | ExecutionException e)
                 {
                     LOGGER.error("Error while adding advertisment to results: {}", e);
+                    failedUrls++;
                 }
+                iterator.remove();
+                processedUrls++;
             }
         }
         if (!advertisments.isEmpty())
@@ -56,8 +58,10 @@ public class TasksListener extends TimerTask
             LOGGER.info("Prepared <{}> results for exporting", advertisments.size());
             xlsExporter.appendResults(advertisments);
         }
-        LOGGER.info("AD urls in progress: {} | Processed urls so far: {} | Remaining URLs to process: {}",
-                adUrlsInProgress.size(), processedUrls, adUrlsInProgress.size() - processedUrls);
+        LOGGER.info(
+                "AD urls in progress: {} | Processed urls so far: {} | Remaining URLs to process: {} | Failed urls: {}",
+                adUrlsInProgress.size(), processedUrls, adUrlsInProgress.size() - processedUrls - failedUrls,
+                failedUrls);
     }
 
     public void setAdUrlsInProgress(BlockingQueue<URL> adUrlsInProgress)

@@ -1,13 +1,10 @@
 package com.idealista.scraper.proxy;
 
-import static org.junit.Assert.*;
-
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.idealista.scraper.webdriver.WebDriverFactory;
-import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
+import com.idealista.scraper.webdriver.WebDriverProvider;
 
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -40,8 +37,8 @@ public class ProxyProviderTests
             e.printStackTrace();
         }
     }
-    
-    @Test
+
+    // @Test
     public void testIndex() throws Exception
     {
         checkProxy(2);
