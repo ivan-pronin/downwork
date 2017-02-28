@@ -1,9 +1,5 @@
 package com.idealista.scraper.webdriver;
 
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
 import com.idealista.scraper.proxy.ProxyAdapter;
 import com.idealista.scraper.util.PropertiesLoader;
 import com.machinepublishers.jbrowserdriver.JBrowserDriver;
@@ -11,20 +7,32 @@ import com.machinepublishers.jbrowserdriver.ProxyConfig;
 import com.machinepublishers.jbrowserdriver.ProxyConfig.Type;
 import com.machinepublishers.jbrowserdriver.Settings;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Options;
 import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class WebDriverFactory implements IWebDriverFactory
 {
+    private static final Logger LOGGER = LogManager.getLogger(WebDriverFactory.class);
     private static final Properties PROPERTIES = PropertiesLoader.getProperties();
     private static final TimeUnit TIME_UNIT_SECONDS = TimeUnit.SECONDS;
     private static final int PAGE_LOAD_TIMEOUT = 60;
+    private static final boolean USE_SERVICE = Boolean.parseBoolean(PROPERTIES.getProperty("useDriverService"));
+    private static ChromeDriverService service;
 
     @Override
     public WebDriver create(DriverType type)
@@ -47,7 +55,7 @@ public class WebDriverFactory implements IWebDriverFactory
             HashMap<String, Object> prefs = new HashMap<String, Object>();
             prefs.put("profile.default_content_setting_values", images);
             options.setExperimentalOption("prefs", prefs);
-            
+
             options.addArguments("incognito", "disable-extensions", "disable-plugins", "test-type", "no-sandbox",
                     "enable-strict-powerful-feature-restrictions");
             cap.setCapability(ChromeOptions.CAPABILITY, options);
@@ -58,6 +66,19 @@ public class WebDriverFactory implements IWebDriverFactory
             cap.setJavascriptEnabled(false);
         }
 
+        if (USE_SERVICE && service == null)
+        {
+            service = ChromeDriverService.createDefaultService();
+            try
+            {
+                service.start();
+            }
+            catch (IOException e)
+            {
+                LOGGER.error("Failed to start ChromeDriverService: {}", e);
+                return null;
+            }
+        }
         ProxyConfig proxyConfig = new ProxyConfig(Type.HTTP, proxy.getHost(), proxy.getPort());
         Settings settings = Settings.builder().proxy(proxyConfig).build();
 
@@ -65,6 +86,11 @@ public class WebDriverFactory implements IWebDriverFactory
         switch (type)
         {
             case CHROME:
+                if (USE_SERVICE)
+                {
+                    driver = new RemoteWebDriver(service.getUrl(), cap);
+                    break;
+                }
                 driver = new ChromeDriver(cap);
                 break;
             case JBROWSER:
@@ -100,5 +126,13 @@ public class WebDriverFactory implements IWebDriverFactory
             }
             return null;
         }
+    }
+
+    @Override
+    public void shutDown()
+    {
+        LOGGER.debug("Shutting down all ChromeDriverServices");
+        service.stop();
+        LOGGER.debug("Services should be shut down.");
     }
 }

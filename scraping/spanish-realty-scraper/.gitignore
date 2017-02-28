@@ -8,3 +8,8 @@
 /bin/
 /output/
 /build/
+
+#Ignore non-project files
+*.log
+*.7z
+*.txt

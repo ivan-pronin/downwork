@@ -10,4 +10,6 @@ public interface IWebDriverFactory
     WebDriver create(ProxyAdapter proxy, DriverType type);
 
     WebDriver create(DriverType type);
+    
+    void shutDown();
 }

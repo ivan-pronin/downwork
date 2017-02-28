@@ -15,7 +15,7 @@ public class WebDriverProvider implements IWebDriverProvider
 {
     private static final Logger LOGGER = LogManager.getLogger(WebDriverProvider.class);
     private static volatile int driverStartCounter;
-    
+
     private final ConcurrentLinkedQueue<WebDriver> webDrivers = new ConcurrentLinkedQueue<>();
     private final ThreadLocal<ProxyAdapter> localProxy = ThreadLocal.withInitial(ProxyAdapter::new);
 
@@ -111,6 +111,7 @@ public class WebDriverProvider implements IWebDriverProvider
         {
             webDriver.quit();
         }
+        webDriverFactory.shutDown();
     }
 
     private void reset()
@@ -123,4 +124,5 @@ public class WebDriverProvider implements IWebDriverProvider
     {
         return Boolean.parseBoolean(PropertiesLoader.getProperties().getProperty("useProxy"));
     }
+
 }
