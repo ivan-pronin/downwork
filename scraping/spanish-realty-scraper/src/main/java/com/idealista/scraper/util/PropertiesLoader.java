@@ -11,7 +11,7 @@ import java.util.Properties;
 public class PropertiesLoader
 {
     private static final Logger LOGGER = LogManager.getLogger(PropertiesLoader.class);
-    
+
     private static Properties props;
 
     public static Properties getProperties()
