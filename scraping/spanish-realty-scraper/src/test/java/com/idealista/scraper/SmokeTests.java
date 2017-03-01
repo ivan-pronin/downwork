@@ -23,18 +23,18 @@ public class SmokeTests
         driver.navigate().to(baseUrl);
         Paginator paginator = new Paginator();
         Queue<URL> pagesToProcess = new ConcurrentLinkedQueue<>();
-        pagesToProcess.addAll(paginator.getAllPageUrls(driver, baseUrl));
+//        pagesToProcess.addAll(paginator.getAllPageUrls(driver, baseUrl));
 
         URL randomPage = pagesToProcess.iterator().next();
         System.out.println("Random page is: " + randomPage);
-        SearchPageProcessor searchPageProcessor = new SearchPageProcessor(webDriverProvider, randomPage);
+//        SearchPageProcessor searchPageProcessor = new SearchPageProcessor(webDriverProvider, randomPage);
         Queue<URL> adUrls = new ConcurrentLinkedQueue<>();
-        adUrls.addAll(searchPageProcessor.call());
+//        adUrls.addAll(searchPageProcessor.call());
         System.out.println(adUrls);
 
         URL randomAdvUrl = adUrls.iterator().next();
         System.out.println("Random Adv url: " + randomAdvUrl);
-        AdvertismentExtractor advPage = new AdvertismentExtractor(webDriverProvider, randomAdvUrl);
-        System.out.println(advPage.call());
+//        AdvertismentExtractor advPage = new AdvertismentExtractor(webDriverProvider, randomAdvUrl);
+//        System.out.println(advPage.call());
     }
 }

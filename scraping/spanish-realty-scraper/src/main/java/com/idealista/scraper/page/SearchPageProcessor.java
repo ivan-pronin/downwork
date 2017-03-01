@@ -1,6 +1,7 @@
 package com.idealista.scraper.page;
 
 import com.idealista.scraper.proxy.ProxyMonitor;
+import com.idealista.scraper.search.Category;
 import com.idealista.scraper.util.URLUtils;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
@@ -17,33 +18,34 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-public class SearchPageProcessor implements Callable<Set<URL>>
+public class SearchPageProcessor implements Callable<Set<Category>>
 {
     private static final Logger LOGGER = LogManager.getLogger(SearchPageProcessor.class);
     private static volatile int totalAdsCounter;
     private WebDriverProvider webDriverProvider;
-    private URL pageUrl;
+    private Category category;
     private ProxyMonitor proxyMonitor = new ProxyMonitor();
 
-    public SearchPageProcessor(WebDriverProvider webDriverProvider, URL pageUrl)
+    public SearchPageProcessor(WebDriverProvider webDriverProvider, Category category)
     {
         this.webDriverProvider = webDriverProvider;
-        this.pageUrl = pageUrl;
+        this.category = category;
     }
 
     @Override
-    public Set<URL> call()
+    public Set<Category> call()
     {
-        LOGGER.info("Processing search page: {}", pageUrl);
+        URL page = category.getUrl();
+        LOGGER.info("Processing search category: {}", page);
         WebDriver driver = webDriverProvider.get();
-        driver.navigate().to(pageUrl);
+        driver.navigate().to(page);
         driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
         List<WebElement> divContainer = driver.findElements(By.xpath("//div[@class='items-container']"));
         if (!divContainer.isEmpty())
         {
             WebElement container = divContainer.get(0);
             List<WebElement> ads = container.findElements(By.xpath(".//article[not(@class)]"));
-            Set<URL> adUrls = new HashSet<>();
+            Set<Category> adUrls = new HashSet<>();
             for (WebElement ad : ads)
             {
                 List<WebElement> infoLink = ad.findElements(
@@ -51,7 +53,7 @@ public class SearchPageProcessor implements Callable<Set<URL>>
                 if (!infoLink.isEmpty())
                 {
                     String attribute = infoLink.get(0).getAttribute("href");
-                    adUrls.add(URLUtils.generateUrl(attribute));
+                    adUrls.add(new Category(URLUtils.generateUrl(attribute), category));
                 }
             }
             int adsCount = ads.size();

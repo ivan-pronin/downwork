@@ -51,7 +51,7 @@ public class IpBlockingTests
 
         Paginator paginator = new Paginator();
         Queue<URL> pagesToProcess = new ConcurrentLinkedQueue<>();
-        pagesToProcess.addAll(paginator.getAllPageUrls(driver, baseUrl));
+        //pagesToProcess.addAll(paginator.getAllPageUrls(driver, baseUrl));
 
         ExecutorService executor = Executors.newFixedThreadPool(8);
 
@@ -64,7 +64,7 @@ public class IpBlockingTests
 
         for (int i = 0; i < MAX_SEARCH_PAGE_ITERATIONS; i++)
         {
-            adsResults.add(executor.submit(new SearchPageProcessor(webDriverProvider, pagesToProcess.poll())));
+            //adsResults.add(executor.submit(new SearchPageProcessor(webDriverProvider, pagesToProcess.poll())));
         }
         LOGGER.info("Begin waiting for search page iterations to complete ... ");
         tasksHandler.waitTasksForCompletion(adsResults);

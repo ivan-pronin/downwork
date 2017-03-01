@@ -27,10 +27,10 @@ public class AdvertismentExtractorTests
         URL url1 = new URL("https://www.idealista.com/en/inmueble/35795178/");
         URL url2 = new URL("https://www.idealista.com/en/inmueble/34168360/");
         WebDriverProvider webDriverProvider = new WebDriverProvider();
-        AdvertismentExtractor extractor1 = new AdvertismentExtractor(webDriverProvider, url1);
-        AdvertismentExtractor extractor2 = new AdvertismentExtractor(webDriverProvider, url2);
-        extractor1.call();
-        extractor2.call();
+//        AdvertismentExtractor extractor1 = new AdvertismentExtractor(webDriverProvider, url1);
+//        AdvertismentExtractor extractor2 = new AdvertismentExtractor(webDriverProvider, url2);
+//        extractor1.call();
+//        extractor2.call();
         printExecutionTime(startTime);
         //webDriverProvider.destroy();
     }
@@ -74,7 +74,7 @@ public class AdvertismentExtractorTests
         {
             driver.navigate().to(pageUrl);
             AdvertismentPage page = new AdvertismentPage(driver);
-            Advertisment ad = new Advertisment(pageUrl, page.getTitle(), RealtyType.BUILDING);
+            Advertisment ad = new Advertisment(pageUrl, page.getTitle(), "RealtyType.BUILDING");
             ad.setAddress(page.getAddress());
             ad.setDateOfListing(page.getListingDate());
             ad.setState("state");

@@ -1,5 +1,6 @@
 package com.idealista.scraper.page;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -7,8 +8,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import com.idealista.scraper.search.SearchActions;
+import com.idealista.scraper.search.SearchAttributes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,7 +39,7 @@ public class StartPage
         SearchActions search = new SearchActions(driver);
         WebElement operationCombo = search.waitForElement(By.id("operation-combo"), 10);
         if (operationCombo != null)
-        
+
         {
             List<WebElement> options = operationCombo.findElements(By.tagName("li"));
             for (WebElement option : options)
@@ -134,5 +139,37 @@ public class StartPage
             return;
         }
         LOGGER.warn("Failed to find <search> button");
+    }
+
+    public SearchAttributes getSearchAttributes(String userOperation, String userTypology, String userLocation)
+    {
+        Set<String> operations = new HashSet<>();
+        Set<String> typologies = new HashSet<>();
+        Set<String> locations = new HashSet<>();
+        if (StringUtils.isEmpty(userOperation))
+        {
+            operations = getAvailableOperations();
+        }
+        else
+        {
+            operations.addAll(Arrays.asList(userOperation.split(",")));
+        }
+        if (StringUtils.isEmpty(userTypology))
+        {
+            typologies = getAvailableTypologies();
+        }
+        else
+        {
+            typologies.addAll(Arrays.asList(userTypology.split(",")));
+        }
+        if (StringUtils.isEmpty(userLocation))
+        {
+            locations = getAvailableLocations();
+        }
+        else
+        {
+            locations.addAll(Arrays.asList(userLocation.split(",")));
+        }
+        return new SearchAttributes(operations, typologies, locations);
     }
 }

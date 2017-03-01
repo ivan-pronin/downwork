@@ -33,8 +33,8 @@ public class Advertisment
 
     private URL url;
     private String title;
-    private RealtyType type;
-    private String subType;
+    private String type;
+    private RealtyType subType;
     private String dateOfListing;
     private int numberOfViews;
     private String address;
@@ -53,7 +53,7 @@ public class Advertisment
     private boolean hasImages;
     private List<String> tags;
 
-    public Advertisment(URL url, String title, RealtyType type)
+    public Advertisment(URL url, String title, String type)
     {
         this.url = url;
         this.title = title;
@@ -106,12 +106,12 @@ public class Advertisment
         this.title = title;
     }
 
-    public RealtyType getType()
+    public String getType()
     {
         return type;
     }
 
-    public void setType(RealtyType type)
+    public void setType(String type)
     {
         this.type = type;
     }
@@ -276,12 +276,12 @@ public class Advertisment
         this.agentPhone = agentPhone;
     }
 
-    public String getSubType()
+    public RealtyType getSubType()
     {
         return subType;
     }
 
-    public void setSubType(String subType)
+    public void setSubType(RealtyType subType)
     {
         this.subType = subType;
     }
