@@ -1,5 +1,7 @@
 package com.idealista.scraper.page;
 
+import com.idealista.scraper.search.Category;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -18,22 +20,16 @@ public class Paginator
 {
     private static final Logger LOGGER = LogManager.getLogger(Paginator.class);
 
-    public Set<URL> getAllPageUrls(WebDriver driver, String basePage)
+    public Set<Category> getAllPageUrls(WebDriver driver, Category baseCategory)
     {
-        driver.navigate().to(basePage);
+        URL url = baseCategory.getUrl();
+        driver.navigate().to(url);
         List<WebElement> pagination = driver.findElements(By.xpath("//div[@class='pagination']"));
         if (pagination.isEmpty())
         {
-            LOGGER.warn("Failed to find pagination for category page: {}", basePage);
-            try
-            {
-                return Collections.singleton(new URL(basePage));
-            }
-            catch (MalformedURLException e1)
-            {
-                e1.printStackTrace();
-                return Collections.emptySet();
-            }
+            LOGGER.warn("Didn't find pagination for category page: {}. Seems like category has only single page", url);
+            // When there are no pages in the category
+            return Collections.singleton(baseCategory);
         }
         List<WebElement> pages = pagination.get(0).findElements(By.xpath(".//li"));
         if (pages.isEmpty())
@@ -42,23 +38,23 @@ public class Paginator
             return Collections.emptySet();
         }
         int totalPages = Integer.parseInt(pages.get(pages.size() - 2).getText());
-        LOGGER.info("Total pages: " + totalPages);
         String basePagePath = driver.getCurrentUrl();
-        Set<URL> pagesToProcess = new HashSet<>();
-        IntStream.range(1, totalPages + 1).forEach(e -> pagesToProcess.add((generateUrl(basePagePath, e))));
-        LOGGER.info("Pages to process counT: " + pagesToProcess.size());
-        return pagesToProcess;
+        Set<Category> searchPagesToProcess = new HashSet<>();
+        IntStream.range(1, totalPages + 1)
+                .forEach(e -> searchPagesToProcess.add((generateCategory(baseCategory, basePagePath, e))));
+        LOGGER.info("Pages to process count: {}", searchPagesToProcess.size());
+        return searchPagesToProcess;
     }
 
-    private URL generateUrl(String basePagePath, int pageNumber)
+    private Category generateCategory(Category baseCategory, String basePagePath, int pageNumber)
     {
         try
         {
-            return new URL(basePagePath + "pagina-" + pageNumber + ".htm");
+            return new Category(new URL(basePagePath + "pagina-" + pageNumber + ".htm"), baseCategory);
         }
         catch (MalformedURLException e)
         {
-            LOGGER.error("Error while creating URL from string: {}, error: {}", basePagePath, e);
+            LOGGER.error("Error while creating CategoryURL from string: {}, error: {}", basePagePath, e);
         }
         return null;
     }

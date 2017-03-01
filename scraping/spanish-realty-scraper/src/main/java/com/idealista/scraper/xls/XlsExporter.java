@@ -77,8 +77,8 @@ public class XlsExporter
             return;
         }
         row.createCell(0).setCellValue(ad.getTitle());
-        row.createCell(1).setCellValue(ad.getType().name());
-        row.createCell(2).setCellValue(ad.getSubType());
+        row.createCell(1).setCellValue(ad.getType());
+        row.createCell(2).setCellValue(ad.getSubType().name());
         row.createCell(3).setCellValue(ad.getDateOfListing());
         row.createCell(4).setCellValue("todo:number_of_views");
         row.createCell(5).setCellValue(ad.getAddress());

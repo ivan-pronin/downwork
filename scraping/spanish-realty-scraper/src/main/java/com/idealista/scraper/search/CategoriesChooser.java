@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -91,19 +92,22 @@ public class CategoriesChooser
         return categoriesUrls;
     }
 
-    public class CategoryByOperationTypeLocation implements Callable<String>
+    public class CategoryByOperationTypeLocation implements Callable<Category>
     {
-        private SearchAttribute searchAttribute;
+        private String operation;
+        private String typology;
+        private String location;
 
-        public CategoryByOperationTypeLocation(SearchAttribute searchAttribute, WebDriverProvider webDriverProvider)
+        public CategoryByOperationTypeLocation(String operation, String typology, String location)
         {
-            this.searchAttribute = searchAttribute;
+            this.operation = operation;
+            this.typology = typology;
+            this.location = location;
         }
 
         @Override
-        public String call() throws Exception
+        public Category call() throws Exception
         {
-            String location = searchAttribute.getLocation();
             if ("International".equalsIgnoreCase(location))
             {
                 LOGGER.info("Skipping International site by now...");
@@ -112,9 +116,7 @@ public class CategoriesChooser
             WebDriver driver = webDriverProvider.get();
             driver.navigate().to("https://www.idealista.com/en/");
             StartPage startPage = new StartPage(driver);
-            String operation = searchAttribute.getOperation();
             startPage.selectOperation(operation);
-            String typology = searchAttribute.getTypology();
             if (!startPage.getAvailableTypologies().contains(typology))
             {
                 LOGGER.error("Specified Operation + Type combo is not available: {} + {}", operation, typology);
@@ -137,10 +139,10 @@ public class CategoriesChooser
                 driver = proxyMonitor.restartDriver(webDriverProvider);
                 driver.navigate().to("https://www.idealista.com/");
             }
-            return categoryUrl;
+            return new Category(new URL(categoryUrl), location, operation, typology);
         }
     }
-    
+
     public Set<String> getCategoriesUrlsByOperationAndTypology(String operationName, String typologyName)
     {
         Set<String> categoriesUrls = new HashSet<>();

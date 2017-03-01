@@ -1,7 +1,6 @@
 package com.idealista.scraper.xls;
 
 import com.idealista.scraper.model.Advertisment;
-import com.idealista.scraper.model.RealtyType;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -32,7 +31,7 @@ public class XlsExporterTests
         fileOut.close();
     }
 
-    //@Test
+    // @Test
     public void testAppend() throws Exception
     {
         XlsExporter xls = new XlsExporter("test1.xls");
@@ -46,7 +45,7 @@ public class XlsExporterTests
         Set<Advertisment> results = new HashSet<>();
         for (int i = 0; i < numberOfAds; i++)
         {
-            results.add(new Advertisment(new URL("http://www.url-" + i + ".com"), "title-" + i, RealtyType.BUILDING));
+            results.add(new Advertisment(new URL("http://www.url-" + i + ".com"), "title-" + i, "RealtyType.BUILDING"));
         }
         return results;
     }

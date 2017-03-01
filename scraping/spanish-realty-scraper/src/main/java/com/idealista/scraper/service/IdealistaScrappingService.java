@@ -2,19 +2,17 @@ package com.idealista.scraper.service;
 
 import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.model.Advertisment;
-import com.idealista.scraper.model.RealtyType;
 import com.idealista.scraper.page.AdvertismentExtractor;
 import com.idealista.scraper.page.Paginator;
 import com.idealista.scraper.page.SearchPageProcessor;
 import com.idealista.scraper.page.StartPage;
 import com.idealista.scraper.search.CategoriesChooser;
-import com.idealista.scraper.search.SearchAttribute;
+import com.idealista.scraper.search.Category;
+import com.idealista.scraper.search.SearchAttributes;
 import com.idealista.scraper.util.PropertiesLoader;
-import com.idealista.scraper.util.URLUtils;
 import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -55,31 +53,39 @@ public class IdealistaScrappingService
         executor = ExecutorServiceProvider.getExecutor();
     }
 
-    public void scrapSite(SearchAttribute searchAttribute) throws InterruptedException, MalformedURLException
+    public void scrapSite(String userOperation, String userTypology, String userLocation) throws InterruptedException, MalformedURLException
     {
         int maxIterations = Integer.parseInt(props.getProperty("maxAdsToProcess", "100"));
         WebDriver driver = webDriverProvider.get();
         NavigateActions navigateActions = new NavigateActions(driver);
         navigateActions.get(new URL(IDEALISTA_COM_EN));
-        Set<URL> categoriesUrls = getCategoriesUrls(searchAttribute);
+        
+        StartPage startPage = new StartPage(driver);
+        SearchAttributes searchAttributes = startPage.getSearchAttributes(userOperation, userTypology, userLocation);
+        
+        LOGGER.info(" === === Printing parsed SearchAttributes === === ");
+        LOGGER.info(searchAttributes);
+        LOGGER.info(" === === === === === === ===  === === === === === ");
+        LOGGER.info("");
+        Set<Category> categoriesBaseUrls = getCategoriesUrls(searchAttributes);
 
         Paginator paginator = new Paginator();
-        Queue<URL> pagesToProcess = new ConcurrentLinkedQueue<>();
+        Queue<Category> searchPagesToProcess = new ConcurrentLinkedQueue<>();
 
-        categoriesUrls.forEach(e -> pagesToProcess.addAll(paginator.getAllPageUrls(driver, e.toString())));
+        categoriesBaseUrls.forEach(e -> searchPagesToProcess.addAll(paginator.getAllPageUrls(driver, e)));
 
-        Queue<Callable<Set<URL>>> tasks = new ConcurrentLinkedQueue<>();
+        Queue<Callable<Set<Category>>> tasks = new ConcurrentLinkedQueue<>();
         for (int i = 0; i < (maxIterations / 30) + 1; i++)
         {
-            if (!pagesToProcess.isEmpty())
+            if (!searchPagesToProcess.isEmpty())
             {
-                URL page = pagesToProcess.poll();
+                Category page = searchPagesToProcess.poll();
                 tasks.add(new SearchPageProcessor(webDriverProvider, page));
             }
         }
-        List<Future<Set<URL>>> taskResults = executor.invokeAll(tasks);
+        List<Future<Set<Category>>> taskResults = executor.invokeAll(tasks);
 
-        Set<URL> adUrls = new HashSet<>();
+        Set<Category> adUrls = new HashSet<>();
         taskResults.forEach(e ->
         {
             try
@@ -88,115 +94,72 @@ public class IdealistaScrappingService
             }
             catch (InterruptedException | ExecutionException e2)
             {
-                e2.printStackTrace();
+                LOGGER.error("Error while retrieving ad url from category task: {}", e);
             }
         });
 
-        Iterator<URL> iterator = adUrls.iterator();
+        Iterator<Category> iterator = adUrls.iterator();
         for (int i = 0; i < maxIterations; i++)
         {
             if (iterator.hasNext())
             {
-                URL page = iterator.next();
+                Category page = iterator.next();
                 AdvertismentExtractor extractor = new AdvertismentExtractor(webDriverProvider, page);
-                extractor.setState(searchAttribute.getLocation());
-                extractor.setType(RealtyType.fromString(searchAttribute.getTypology()));
-                extractor.setSubType(searchAttribute.getOperation());
                 advertismentExtractorResults.put(executor.submit(extractor));
-                advertismentUrlsInProgress.put(page);
+                advertismentUrlsInProgress.put(page.getUrl());
             }
         }
     }
 
-    private Set<URL> getCategoriesUrls(SearchAttribute searchAttribute) throws InterruptedException
+    private Set<Category> getCategoriesUrls(SearchAttributes searchAttributes) throws InterruptedException
     {
-        String operation = searchAttribute.getOperation();
-        String typology = searchAttribute.getTypology();
-        String location = searchAttribute.getLocation();
+        Set<String> userOperations = searchAttributes.getOperations();
+        Set<String> userTypologies = searchAttributes.getTypologies();
+        Set<String> userLocations = searchAttributes.getLocations();
         StartPage startPage = new StartPage(webDriverProvider.get());
 
-        Queue<Callable<String>> results = new ConcurrentLinkedQueue<>();
+        Queue<Callable<Category>> results = new ConcurrentLinkedQueue<>();
 
         CategoriesChooser chooser = new CategoriesChooser(webDriverProvider);
-        if (StringUtils.isEmpty(operation))
-        {
-            LOGGER.info(
-                    "Specified <operation> is null, will iterate through all available <operations + typology + locations>");
-            // iterate ALL
-            for (String chosenOperation : startPage.getAvailableOperations())
-            {
-                startPage.selectOperation(chosenOperation);
-                for (String chosenTypology : startPage.getAvailableTypologies())
-                {
-                    startPage.selectTypology(chosenTypology);
-                    for (String chosenLocation : startPage.getAvailableLocations())
-                    {
-                        results.add(chooser.new CategoryByOperationTypeLocation(
-                                new SearchAttribute(chosenOperation, chosenTypology, chosenLocation),
-                                webDriverProvider));
-                    }
-                }
-            }
-        }
-        else
+
+        for (String operation : userOperations)
         {
             startPage.selectOperation(operation);
-            if (StringUtils.isEmpty(typology))
-            {
-                LOGGER.info(
-                        "Specified <typology> is null, will iterate through all available <typologies + locations> for specified <operation>",
-                        operation);
-                // iterate ALL typologies
-                for (String chosenTypology : startPage.getAvailableTypologies())
-                {
-                    startPage.selectTypology(chosenTypology);
-                    for (String chosenLocation : startPage.getAvailableLocations())
-                    {
-                        results.add(chooser.new CategoryByOperationTypeLocation(
-                                new SearchAttribute(operation, chosenTypology, chosenLocation), webDriverProvider));
-                    }
-                }
-            }
-            else
-            {
-                startPage.selectTypology(typology);
-                if (StringUtils.isEmpty(location))
-                {
-                    // iterate All locations
-                    LOGGER.info(
-                            "Will iterate through all available <locations> for specified <operation>: {} and <typology>: {}",
-                            operation, typology);
-                    for (String chosenLocation : startPage.getAvailableLocations())
-                    {
-                        results.add(chooser.new CategoryByOperationTypeLocation(
-                                new SearchAttribute(operation, typology, chosenLocation), webDriverProvider));
-                    }
-                }
-                else
-                {
-                    LOGGER.info("Will scrap only selected  <operation>: {}, <typology>: {} and <locations>: {}",
-                            operation, typology, location);
-                    startPage.selectLocation(location);
-                    results.add(chooser.new CategoryByOperationTypeLocation(
-                            new SearchAttribute(operation, typology, location), webDriverProvider));
-                }
+            Set<String> availableTypologies = startPage.getAvailableTypologies();
 
+            for (String typology : availableTypologies)
+            {
+                if (userTypologies.contains(typology))
+                {
+                    startPage.selectTypology(typology);
+                    Set<String> availableLocations = startPage.getAvailableLocations();
+                    for (String location : availableLocations)
+                    {
+                        if (userLocations.contains(location))
+                        {
+                            startPage.selectLocation(location);
+                            results.add(chooser.new CategoryByOperationTypeLocation(operation, typology, location));
+                        }
+                    }
+
+                }
             }
+
         }
-        List<Future<String>> categories = executor.invokeAll(results);
-        Set<String> stringUrls = categories.stream().map(e ->
+
+        List<Future<Category>> categories = executor.invokeAll(results);
+        return categories.stream().map(t ->
         {
             try
             {
-                return e.get();
+                return t.get();
             }
-            catch (InterruptedException | ExecutionException e1)
+            catch (InterruptedException | ExecutionException e)
             {
-                e1.printStackTrace();
+                LOGGER.error("Error while retrieving category task result: {}", e);
                 return null;
             }
         }).collect(Collectors.toSet());
-        return URLUtils.convertStringToUrls(stringUrls);
     }
 
     public BlockingQueue<URL> getAdvertismentUrlsInProgress()

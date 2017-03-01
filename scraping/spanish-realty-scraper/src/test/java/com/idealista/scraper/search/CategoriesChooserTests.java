@@ -2,12 +2,18 @@ package com.idealista.scraper.search;
 
 import com.idealista.scraper.page.StartPage;
 import com.idealista.scraper.page.StartPageTests;
+import com.idealista.scraper.util.PropertiesLoader;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
+import static org.junit.Assert.*;
+
+import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -21,11 +27,11 @@ public class CategoriesChooserTests
 {
     private static final String IDEALISTA_COM_EN = "https://www.idealista.com/en/";
     private static final Logger LOGGER = LogManager.getLogger(StartPageTests.class);
-    private WebDriverProvider webDriverProvider = new WebDriverProvider();
 
     // @Test
     public void testGetAllCategoriesUrls()
     {
+        WebDriverProvider webDriverProvider = new WebDriverProvider();
         webDriverProvider.get().navigate().to(IDEALISTA_COM_EN);
         CategoriesChooser chooser = new CategoriesChooser(webDriverProvider);
         chooser.getAllCategoriesUrls();
@@ -34,6 +40,7 @@ public class CategoriesChooserTests
     // @Test
     public void testGetCatsByOperationAndTypology()
     {
+        WebDriverProvider webDriverProvider = new WebDriverProvider();
         webDriverProvider.get().navigate().to(IDEALISTA_COM_EN);
         CategoriesChooser chooser = new CategoriesChooser(webDriverProvider);
         Set<String> result = chooser.getCategoriesUrlsByOperationAndTypology("Share", "Homes");
@@ -43,15 +50,17 @@ public class CategoriesChooserTests
     // @Test
     public void getGetCategoriesWithoutShowAllLink()
     {
+        WebDriverProvider webDriverProvider = new WebDriverProvider();
         webDriverProvider.get().navigate().to(IDEALISTA_COM_EN);
         CategoriesChooser chooser = new CategoriesChooser(webDriverProvider);
         Set<String> result = chooser.getCategoryUrlByOperationTypologyAndLocation("Share", "Homes", "Fuerteventura");
         LOGGER.info("REsult: {}", result);
     }
 
-    @Test
+    // @Test
     public void testCallable() throws InterruptedException
     {
+        WebDriverProvider webDriverProvider = new WebDriverProvider();
         webDriverProvider.get().navigate().to(IDEALISTA_COM_EN);
         CategoriesChooser chooser = new CategoriesChooser(webDriverProvider);
         StartPage startPage = new StartPage(webDriverProvider.get());
@@ -59,18 +68,18 @@ public class CategoriesChooserTests
         startPage.selectTypology("Homes");
         Set<String> locations = startPage.getAvailableLocations();
         ExecutorService executor = Executors.newFixedThreadPool(8);
-        Queue<Future<String>> results = new ConcurrentLinkedQueue<>();
+        Queue<Future<Category>> results = new ConcurrentLinkedQueue<>();
         for (String location : locations)
         {
-            results.add(executor.submit(chooser.new CategoryByOperationTypeLocation(
-                    new SearchAttribute("Share", "Homes", location), webDriverProvider)));
+            results.add(executor.submit(chooser.new CategoryByOperationTypeLocation("Share", "Homes", location)));
         }
         executor.shutdown();
         executor.awaitTermination(600, TimeUnit.SECONDS);
         LOGGER.info(" >>>>>>>>>>>  All tasks seem to be finished!");
         LOGGER.info(" >>>>>>>>>>>  Printing results...");
         LOGGER.info("Results size: {}", results.size());
-        results.forEach(e -> {
+        results.forEach(e ->
+        {
             try
             {
                 LOGGER.info(e.get());
@@ -81,5 +90,31 @@ public class CategoriesChooserTests
                 e1.printStackTrace();
             }
         });
+    }
+
+    //@Test
+    public void testParsingCategories() throws Exception
+    {
+        //String operation = "Buy";
+        //String operation = null;
+        String operation = "Buy,Share";
+//        String typology = "Homes";
+        String typology = null;
+//        String typology = "Homes,Buildings";
+        String location = null;
+
+        WebDriver driver = new ChromeDriver();
+        driver.navigate().to(IDEALISTA_COM_EN);
+        StartPage page = new StartPage(driver);
+        System.out.println(page.getSearchAttributes(operation, typology, location));
+    }
+    @Test
+    public void testParsingProps() throws Exception
+    {
+        Properties PROPERTIES = PropertiesLoader.getProperties();
+        String operation = PROPERTIES.getProperty("operation", null);
+        String typology = PROPERTIES.getProperty("typology", null);
+        String location = PROPERTIES.getProperty("location", null);
+        System.out.println("Operation: " + operation + ", typology: " + typology+ ", location: "+location);
     }
 }

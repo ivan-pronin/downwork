@@ -2,6 +2,7 @@ package com.idealista.scraper.page;
 
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.model.RealtyType;
+import com.idealista.scraper.search.Category;
 import com.idealista.scraper.webdriver.INavigateActions;
 import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
@@ -18,31 +19,29 @@ public class AdvertismentExtractor implements Callable<Advertisment>
     private static final Logger LOGGER = LogManager.getLogger(AdvertismentExtractor.class);
 
     private WebDriverProvider webDriverProvider;
-    private URL pageUrl;
-    private RealtyType type;
-    private String state;
-    private String subType;
+    private Category category;
 
-    public AdvertismentExtractor(WebDriverProvider webDriverProvider, URL pageUrl)
+    public AdvertismentExtractor(WebDriverProvider webDriverProvider, Category category)
     {
         this.webDriverProvider = webDriverProvider;
-        this.pageUrl = pageUrl;
+        this.category = category;
     }
 
     @Override
     public Advertisment call()
     {
-        LOGGER.info("Scrapping the page: {}", pageUrl);
+        URL url = category.getUrl();
+        LOGGER.info("Scrapping the page: {}", url);
         WebDriver driver = webDriverProvider.get();
         INavigateActions navigateActions = new NavigateActions(webDriverProvider);
-        driver = navigateActions.get(pageUrl);
+        driver = navigateActions.get(url);
         AdvertismentPage page = new AdvertismentPage(driver);
-        Advertisment ad = new Advertisment(pageUrl, page.getTitle(), type);
-        ad.setSubType(subType);
+        Advertisment ad = new Advertisment(url, page.getTitle(), category.getType());
+        ad.setSubType(RealtyType.fromString(category.getSubType()));
         ad.setDateOfListing(page.getListingDate());
         // number_of_views
         ad.setAddress(page.getAddress());
-        ad.setState(state);
+        ad.setState(category.getState());
         ad.setCity(page.getCity());
         ad.setPostalCode(page.getPostalCode());
         // age
@@ -59,20 +58,5 @@ public class AdvertismentExtractor implements Callable<Advertisment>
         ad.setHasImages(page.hasImages());
         ad.setTags(page.getTags());
         return ad;
-    }
-
-    public void setType(RealtyType type)
-    {
-        this.type = type;
-    }
-
-    public void setState(String state)
-    {
-        this.state = state;
-    }
-
-    public void setSubType(String subType)
-    {
-        this.subType = subType;
     }
 }
