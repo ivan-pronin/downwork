@@ -7,7 +7,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.Test;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,7 +18,7 @@ import java.util.Set;
 
 public class XlsExporterTests
 {
-    // @Test
+    //@Test
     public void testExportToXls() throws Exception
     {
         FileOutputStream fileOut = new FileOutputStream("workbook.xlsx");
@@ -29,6 +31,19 @@ public class XlsExporterTests
         createHeader(row);
         wb.write(fileOut);
         fileOut.close();
+    }
+    
+    @Test
+    public void testAppendToExistingWB() throws Exception
+    {
+        FileInputStream fileIn = new FileInputStream("workbook.xlsx");
+        Workbook wb = new XSSFWorkbook(fileIn);
+        Sheet sheet = wb.getSheet("new sheet");
+        int lastRow = sheet.getLastRowNum();
+        sheet.createRow(++lastRow).createCell(0).setCellValue("Appended!");
+        FileOutputStream fileOut = new FileOutputStream("workbook.xlsx");
+        wb.write(fileOut);
+        
     }
 
     // @Test

@@ -3,8 +3,6 @@ package com.idealista.scraper.service;
 import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.page.AdvertismentExtractor;
-import com.idealista.scraper.page.Paginator;
-import com.idealista.scraper.page.SearchPageProcessor;
 import com.idealista.scraper.page.StartPage;
 import com.idealista.scraper.search.CategoriesChooser;
 import com.idealista.scraper.search.Category;
@@ -19,7 +17,6 @@ import org.openqa.selenium.WebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -53,52 +50,27 @@ public class IdealistaScrappingService
         executor = ExecutorServiceProvider.getExecutor();
     }
 
-    public void scrapSite(String userOperation, String userTypology, String userLocation) throws InterruptedException, MalformedURLException
+    public void scrapSite(String userOperation, String userTypology, String userLocation)
+            throws InterruptedException, MalformedURLException
     {
         int maxIterations = Integer.parseInt(props.getProperty("maxAdsToProcess", "100"));
         WebDriver driver = webDriverProvider.get();
         NavigateActions navigateActions = new NavigateActions(driver);
         navigateActions.get(new URL(IDEALISTA_COM_EN));
-        
+
         StartPage startPage = new StartPage(driver);
         SearchAttributes searchAttributes = startPage.getSearchAttributes(userOperation, userTypology, userLocation);
-        
+
         LOGGER.info(" === === Printing parsed SearchAttributes === === ");
         LOGGER.info(searchAttributes);
         LOGGER.info(" === === === === === === ===  === === === === === ");
         LOGGER.info("");
         Set<Category> categoriesBaseUrls = getCategoriesUrls(searchAttributes);
 
-        Paginator paginator = new Paginator();
-        Queue<Category> searchPagesToProcess = new ConcurrentLinkedQueue<>();
+        IAdUrlsFinder adUrlsFinder = new AdUrlsFinder(webDriverProvider, categoriesBaseUrls);
+        Set<Category> adUrlsToProcess = adUrlsFinder.findNewAdUrlsAmount(maxIterations);
 
-        categoriesBaseUrls.forEach(e -> searchPagesToProcess.addAll(paginator.getAllPageUrls(driver, e)));
-
-        Queue<Callable<Set<Category>>> tasks = new ConcurrentLinkedQueue<>();
-        for (int i = 0; i < (maxIterations / 30) + 1; i++)
-        {
-            if (!searchPagesToProcess.isEmpty())
-            {
-                Category page = searchPagesToProcess.poll();
-                tasks.add(new SearchPageProcessor(webDriverProvider, page));
-            }
-        }
-        List<Future<Set<Category>>> taskResults = executor.invokeAll(tasks);
-
-        Set<Category> adUrls = new HashSet<>();
-        taskResults.forEach(e ->
-        {
-            try
-            {
-                adUrls.addAll(e.get());
-            }
-            catch (InterruptedException | ExecutionException e2)
-            {
-                LOGGER.error("Error while retrieving ad url from category task: {}", e);
-            }
-        });
-
-        Iterator<Category> iterator = adUrls.iterator();
+        Iterator<Category> iterator = adUrlsToProcess.iterator();
         for (int i = 0; i < maxIterations; i++)
         {
             if (iterator.hasNext())
@@ -144,7 +116,6 @@ public class IdealistaScrappingService
 
                 }
             }
-
         }
 
         List<Future<Category>> categories = executor.invokeAll(results);

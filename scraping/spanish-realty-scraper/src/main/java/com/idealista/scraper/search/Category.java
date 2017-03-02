@@ -64,4 +64,10 @@ public class Category
         Category other = (Category) obj;
         return Objects.equals(url, other.url);
     }
+
+    @Override
+    public String toString()
+    {
+        return "Category [url=" + url + "]";
+    }
 }

@@ -1,10 +1,5 @@
 package com.idealista.scraper.xls;
 
-import com.idealista.scraper.model.Advertisment;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,12 +8,21 @@ import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+
+import com.idealista.scraper.data.DataSource;
+import com.idealista.scraper.data.IDataSource;
+import com.idealista.scraper.model.Advertisment;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TasksListener extends TimerTask
 {
     private static final Logger LOGGER = LogManager.getLogger(TasksListener.class);
     private BlockingQueue<Future<Advertisment>> advertismentExtractorResults;
     private BlockingQueue<URL> adUrlsInProgress;
+    private IDataSource dataSource = new DataSource();
     private int processedUrls;
     private int failedUrls;
     XlsExporter xlsExporter;
@@ -57,6 +61,8 @@ public class TasksListener extends TimerTask
         {
             LOGGER.info("Prepared <{}> results for exporting", advertisments.size());
             xlsExporter.appendResults(advertisments);
+            dataSource.updateProcessedUrls("./data/processedAds.txt",
+                    advertisments.stream().map(e -> e.getUrl()).collect(Collectors.toSet()));
         }
         LOGGER.info(
                 "AD urls in progress: {} | Processed urls so far: {} | Remaining URLs to process: {} | Failed urls: {}",

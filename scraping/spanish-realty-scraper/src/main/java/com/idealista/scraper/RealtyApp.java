@@ -27,7 +27,7 @@ public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
     private static final Properties PROPERTIES = PropertiesLoader.getProperties();
-    private static final String APP_VERSION = "rc-0.9";
+    private static final String APP_VERSION = "rc-0.95";
 
     static
     {

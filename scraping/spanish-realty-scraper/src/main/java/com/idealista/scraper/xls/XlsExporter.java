@@ -4,12 +4,15 @@ import com.idealista.scraper.model.Advertisment;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -20,29 +23,46 @@ public class XlsExporter
     private static final String IDEALISTA_DATA = "Idealista_data";
     private static final Logger LOGGER = LogManager.getLogger(XlsExporter.class);
     private Workbook wb;
+    private Sheet sheet;
     private String fileName;
 
     public XlsExporter(String fileName)
     {
         this.fileName = fileName;
-        createWorkBook();
+        initWorkBook();
     }
 
-    private void createWorkBook()
+    private void initWorkBook()
     {
-        try (FileOutputStream fileOut = new FileOutputStream(fileName))
+        if (!new File(fileName).exists())
         {
-            wb = new XSSFWorkbook();
-            Sheet sheet = wb.createSheet(IDEALISTA_DATA);
-            Row row = sheet.createRow((short) 0);
-            createHeader(row);
-            wb.write(fileOut);
+            try (FileOutputStream fileOut = new FileOutputStream(fileName, true))
+            {
+                wb = new HSSFWorkbook();
+                sheet = wb.createSheet(IDEALISTA_DATA);
+                Row row = sheet.createRow((short) 0);
+                createHeader(row);
+                wb.write(fileOut);
+            }
+            catch (IOException e)
+            {
+                LOGGER.error("Error while creating a workbook: {}", e);
+            }
+            LOGGER.info("Workbook with name <{}> successfully created", fileName);
         }
-        catch (IOException e)
+        else
         {
-            LOGGER.error("Error while creating a workbook: {}", e);
+            try (FileInputStream fileIn = new FileInputStream(fileName))
+            {
+                wb = new HSSFWorkbook(fileIn);
+                sheet = wb.getSheet(IDEALISTA_DATA);
+                LOGGER.info("Workbook with name <{}> already exists, will append new data there", fileName);
+            }
+            catch (IOException e)
+            {
+                LOGGER.error("Failed to read a workbook: {}", fileName, e.getMessage());
+            }
         }
-        LOGGER.info("Workbook with name <{}> successfully created", fileName);
     }
 
     public void appendResults(Set<Advertisment> advertisments)
@@ -50,7 +70,6 @@ public class XlsExporter
         LOGGER.info("Writing new <{}> advertisments to XLS...", advertisments.size());
         try (FileOutputStream fileOut = new FileOutputStream(fileName))
         {
-            Sheet sheet = wb.getSheet(IDEALISTA_DATA);
             int lastRow = sheet.getLastRowNum();
             for (Advertisment ad : advertisments)
             {

@@ -3,6 +3,7 @@ package com.idealista.scraper.page;
 import com.idealista.scraper.proxy.ProxyMonitor;
 import com.idealista.scraper.search.Category;
 import com.idealista.scraper.util.URLUtils;
+import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +39,8 @@ public class SearchPageProcessor implements Callable<Set<Category>>
         URL page = category.getUrl();
         LOGGER.info("Processing search category: {}", page);
         WebDriver driver = webDriverProvider.get();
-        driver.navigate().to(page);
+        NavigateActions navigateActions = new NavigateActions(webDriverProvider);
+        driver = navigateActions.get(page);
         driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
         List<WebElement> divContainer = driver.findElements(By.xpath("//div[@class='items-container']"));
         if (!divContainer.isEmpty())
