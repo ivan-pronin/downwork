@@ -5,15 +5,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -76,25 +72,26 @@ public final class FileUtils
             return null;
         }).collect(Collectors.toSet());
     }
-    
-    public static void exportToExcel(List<Map<String, String>> data, String fileName)
+
+    public static void createFileIfNotExists(String fileName)
     {
-        File file = new File(fileName);
-        try (FileWriter writer = new FileWriter(file))
+        File f = new File(fileName);
+        if (!f.exists())
         {
-            for (Map<String, String> row : data)
+            File parentFile = f.getParentFile();
+            if (parentFile != null)
             {
-                for (Entry<String, String> entry : row.entrySet())
-                {
-                    writer.append(entry.getKey() + " = " + entry.getValue() + "\t");
-                }
-                writer.append("\n");
+                parentFile.mkdirs();
             }
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            try
+            {
+                f.createNewFile();
+            }
+            catch (IOException e)
+            {
+                LOGGER.error("Failed to create a new file: {}, {}", fileName, e.getMessage());
+            }
+            LOGGER.info("Created a new file: {}", fileName);
         }
     }
 }
