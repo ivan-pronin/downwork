@@ -49,6 +49,7 @@ public class ProxyProvider implements IProxyProvider
     @Override
     public ProxyAdapter getNextWorkingProxy()
     {
+        Instant start = Instant.now();
         LOGGER.info("Getting next working Proxy ... ");
         ProxyAdapter workingProxy = getWorkingProxyFromSet(proxiesInputData);
         if (workingProxy == null)
@@ -61,8 +62,23 @@ public class ProxyProvider implements IProxyProvider
             workingProxy = getWorkingProxyFromSet(fetchedProxies);
             if (workingProxy == null)
             {
-                LOGGER.error("All proxy sources were consumed, returning NULL proxy...");
-                return null;
+                LOGGER.error("All proxy sources were consumed, trying to refresh them ...");
+                while (Duration.between(start, Instant.now()).toMinutes() < 10)
+                {
+                    LOGGER.info("Waiting for 10 minutes before fetching new proxies...");
+                    synchronized (this)
+                    {
+                        try
+                        {
+                            this.wait(10 * 60 * 1000);
+                        }
+                        catch (InterruptedException e)
+                        {
+                            LOGGER.error("Failed to wait: {}", e.getMessage());
+                        }
+                    }
+                }
+                return getNextWorkingProxy();
             }
             return workingProxy;
         }
