@@ -1,4 +1,4 @@
-package com.idealista.scraper.search;
+package com.idealista.scraper.model;
 
 import java.net.URL;
 import java.util.Objects;

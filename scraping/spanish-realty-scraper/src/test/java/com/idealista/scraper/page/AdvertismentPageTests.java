@@ -1,6 +1,6 @@
 package com.idealista.scraper.page;
 
-import static org.junit.Assert.*;
+import com.idealista.scraper.ui.page.AdvertismentPage;
 
 import org.junit.Test;
 import org.openqa.selenium.By;

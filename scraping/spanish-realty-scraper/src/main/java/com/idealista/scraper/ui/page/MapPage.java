@@ -1,4 +1,4 @@
-package com.idealista.scraper.page;
+package com.idealista.scraper.ui.page;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

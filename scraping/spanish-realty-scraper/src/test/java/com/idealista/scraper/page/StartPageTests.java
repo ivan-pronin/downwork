@@ -1,5 +1,6 @@
 package com.idealista.scraper.page;
 
+import com.idealista.scraper.ui.page.StartPage;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;

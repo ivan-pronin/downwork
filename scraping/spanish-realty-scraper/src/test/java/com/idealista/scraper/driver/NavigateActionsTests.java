@@ -1,7 +1,5 @@
 package com.idealista.scraper.driver;
 
-import static org.junit.Assert.*;
-
 import com.idealista.scraper.webdriver.INavigateActions;
 import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;

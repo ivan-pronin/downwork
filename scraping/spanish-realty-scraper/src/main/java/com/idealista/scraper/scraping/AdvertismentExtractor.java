@@ -1,8 +1,9 @@
-package com.idealista.scraper.page;
+package com.idealista.scraper.scraping;
 
 import com.idealista.scraper.model.Advertisment;
+import com.idealista.scraper.model.Category;
 import com.idealista.scraper.model.RealtyType;
-import com.idealista.scraper.search.Category;
+import com.idealista.scraper.ui.page.AdvertismentPage;
 import com.idealista.scraper.webdriver.INavigateActions;
 import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
@@ -14,11 +15,12 @@ import org.openqa.selenium.WebDriver;
 import java.net.URL;
 import java.util.concurrent.Callable;
 
-public class AdvertismentExtractor implements Callable<Advertisment>
+public final class AdvertismentExtractor implements Callable<Advertisment>
 {
     private static final Logger LOGGER = LogManager.getLogger(AdvertismentExtractor.class);
 
     private WebDriverProvider webDriverProvider;
+
     private Category category;
 
     public AdvertismentExtractor(WebDriverProvider webDriverProvider, Category category)
@@ -59,4 +61,5 @@ public class AdvertismentExtractor implements Callable<Advertisment>
         ad.setTags(page.getTags());
         return ad;
     }
+
 }

@@ -4,6 +4,8 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.idealista.scraper.webdriver.WebDriverFactory;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
 import com.idealista.scraper.webdriver.WebDriverProvider;
+import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
+import com.idealista.scraper.webdriver.proxy.ProxyProvider;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

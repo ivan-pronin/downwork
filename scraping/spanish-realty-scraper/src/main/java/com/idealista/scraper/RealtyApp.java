@@ -1,5 +1,19 @@
 package com.idealista.scraper;
 
+import com.idealista.scraper.executor.ExecutorServiceProvider;
+import com.idealista.scraper.executor.listener.TasksListener;
+import com.idealista.scraper.model.Advertisment;
+import com.idealista.scraper.service.IdealistaScrappingService;
+import com.idealista.scraper.webdriver.WebDriverProvider;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -12,53 +26,65 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.idealista.scraper.executor.ExecutorServiceProvider;
-import com.idealista.scraper.model.Advertisment;
-import com.idealista.scraper.service.IdealistaScrappingService;
-import com.idealista.scraper.util.PropertiesLoader;
-import com.idealista.scraper.webdriver.WebDriverProvider;
-import com.idealista.scraper.xls.TasksListener;
-import com.idealista.scraper.xls.XlsExporter;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+@Component
 public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
-    private static final Properties PROPERTIES = PropertiesLoader.getProperties();
-    private static final String APP_VERSION = "rc-0.96";
-
-    static
+    private static final String APP_VERSION = "rc-1.0.1";
+    
+    private Instant startTime;
+    
+    @Value("${enableWebdriverLogging}")
+    private boolean enableWebdriverLogging;
+    
+    @Value("${operation}")
+    private String operation;
+    
+    @Value("${typology}")
+    private String typology;
+    
+    @Value("${location}")
+    private String location;
+    
+    @Autowired
+    private TasksListener tasksListener;
+    
+    @Autowired
+    private ExecutorServiceProvider executorService;
+    
+    @Autowired
+    private IdealistaScrappingService idealistaService;
+    
+    @Autowired
+    private WebDriverProvider webDriverProvider;
+    
+    public void initSystemProperties()
     {
-        if (Boolean.getBoolean(PROPERTIES.getProperty("enableWebdriverLogging")))
+        if (enableWebdriverLogging)
         {
-            System.setProperty("webdriver.chrome.logfile", "./chromedriver_" + getTimeStamp() + ".log");
+            System.setProperty("webdriver.chrome.logfile", "./logs/chromedriver_" + getTimeStamp() + ".log");
         }
     }
-
-    public static void main(String[] args) throws InterruptedException, IOException
+    
+    public void printInfo() throws IOException
     {
         LOGGER.info("Program started");
-        printProgramInfo(PROPERTIES);
+        startTime = Instant.now();
+        printProgramInfo();
         printEnvironmentInfo();
-        Instant startTime = Instant.now();
-        WebDriverProvider webDriverProvider = new WebDriverProvider();
-        String operation = PROPERTIES.getProperty("operation", null);
-        String typology = PROPERTIES.getProperty("typology", null);
-        String location = PROPERTIES.getProperty("location", null);
+    }
 
+    public void run() throws InterruptedException, IOException
+    {
         BlockingQueue<Future<Advertisment>> advertismentExtractorTasks = new LinkedBlockingQueue<>();
-        IdealistaScrappingService idealistaService = new IdealistaScrappingService(webDriverProvider,
-                advertismentExtractorTasks);
+        idealistaService.setAdvertismentExtractorResults(advertismentExtractorTasks);
         idealistaService.scrapSite(operation, typology, location);
-
-        XlsExporter xlsExporter = new XlsExporter(PROPERTIES.getProperty("xlsFileName", "Scraper.xlsx"));
-        TasksListener tasksListener = new TasksListener(advertismentExtractorTasks, xlsExporter);
+        
+        tasksListener.setAdvertismentExtractorResults(advertismentExtractorTasks);
         tasksListener.setAdUrlsInProgress(idealistaService.getAdvertismentUrlsInProgress());
 
         Timer timer = new Timer();
-        ExecutorService executor = ExecutorServiceProvider.getExecutor();
+        ExecutorService executor = executorService.getExecutor();
         executor.shutdown();
         timer.schedule(tasksListener, 0, 30 * 1000);
 
@@ -92,13 +118,14 @@ public class RealtyApp
         LOGGER.info("");
     }
 
-    private static void printProgramInfo(Properties props)
+    private static void printProgramInfo() throws IOException
     {
         LOGGER.info("=== === Printing program info   === ===");
         LOGGER.info("");
         LOGGER.info("App version: {}", APP_VERSION);
         LOGGER.info("");
         LOGGER.info("... ... Printing App properties ... ... ");
+        Properties props = PropertiesLoaderUtils.loadProperties(new FileSystemResource("realty.properties"));
         props.forEach((k, v) -> logEntry(k, v));
         LOGGER.info("... ... ... ... ... ... ... ... ... ... ");
     }
@@ -114,7 +141,7 @@ public class RealtyApp
         LOGGER.info("{} = {}", k, v);
     }
 
-    private static String getTimeStamp()
+    private String getTimeStamp()
     {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd_HH-mm-ss_SSS");
         return sdf.format(new Timestamp(new java.util.Date().getTime()));

@@ -1,7 +1,7 @@
 package com.idealista.scraper.page;
 
 import com.idealista.scraper.model.Advertisment;
-import com.idealista.scraper.model.RealtyType;
+import com.idealista.scraper.ui.page.AdvertismentPage;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;

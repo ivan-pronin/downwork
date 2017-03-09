@@ -1,6 +1,6 @@
-package com.idealista.scraper.page;
+package com.idealista.scraper.ui.page;
 
-import com.idealista.scraper.search.SearchActions;
+import com.idealista.scraper.ui.SearchActions;
 import com.idealista.scraper.util.RegexUtils;
 
 import org.openqa.selenium.WebDriver;

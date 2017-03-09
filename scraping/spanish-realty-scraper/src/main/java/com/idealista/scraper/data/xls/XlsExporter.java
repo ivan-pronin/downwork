@@ -1,4 +1,4 @@
-package com.idealista.scraper.xls;
+package com.idealista.scraper.data.xls;
 
 import com.idealista.scraper.model.Advertisment;
 
@@ -9,7 +9,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+@Component
 public class XlsExporter
 {
     private static final String IDEALISTA_DATA = "Idealista_data";
@@ -25,14 +27,13 @@ public class XlsExporter
     private Workbook wb;
     private Sheet sheet;
     private String fileName;
-
-    public XlsExporter(String fileName)
+    
+    public XlsExporter(@Value(value = "${xlsFileName}") String fileName)
     {
         this.fileName = fileName;
-        initWorkBook();
     }
 
-    private void initWorkBook()
+    public void initWorkBook()
     {
         if (!new File(fileName).exists())
         {

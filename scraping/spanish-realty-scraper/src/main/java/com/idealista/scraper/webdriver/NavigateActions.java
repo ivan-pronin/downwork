@@ -1,6 +1,6 @@
 package com.idealista.scraper.webdriver;
 
-import com.idealista.scraper.proxy.ProxyMonitor;
+import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

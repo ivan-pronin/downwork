@@ -1,7 +1,9 @@
 package com.idealista.scraper.search;
 
-import com.idealista.scraper.page.StartPage;
+import com.idealista.scraper.model.Category;
 import com.idealista.scraper.page.StartPageTests;
+import com.idealista.scraper.scraping.search.CategoriesChooser;
+import com.idealista.scraper.ui.page.StartPage;
 import com.idealista.scraper.util.PropertiesLoader;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
@@ -10,8 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
-import static org.junit.Assert.*;
 
 import java.util.Properties;
 import java.util.Queue;

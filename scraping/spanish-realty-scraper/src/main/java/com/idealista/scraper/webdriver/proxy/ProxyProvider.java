@@ -1,7 +1,6 @@
-package com.idealista.scraper.proxy;
+package com.idealista.scraper.webdriver.proxy;
 
 import com.idealista.scraper.util.FileUtils;
-import com.idealista.scraper.util.PropertiesLoader;
 import com.idealista.scraper.webdriver.WebDriverFactory;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
 
@@ -12,6 +11,11 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -22,6 +26,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+@Component
 public class ProxyProvider implements IProxyProvider
 {
     private static final Logger LOGGER = LogManager.getLogger(ProxyProvider.class);
@@ -34,14 +39,13 @@ public class ProxyProvider implements IProxyProvider
     private Set<String> proxiesInputData = new HashSet<>();
     private Set<String> fetchedProxies = new HashSet<>();
 
-    private WebDriverFactory webDriverFactory = new WebDriverFactory();
+    @Autowired
+    private WebDriverFactory webDriverFactory;
+    
+    @Value("${maxProxyResponseTime}")
+    private long maxProxyResponseTime;
 
-    public ProxyProvider()
-    {
-        initProxiesList();
-    }
-
-    private void initProxiesList()
+    public void initProxiesList()
     {
         proxiesInputData = FileUtils.readFileToLines("proxies.txt");
     }
@@ -113,8 +117,6 @@ public class ProxyProvider implements IProxyProvider
     {
         long actualResponseTime = pageLoad.toMillis();
         LOGGER.info("Validating connection speed to the proxy: {} millis", actualResponseTime);
-        Integer maxProxyResponseTime = Integer
-                .parseInt(PropertiesLoader.getProperties().getProperty("maxProxyResponseTime", "10000"));
         return actualResponseTime <= maxProxyResponseTime;
     }
 
@@ -181,5 +183,10 @@ public class ProxyProvider implements IProxyProvider
         Proxy seleniumProxy = new Proxy().setHttpProxy(address).setFtpProxy(address).setSslProxy(address);
         String[] parts = address.split(":");
         return new ProxyAdapter(seleniumProxy, parts[0], Integer.parseInt(parts[1]));
+    }
+
+    public void setWebDriverFactory(WebDriverFactory webDriverFactory)
+    {
+        this.webDriverFactory = webDriverFactory;
     }
 }

@@ -1,16 +1,19 @@
 package com.idealista.scraper.webdriver;
 
-import com.idealista.scraper.proxy.ProxyAdapter;
-import com.idealista.scraper.proxy.ProxyProvider;
-import com.idealista.scraper.util.PropertiesLoader;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
+import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
+import com.idealista.scraper.webdriver.proxy.ProxyProvider;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+@Component
 public class WebDriverProvider implements IWebDriverProvider
 {
     private static final Logger LOGGER = LogManager.getLogger(WebDriverProvider.class);
@@ -19,13 +22,23 @@ public class WebDriverProvider implements IWebDriverProvider
     private final ConcurrentLinkedQueue<WebDriver> webDrivers = new ConcurrentLinkedQueue<>();
     private final ThreadLocal<ProxyAdapter> localProxy = ThreadLocal.withInitial(ProxyAdapter::new);
 
-    private WebDriverFactory webDriverFactory = new WebDriverFactory();
-    private ProxyProvider proxyProvider = new ProxyProvider();
+    @Autowired
+    private WebDriverFactory webDriverFactory;
+
+    @Autowired
+    private ProxyProvider proxyProvider;
+
+    @Value("${useProxy}")
+    private boolean useProxy;
+
+    @Value("${driverType}")
+    private String driverType;
+
     private ProxyAdapter proxy;
 
-    public WebDriverProvider()
+    public void init()
     {
-        if (useProxy())
+        if (useProxy)
         {
             proxy = proxyProvider.getNextWorkingProxy();
         }
@@ -38,10 +51,9 @@ public class WebDriverProvider implements IWebDriverProvider
         @Override
         protected WebDriver initialValue()
         {
-            String driverType = PropertiesLoader.getProperties().getProperty("driverType");
             DriverType type = DriverType.fromString(driverType);
             WebDriver driver = null;
-            if (useProxy())
+            if (useProxy)
             {
                 synchronized (this)
                 {
@@ -120,9 +132,13 @@ public class WebDriverProvider implements IWebDriverProvider
         isWebDriverInitialized.set(Boolean.FALSE);
     }
 
-    private boolean useProxy()
+    public void setWebDriverFactory(WebDriverFactory webDriverFactory)
     {
-        return Boolean.parseBoolean(PropertiesLoader.getProperties().getProperty("useProxy"));
+        this.webDriverFactory = webDriverFactory;
     }
 
+    public void setProxyProvider(ProxyProvider proxyProvider)
+    {
+        this.proxyProvider = proxyProvider;
+    }
 }

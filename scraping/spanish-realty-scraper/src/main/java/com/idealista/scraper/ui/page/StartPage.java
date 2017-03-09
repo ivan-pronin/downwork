@@ -1,4 +1,7 @@
-package com.idealista.scraper.page;
+package com.idealista.scraper.ui.page;
+
+import com.idealista.scraper.model.SearchAttributes;
+import com.idealista.scraper.ui.SearchActions;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -7,10 +10,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.idealista.scraper.search.SearchActions;
-import com.idealista.scraper.search.SearchAttributes;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;

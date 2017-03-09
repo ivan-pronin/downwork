@@ -1,16 +1,20 @@
-package com.idealista.scraper.proxy;
+package com.idealista.scraper.webdriver.proxy;
 
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProxyMonitor
 {
     private static final Logger LOGGER = LogManager.getLogger();
-    
-    public WebDriver checkForVerificationAndRestartDriver(WebDriver driver, WebDriverProvider webDriverProvider)
+
+    private WebDriverProvider webDriverProvider;
+
+    public WebDriver checkForVerificationAndRestartDriver(WebDriver driver)
     {
         if (ifVerificationAppered(driver))
         {
@@ -29,5 +33,10 @@ public class ProxyMonitor
     {
         webDriverProvider.end();
         return webDriverProvider.get();
+    }
+
+    public void setWebDriverProvider(WebDriverProvider webDriverProvider)
+    {
+        this.webDriverProvider = webDriverProvider;
     }
 }

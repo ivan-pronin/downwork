@@ -1,20 +1,24 @@
 package com.idealista.scraper.executor;
 
-import com.idealista.scraper.util.PropertiesLoader;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ExecutorServiceProvider
+@Component
+public final class ExecutorServiceProvider
 {
     private static ExecutorService instance;
 
-    public static ExecutorService getExecutor()
+    @Value("${maxThreads}")
+    private int maxThreads;
+
+    public ExecutorService getExecutor()
     {
         if (instance == null)
         {
-            instance = Executors.newFixedThreadPool(
-                    Integer.parseInt(PropertiesLoader.getProperties().getProperty("maxThreads", "2")));
+            instance = Executors.newFixedThreadPool(maxThreads);
         }
         return instance;
     }

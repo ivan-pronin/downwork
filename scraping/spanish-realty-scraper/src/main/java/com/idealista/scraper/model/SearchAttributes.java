@@ -1,4 +1,4 @@
-package com.idealista.scraper.search;
+package com.idealista.scraper.model;
 
 import java.util.Set;
 

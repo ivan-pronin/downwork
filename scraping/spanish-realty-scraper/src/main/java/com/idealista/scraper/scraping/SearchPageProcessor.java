@@ -1,10 +1,10 @@
-package com.idealista.scraper.page;
+package com.idealista.scraper.scraping;
 
-import com.idealista.scraper.proxy.ProxyMonitor;
-import com.idealista.scraper.search.Category;
+import com.idealista.scraper.model.Category;
 import com.idealista.scraper.util.URLUtils;
 import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
+import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,25 +23,29 @@ public class SearchPageProcessor implements Callable<Set<Category>>
 {
     private static final Logger LOGGER = LogManager.getLogger(SearchPageProcessor.class);
     private static volatile int totalAdsCounter;
-    private WebDriverProvider webDriverProvider;
-    private Category category;
-    private ProxyMonitor proxyMonitor = new ProxyMonitor();
 
-    public SearchPageProcessor(WebDriverProvider webDriverProvider, Category category)
+    private Category category;
+
+    private WebDriverProvider webDriverProvider;
+
+    private ProxyMonitor proxyMonitor;
+
+    public SearchPageProcessor(Category category, WebDriverProvider webDriverProvider, ProxyMonitor proxyMonitor)
     {
-        this.webDriverProvider = webDriverProvider;
         this.category = category;
+        this.webDriverProvider = webDriverProvider;
+        this.proxyMonitor = proxyMonitor;
     }
 
     @Override
     public Set<Category> call()
     {
         URL page = category.getUrl();
-        LOGGER.info("Processing search category: {}", page);
+        LOGGER.info("Processing search page: {}", page);
         WebDriver driver = webDriverProvider.get();
         NavigateActions navigateActions = new NavigateActions(webDriverProvider);
         driver = navigateActions.get(page);
-        driver = proxyMonitor.checkForVerificationAndRestartDriver(driver, webDriverProvider);
+        driver = proxyMonitor.checkForVerificationAndRestartDriver(driver);
         List<WebElement> divContainer = driver.findElements(By.xpath("//div[@class='items-container']"));
         if (!divContainer.isEmpty())
         {
@@ -63,6 +67,7 @@ public class SearchPageProcessor implements Callable<Set<Category>>
             LOGGER.info("Added new advertisment urls: {}, total ads count: {}", adsCount, totalAdsCounter);
             return adUrls;
         }
+        LOGGER.error("Search page is empty.. Smth bad happened, returning empty collection from page: {}", page);
         return Collections.emptySet();
     }
 }

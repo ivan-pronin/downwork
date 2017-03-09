@@ -1,5 +1,7 @@
 package com.idealista.scraper.proxy;
 
+import com.idealista.scraper.webdriver.proxy.ProxyFetcher;
+
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
