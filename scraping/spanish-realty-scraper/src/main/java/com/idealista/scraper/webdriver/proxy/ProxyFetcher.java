@@ -1,6 +1,6 @@
-package com.idealista.scraper.proxy;
+package com.idealista.scraper.webdriver.proxy;
 
-import com.idealista.scraper.search.SearchActions;
+import com.idealista.scraper.ui.SearchActions;
 import com.idealista.scraper.webdriver.INavigateActions;
 import com.idealista.scraper.webdriver.NavigateActions;
 
@@ -23,7 +23,9 @@ public class ProxyFetcher
     private static final Logger LOGGER = LogManager.getLogger(ProxyFetcher.class);
 
     private INavigateActions navigateActions;
+    
     private SearchActions searchActions;
+    
     private WebDriver driver;
 
     public ProxyFetcher(WebDriver driver)

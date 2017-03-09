@@ -1,5 +1,7 @@
 package com.idealista.scraper.xls;
 
+import com.idealista.scraper.data.xls.XlsExporter;
+import com.idealista.scraper.data.xls.XlsHeader;
 import com.idealista.scraper.model.Advertisment;
 
 import org.apache.poi.ss.usermodel.Cell;

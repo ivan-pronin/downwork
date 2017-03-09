@@ -1,4 +1,4 @@
-package com.idealista.scraper.xls;
+package com.idealista.scraper.data.xls;
 
 public enum XlsHeader
 {

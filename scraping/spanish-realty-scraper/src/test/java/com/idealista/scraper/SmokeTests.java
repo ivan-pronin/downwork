@@ -1,8 +1,6 @@
 package com.idealista.scraper;
 
-import com.idealista.scraper.page.AdvertismentExtractor;
-import com.idealista.scraper.page.Paginator;
-import com.idealista.scraper.page.SearchPageProcessor;
+import com.idealista.scraper.scraping.Paginator;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.junit.Test;

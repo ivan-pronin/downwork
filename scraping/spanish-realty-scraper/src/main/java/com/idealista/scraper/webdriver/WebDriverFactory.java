@@ -1,7 +1,6 @@
 package com.idealista.scraper.webdriver;
 
-import com.idealista.scraper.proxy.ProxyAdapter;
-import com.idealista.scraper.util.PropertiesLoader;
+import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
 import com.machinepublishers.jbrowserdriver.JBrowserDriver;
 import com.machinepublishers.jbrowserdriver.ProxyConfig;
 import com.machinepublishers.jbrowserdriver.ProxyConfig.Type;
@@ -19,19 +18,32 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+@Component
 public class WebDriverFactory implements IWebDriverFactory
 {
     private static final Logger LOGGER = LogManager.getLogger(WebDriverFactory.class);
-    private static final Properties PROPERTIES = PropertiesLoader.getProperties();
     private static final TimeUnit TIME_UNIT_SECONDS = TimeUnit.SECONDS;
     private static final int PAGE_LOAD_TIMEOUT = 60;
-    private static final boolean USE_SERVICE = Boolean.parseBoolean(PROPERTIES.getProperty("useDriverService"));
+
+    @Value("${useDriverService}")
+    private boolean useChromeService;
+
+    @Value("${useLightweightedChrome}")
+    private boolean useLightweightedChrome;
+
+    @Value("${enableJavascript}")
+    private boolean enableJavascript;
+
+    @Value("${maximizeBrowserWindow}")
+    private boolean maximizeBrowserWindow;
+
     private static ChromeDriverService service;
 
     @Override
@@ -47,7 +59,7 @@ public class WebDriverFactory implements IWebDriverFactory
         ChromeOptions options = new ChromeOptions();
         cap.setCapability(CapabilityType.PROXY, proxy.getSeleniumProxy());
 
-        if (Boolean.parseBoolean(PROPERTIES.getProperty("useLightweightedChrome")))
+        if (useLightweightedChrome)
         {
             // this disables images loading
             HashMap<String, Object> images = new HashMap<String, Object>();
@@ -61,12 +73,12 @@ public class WebDriverFactory implements IWebDriverFactory
             cap.setCapability(ChromeOptions.CAPABILITY, options);
         }
 
-        if (!Boolean.parseBoolean(PROPERTIES.getProperty("enableJavascript")))
+        if (!enableJavascript)
         {
             cap.setJavascriptEnabled(false);
         }
 
-        if (USE_SERVICE && service == null)
+        if (useChromeService && service == null)
         {
             service = ChromeDriverService.createDefaultService();
             try
@@ -86,7 +98,7 @@ public class WebDriverFactory implements IWebDriverFactory
         switch (type)
         {
             case CHROME:
-                if (USE_SERVICE)
+                if (useChromeService)
                 {
                     driver = new RemoteWebDriver(service.getUrl(), cap);
                     break;
@@ -104,7 +116,7 @@ public class WebDriverFactory implements IWebDriverFactory
         Timeouts timeouts = manage.timeouts();
         timeouts.setScriptTimeout(PAGE_LOAD_TIMEOUT, TIME_UNIT_SECONDS);
         timeouts.pageLoadTimeout(PAGE_LOAD_TIMEOUT, TIME_UNIT_SECONDS);
-        if (Boolean.getBoolean(PROPERTIES.getProperty("maximizeBrowserWindow")))
+        if (maximizeBrowserWindow)
         {
             manage.window().maximize();
         }

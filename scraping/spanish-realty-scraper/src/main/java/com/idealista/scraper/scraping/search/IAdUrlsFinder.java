@@ -1,6 +1,6 @@
-package com.idealista.scraper.service;
+package com.idealista.scraper.scraping.search;
 
-import com.idealista.scraper.search.Category;
+import com.idealista.scraper.model.Category;
 
 import java.util.Set;
 

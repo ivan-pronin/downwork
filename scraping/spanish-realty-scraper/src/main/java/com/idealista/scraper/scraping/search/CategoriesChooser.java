@@ -1,13 +1,16 @@
-package com.idealista.scraper.search;
+package com.idealista.scraper.scraping.search;
 
-import com.idealista.scraper.page.MapPage;
-import com.idealista.scraper.page.StartPage;
-import com.idealista.scraper.proxy.ProxyMonitor;
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.ui.page.MapPage;
+import com.idealista.scraper.ui.page.StartPage;
 import com.idealista.scraper.webdriver.WebDriverProvider;
+import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.util.Collections;
@@ -15,17 +18,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+@Component
 public class CategoriesChooser
 {
     private static final Logger LOGGER = LogManager.getLogger(CategoriesChooser.class);
 
+    @Autowired
     private WebDriverProvider webDriverProvider;
-    private ProxyMonitor proxyMonitor = new ProxyMonitor();
-
-    public CategoriesChooser(WebDriverProvider webDriverProvider)
-    {
-        this.webDriverProvider = webDriverProvider;
-    }
+    
+    @Autowired
+    private ProxyMonitor proxyMonitor;
 
     public Set<String> getAllCategoriesUrls()
     {
@@ -217,5 +219,15 @@ public class CategoriesChooser
         startPage.selectTypology(typologyName);
         startPage.selectLocation(location);
         startPage.clickSearch();
+    }
+
+    public void setWebDriverProvider(WebDriverProvider webDriverProvider)
+    {
+        this.webDriverProvider = webDriverProvider;
+    }
+
+    public void setProxyMonitor(ProxyMonitor proxyMonitor)
+    {
+        this.proxyMonitor = proxyMonitor;
     }
 }

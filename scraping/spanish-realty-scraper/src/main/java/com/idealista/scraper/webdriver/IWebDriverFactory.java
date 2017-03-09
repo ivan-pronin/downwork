@@ -1,7 +1,7 @@
 package com.idealista.scraper.webdriver;
 
-import com.idealista.scraper.proxy.ProxyAdapter;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
+import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
 
 import org.openqa.selenium.WebDriver;
 

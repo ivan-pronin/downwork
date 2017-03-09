@@ -1,4 +1,4 @@
-package com.idealista.scraper.search;
+package com.idealista.scraper.ui;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;

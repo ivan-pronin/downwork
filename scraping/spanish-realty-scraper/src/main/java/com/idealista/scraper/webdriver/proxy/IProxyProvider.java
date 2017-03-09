@@ -1,4 +1,4 @@
-package com.idealista.scraper.proxy;
+package com.idealista.scraper.webdriver.proxy;
 
 public interface IProxyProvider
 {
