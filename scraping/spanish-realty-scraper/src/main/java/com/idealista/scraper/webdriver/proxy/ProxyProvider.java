@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.time.Duration;
@@ -42,6 +40,9 @@ public class ProxyProvider implements IProxyProvider
     @Autowired
     private WebDriverFactory webDriverFactory;
     
+    @Autowired
+    private ProxyFetcher proxyFetcher;
+    
     @Value("${maxProxyResponseTime}")
     private long maxProxyResponseTime;
 
@@ -61,7 +62,8 @@ public class ProxyProvider implements IProxyProvider
             LOGGER.warn("All proxies from proxies.txt were consumed, fetching new ones ...");
             if (fetchedProxies.isEmpty())
             {
-                fetchedProxies = new ProxyFetcher(getDriver()).fetchProxies();
+                proxyFetcher.setDriver(getDriver());
+                fetchedProxies = proxyFetcher.fetchProxies();
             }
             workingProxy = getWorkingProxyFromSet(fetchedProxies);
             if (workingProxy == null)

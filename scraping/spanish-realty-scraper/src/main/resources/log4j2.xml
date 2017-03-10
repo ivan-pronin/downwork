@@ -96,6 +96,9 @@
 		</Logger>
 		<Logger name="com.idealista.scraper.webdriver.NavigateActions" level="debug" additivity="false">
 			<appender-ref ref="debugLog" />
+		</Logger>
+		<Logger name="com.idealista.scraper.ui" level="debug" additivity="false">
+			<appender-ref ref="debugLog" />			
 		</Logger>	
 
 	</Loggers>

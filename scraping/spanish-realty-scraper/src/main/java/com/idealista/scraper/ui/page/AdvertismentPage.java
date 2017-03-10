@@ -1,27 +1,21 @@
 package com.idealista.scraper.ui.page;
 
-import com.idealista.scraper.ui.SearchActions;
 import com.idealista.scraper.util.RegexUtils;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class AdvertismentPage
+@Component
+public class AdvertismentPage extends BasePage
 {
     private static final String M_2 = "m²";
     private static final String BATHROOM = "bathroom";
     private static final String BEDROOM = "bedroom";
     private static final String ENERGY_CERTIFICATION = "Energy certification:";
-    private SearchActions searchActions;
-
-    public AdvertismentPage(WebDriver driver)
-    {
-        searchActions = new SearchActions(driver);
-    }
 
     public String getDescription()
     {

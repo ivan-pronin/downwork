@@ -62,6 +62,7 @@ public class AdUrlsFinder implements IAdUrlsFinder
         processedUrls = dataSource.getUrlsFromFile(DataType.PROCESSED_ADS);
 
         int diff = newUrls.size() - neededAmount;
+        Category templateCategory = categoriesBaseUrls.iterator().next();
         if (diff >= 0)
         {
             Iterator<URL> iterator = newUrls.iterator();
@@ -71,14 +72,14 @@ public class AdUrlsFinder implements IAdUrlsFinder
                 iterator.remove();
                 diff--;
             }
-            Category templateCategory = categoriesBaseUrls.iterator().next();
             newUrls.forEach(e -> adUrlsToProcess.add(new Category(e, templateCategory)));
         }
         else
         {
+            newUrls.forEach(e -> adUrlsToProcess.add(new Category(e, templateCategory)));
             while (!searchPagesToProcess.isEmpty())
             {
-                if (adUrlsToProcess.size() >= Math.abs(diff))
+                if (adUrlsToProcess.size() >= neededAmount)
                 {
                     break;
                 }

@@ -7,33 +7,29 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
+@Component
 public class NavigateActions implements INavigateActions
 {
     private static final Logger LOGGER = LogManager.getLogger(NavigateActions.class);
 
+    @Autowired
     private WebDriverProvider webDriverProvider;
-    private ProxyMonitor proxyMonitor = new ProxyMonitor();
+
+    @Autowired
+    private ProxyMonitor proxyMonitor;
+
     private WebDriver driver;
-
-    public NavigateActions(WebDriver driver)
-    {
-        this.driver = driver;
-    }
-
-    public NavigateActions(WebDriverProvider webDriverProvider)
-    {
-        this.webDriverProvider = webDriverProvider;
-        driver = webDriverProvider.get();
-    }
 
     @Override
     public void navigateWithoutValidations(String page)
     {
         LOGGER.debug("Trying to load the page: {}", page);
-        driver.navigate().to(page);
+        getDriver().navigate().to(page);
         LOGGER.debug("Page {} loaded", page);
     }
 
@@ -43,6 +39,7 @@ public class NavigateActions implements INavigateActions
         try
         {
             LOGGER.debug("Trying to load the page: {}", page);
+            WebDriver driver = getDriver();
             driver.navigate().to(page);
             if (proxyConnectionAlive(driver) && !proxyMonitor.ifVerificationAppered(driver))
             {
@@ -72,5 +69,15 @@ public class NavigateActions implements INavigateActions
         LOGGER.info("Restarting driver ...");
         webDriverProvider.end();
         return webDriverProvider.get();
+    }
+
+    private WebDriver getDriver()
+    {
+        return webDriverProvider.get();
+    }
+
+    public void setWebDriverProvider(WebDriverProvider webDriverProvider)
+    {
+        this.webDriverProvider = webDriverProvider;
     }
 }

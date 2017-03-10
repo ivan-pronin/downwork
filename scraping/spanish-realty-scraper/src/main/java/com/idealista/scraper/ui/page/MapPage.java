@@ -1,42 +1,42 @@
 package com.idealista.scraper.ui.page;
 
+import com.idealista.scraper.ui.ClickActions;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-public class MapPage
+@Component
+public class MapPage extends BasePage
 {
+    private static final int WAIT_FOR_ELEMENT_TIMEOUT_SECONDS = 5;
     private static final Logger LOGGER = LogManager.getLogger(MapPage.class);
-
-    private WebDriver driver;
-
-    public MapPage(WebDriver driver)
-    {
-        this.driver = driver;
-    }
 
     public void clickShowAll()
     {
-        List<WebElement> showAllLink = driver.findElements(By.id("showAllLink"));
-        if (!showAllLink.isEmpty())
+        WebElement showAllLink = searchActions.waitForElement(By.id("showAllLink"), WAIT_FOR_ELEMENT_TIMEOUT_SECONDS);
+        if (showAllLink != null)
         {
-            showAllLink.get(0).click();
+            clickActions.click(showAllLink);
         }
     }
 
     public void clickIdealistaLink()
     {
-        List<WebElement> idealistaLink = driver
-                .findElements(By.xpath("//div[@class='breadcrumb-geo wrapper clearfix']//a[text()='idealista']"));
-        if (idealistaLink.isEmpty())
+        WebElement idealistaLink = searchActions
+                .waitForElement(By.xpath("//div[@class='breadcrumb-geo wrapper clearfix']//a[text()='idealista']"), 5);
+        if (idealistaLink == null)
         {
             LOGGER.warn("Failed to find <idealista> link");
             return;
         }
-        idealistaLink.get(0).click();
+        clickActions.click(idealistaLink);
+    }
+
+    public void setClickActions(ClickActions clickActions)
+    {
+        this.clickActions = clickActions;
     }
 }

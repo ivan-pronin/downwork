@@ -41,7 +41,7 @@ public class AppConfig
     {
         ctx.getBean(RealtyApp.class).initSystemProperties();
         ctx.getBean(XlsExporter.class).initWorkBook();
-        ctx.getBean(WebDriverProvider.class).init();
         ctx.getBean(ProxyProvider.class).initProxiesList();
+        ctx.getBean(WebDriverProvider.class).init();
     }
 }

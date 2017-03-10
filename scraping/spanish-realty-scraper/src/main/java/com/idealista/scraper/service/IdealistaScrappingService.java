@@ -8,7 +8,10 @@ import com.idealista.scraper.scraping.IAdvertismentExtractorFactory;
 import com.idealista.scraper.scraping.search.AdUrlsFinder;
 import com.idealista.scraper.scraping.search.CategoriesChooser;
 import com.idealista.scraper.scraping.search.IAdUrlsFinder;
+import com.idealista.scraper.service.model.FilterAttributes;
+import com.idealista.scraper.service.model.IFilterAttributesFactory;
 import com.idealista.scraper.ui.page.StartPage;
+import com.idealista.scraper.webdriver.INavigateActions;
 import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
@@ -50,9 +53,18 @@ public class IdealistaScrappingService
 
     @Autowired
     private CategoriesChooser chooser;
+    
+    @Autowired
+    private INavigateActions navigateActions;
 
     @Autowired
     private IAdvertismentExtractorFactory advertismentExtractorFactory;
+
+    @Autowired
+    private IFilterAttributesFactory filterAttributesFactory;
+    
+    @Autowired
+    private StartPage startPage;
 
     private BlockingQueue<Future<Advertisment>> advertismentExtractorResults;
     private BlockingQueue<URL> advertismentUrlsInProgress = new LinkedBlockingQueue<>();
@@ -60,21 +72,21 @@ public class IdealistaScrappingService
     @Value(value = "${maxAdsToProcess}")
     private int maxIterations;
 
-    public void scrapSite(String userOperation, String userTypology, String userLocation)
+    public void scrapSite(String userOperation, String userTypology, String userLocation, String publicationDateFilter)
             throws InterruptedException, MalformedURLException
     {
         WebDriver driver = webDriverProvider.get();
-        NavigateActions navigateActions = new NavigateActions(driver);
         navigateActions.get(new URL(IDEALISTA_COM_EN));
 
-        StartPage startPage = new StartPage(driver);
+        startPage.setWebDriver(driver);
         SearchAttributes searchAttributes = startPage.getSearchAttributes(userOperation, userTypology, userLocation);
+        FilterAttributes filterAttributes = filterAttributesFactory.create(publicationDateFilter);
 
         LOGGER.info(" === === Printing parsed SearchAttributes === === ");
         LOGGER.info(searchAttributes);
         LOGGER.info(" === === === === === === ===  === === === === === ");
         LOGGER.info("");
-        Set<Category> categoriesBaseUrls = getCategoriesUrls(searchAttributes);
+        Set<Category> categoriesBaseUrls = getCategoriesUrls(searchAttributes, filterAttributes);
 
         ((AdUrlsFinder) adUrlsFinder).setCategoriesBaseUrls(categoriesBaseUrls);
         Set<Category> adUrlsToProcess = adUrlsFinder.findNewAdUrlsAmount(maxIterations);
@@ -92,12 +104,13 @@ public class IdealistaScrappingService
         }
     }
 
-    private Set<Category> getCategoriesUrls(SearchAttributes searchAttributes) throws InterruptedException
+    private Set<Category> getCategoriesUrls(SearchAttributes searchAttributes, FilterAttributes filterAttributes)
+            throws InterruptedException
     {
         Set<String> userOperations = searchAttributes.getOperations();
         Set<String> userTypologies = searchAttributes.getTypologies();
         Set<String> userLocations = searchAttributes.getLocations();
-        StartPage startPage = new StartPage(webDriverProvider.get());
+        startPage.setWebDriver(webDriverProvider.get());
 
         Queue<Callable<Category>> results = new ConcurrentLinkedQueue<>();
 
@@ -117,7 +130,8 @@ public class IdealistaScrappingService
                         if (userLocations.contains(location))
                         {
                             startPage.selectLocation(location);
-                            results.add(chooser.new CategoryByOperationTypeLocation(operation, typology, location));
+                            results.add(chooser.new CategoryBySearchAndFilterAttributes(operation, typology, location,
+                                    filterAttributes));
                         }
                     }
 
