@@ -46,6 +46,9 @@ public class RealtyApp
     @Value("${location}")
     private String location;
     
+    @Value("${publicationDateFilter}")
+    private String publicationDateFilter;
+    
     @Autowired
     private TasksListener tasksListener;
     
@@ -78,7 +81,7 @@ public class RealtyApp
     {
         BlockingQueue<Future<Advertisment>> advertismentExtractorTasks = new LinkedBlockingQueue<>();
         idealistaService.setAdvertismentExtractorResults(advertismentExtractorTasks);
-        idealistaService.scrapSite(operation, typology, location);
+        idealistaService.scrapSite(operation, typology, location, publicationDateFilter);
         
         tasksListener.setAdvertismentExtractorResults(advertismentExtractorTasks);
         tasksListener.setAdUrlsInProgress(idealistaService.getAdvertismentUrlsInProgress());

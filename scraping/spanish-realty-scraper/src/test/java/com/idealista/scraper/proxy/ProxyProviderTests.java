@@ -1,5 +1,7 @@
 package com.idealista.scraper.proxy;
 
+import static org.junit.Assert.*;
+
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.idealista.scraper.webdriver.WebDriverFactory;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
@@ -7,10 +9,17 @@ import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
 import com.idealista.scraper.webdriver.proxy.ProxyProvider;
 
+import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.Proxy.ProxyType;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class ProxyProviderTests
 {
@@ -74,5 +83,19 @@ public class ProxyProviderTests
             System.out.println("Finally block");
             driver.quit();
         }
+    }
+    
+    @Test
+    public void testHostProxy() throws Exception
+    {
+        String host = "bgproxy.site";
+        int port = 8080;
+        Proxy proxy = new Proxy().setHttpProxy(host).setSslProxy(host).setProxyType(ProxyType.MANUAL);
+        DesiredCapabilities cap = DesiredCapabilities.chrome();
+        cap.setCapability(CapabilityType.PROXY, proxy);
+        WebDriver driver = new ChromeDriver(cap);
+        String url = "http://www.tut.by";
+        driver.navigate().to(url);
+        System.out.println(driver.getCurrentUrl());
     }
 }

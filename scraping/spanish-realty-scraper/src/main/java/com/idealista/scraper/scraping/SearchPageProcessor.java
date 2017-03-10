@@ -2,6 +2,7 @@ package com.idealista.scraper.scraping;
 
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.util.URLUtils;
+import com.idealista.scraper.webdriver.INavigateActions;
 import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
@@ -27,14 +28,16 @@ public class SearchPageProcessor implements Callable<Set<Category>>
     private Category category;
 
     private WebDriverProvider webDriverProvider;
-
+    private INavigateActions navigateActions;
     private ProxyMonitor proxyMonitor;
 
-    public SearchPageProcessor(Category category, WebDriverProvider webDriverProvider, ProxyMonitor proxyMonitor)
+    public SearchPageProcessor(Category category, WebDriverProvider webDriverProvider, ProxyMonitor proxyMonitor,
+            INavigateActions navigateActions)
     {
         this.category = category;
         this.webDriverProvider = webDriverProvider;
         this.proxyMonitor = proxyMonitor;
+        this.navigateActions = navigateActions;
     }
 
     @Override
@@ -43,7 +46,6 @@ public class SearchPageProcessor implements Callable<Set<Category>>
         URL page = category.getUrl();
         LOGGER.info("Processing search page: {}", page);
         WebDriver driver = webDriverProvider.get();
-        NavigateActions navigateActions = new NavigateActions(webDriverProvider);
         driver = navigateActions.get(page);
         driver = proxyMonitor.checkForVerificationAndRestartDriver(driver);
         List<WebElement> divContainer = driver.findElements(By.xpath("//div[@class='items-container']"));

@@ -1,14 +1,13 @@
 package com.idealista.scraper.ui.page;
 
 import com.idealista.scraper.model.SearchAttributes;
-import com.idealista.scraper.ui.SearchActions;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,16 +16,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class StartPage
+@Component
+public class StartPage extends BasePage
 {
     private static final Logger LOGGER = LogManager.getLogger(StartPage.class);
-
-    private WebDriver driver;
-
-    public StartPage(WebDriver driver)
-    {
-        this.driver = driver;
-    }
 
     public void selectOperation(String operation)
     {
@@ -35,8 +28,7 @@ public class StartPage
             LOGGER.info("Specified <operation> is null, skipping...");
             return;
         }
-        SearchActions search = new SearchActions(driver);
-        WebElement operationCombo = search.waitForElement(By.id("operation-combo"), 10);
+        WebElement operationCombo = searchActions.waitForElement(By.id("operation-combo"), 10);
         if (operationCombo != null)
 
         {
@@ -54,8 +46,7 @@ public class StartPage
 
     public Set<String> getAvailableOperations()
     {
-        SearchActions search = new SearchActions(driver);
-        WebElement operationCombo = search.waitForElement(By.id("operation-combo"), 10);
+        WebElement operationCombo = searchActions.waitForElement(By.id("operation-combo"), 10);
         if (operationCombo != null)
         {
             List<WebElement> options = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
@@ -66,8 +57,7 @@ public class StartPage
 
     public Set<String> getAvailableTypologies()
     {
-        SearchActions search = new SearchActions(driver);
-        WebElement operationCombo = search.waitForElement(By.id("typology-combo"), 10);
+        WebElement operationCombo = searchActions.waitForElement(By.id("typology-combo"), 10);
         if (operationCombo != null)
         {
             List<WebElement> options = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
@@ -83,7 +73,7 @@ public class StartPage
             LOGGER.info("Specified <typology> is null, skipping...");
             return;
         }
-        List<WebElement> operationCombo = driver.findElements(By.id("typology-combo"));
+        List<WebElement> operationCombo = searchActions.findElementsById(Collections.emptyList(), "typology-combo");
         if (!operationCombo.isEmpty())
         {
             List<WebElement> options = operationCombo.get(0).findElements(By.xpath(".//li[@data-disabled='false']"));
@@ -100,7 +90,7 @@ public class StartPage
 
     public Set<String> getAvailableLocations()
     {
-        List<WebElement> operationCombo = driver.findElements(By.id("location-combo"));
+        List<WebElement> operationCombo = searchActions.findElementsById(Collections.emptyList(), "location-combo");
         if (!operationCombo.isEmpty())
         {
             List<WebElement> availableOptions = operationCombo.get(0)
@@ -114,7 +104,7 @@ public class StartPage
 
     public void selectLocation(String location)
     {
-        List<WebElement> operationCombo = driver.findElements(By.id("location-combo"));
+        List<WebElement> operationCombo = searchActions.findElementsById(Collections.emptyList(), "location-combo");
         if (!operationCombo.isEmpty())
         {
             List<WebElement> options = operationCombo.get(0).findElements(By.xpath(".//li[@data-disabled='false']"));
@@ -131,7 +121,7 @@ public class StartPage
 
     public void clickSearch()
     {
-        List<WebElement> link = driver.findElements(By.xpath("//button[@class='btn action']"));
+        List<WebElement> link = searchActions.findElementsByXpath("//button[@class='btn action']");
         if (!link.isEmpty())
         {
             link.get(0).click();

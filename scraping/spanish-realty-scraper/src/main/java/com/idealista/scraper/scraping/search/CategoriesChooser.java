@@ -1,7 +1,9 @@
 package com.idealista.scraper.scraping.search;
 
 import com.idealista.scraper.model.Category;
+import com.idealista.scraper.service.model.FilterAttributes;
 import com.idealista.scraper.ui.page.MapPage;
+import com.idealista.scraper.ui.page.SearchPage;
 import com.idealista.scraper.ui.page.StartPage;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
@@ -27,13 +29,22 @@ public class CategoriesChooser
     private WebDriverProvider webDriverProvider;
     
     @Autowired
+    private StartPage startPage;
+    
+    @Autowired
+    private MapPage mapPage;
+    
+    @Autowired
+    private SearchPage searchPage;
+    
+    @Autowired
     private ProxyMonitor proxyMonitor;
 
     public Set<String> getAllCategoriesUrls()
     {
         Set<String> categoriesUrls = new HashSet<>();
         WebDriver driver = webDriverProvider.get();
-        StartPage startPage = new StartPage(driver);
+        startPage.setWebDriver(driver);
         Set<String> availableOperations = startPage.getAvailableOperations();
         for (String operation : availableOperations)
         {
@@ -47,7 +58,7 @@ public class CategoriesChooser
                 for (String location : availableLocations)
                 {
                     selectOptionsAndStartSearch(startPage, operation, typology, location);
-                    MapPage mapPage = new MapPage(driver);
+                    mapPage.setWebDriver(driver);
                     mapPage.clickShowAll();
                     String currentUrl = driver.getCurrentUrl();
                     categoriesUrls.add(currentUrl);
@@ -55,7 +66,7 @@ public class CategoriesChooser
                     mapPage.clickIdealistaLink();
                     if (proxyMonitor.ifVerificationAppered(driver))
                     {
-                        driver = proxyMonitor.restartDriver(webDriverProvider);
+                        driver = proxyMonitor.restartDriver();
                         driver.navigate().to("https://www.idealista.com/");
                     }
                 }
@@ -68,7 +79,7 @@ public class CategoriesChooser
     {
         Set<String> categoriesUrls = new HashSet<>();
         WebDriver driver = webDriverProvider.get();
-        StartPage startPage = new StartPage(driver);
+        startPage.setWebDriver(driver);
         startPage.selectOperation(operationName);
         for (String typology : startPage.getAvailableTypologies())
         {
@@ -78,7 +89,7 @@ public class CategoriesChooser
             for (String location : availableLocations)
             {
                 selectOptionsAndStartSearch(startPage, operationName, typology, location);
-                MapPage mapPage = new MapPage(driver);
+                mapPage.setWebDriver(driver);
                 mapPage.clickShowAll();
                 String currentUrl = driver.getCurrentUrl();
                 categoriesUrls.add(currentUrl);
@@ -86,7 +97,7 @@ public class CategoriesChooser
                 mapPage.clickIdealistaLink();
                 if (proxyMonitor.ifVerificationAppered(driver))
                 {
-                    driver = proxyMonitor.restartDriver(webDriverProvider);
+                    driver = proxyMonitor.restartDriver();
                     driver.navigate().to("https://www.idealista.com/");
                 }
             }
@@ -94,17 +105,20 @@ public class CategoriesChooser
         return categoriesUrls;
     }
 
-    public class CategoryByOperationTypeLocation implements Callable<Category>
+    public class CategoryBySearchAndFilterAttributes implements Callable<Category>
     {
         private String operation;
         private String typology;
         private String location;
+        private FilterAttributes filterAttributes;
 
-        public CategoryByOperationTypeLocation(String operation, String typology, String location)
+        public CategoryBySearchAndFilterAttributes(String operation, String typology, String location,
+                FilterAttributes filterAttributes)
         {
             this.operation = operation;
             this.typology = typology;
             this.location = location;
+            this.filterAttributes = filterAttributes;
         }
 
         @Override
@@ -117,7 +131,7 @@ public class CategoriesChooser
             }
             WebDriver driver = webDriverProvider.get();
             driver.navigate().to("https://www.idealista.com/en/");
-            StartPage startPage = new StartPage(driver);
+            startPage.setWebDriver(driver);
             startPage.selectOperation(operation);
             if (!startPage.getAvailableTypologies().contains(typology))
             {
@@ -127,18 +141,22 @@ public class CategoriesChooser
             selectOptionsAndStartSearch(startPage, operation, typology, location);
             if (proxyMonitor.ifVerificationAppered(driver))
             {
-                driver = proxyMonitor.restartDriver(webDriverProvider);
+                driver = proxyMonitor.restartDriver();
                 driver.navigate().to("https://www.idealista.com/en/");
                 selectOptionsAndStartSearch(startPage, operation, typology, location);
             }
-            MapPage mapPage = new MapPage(driver);
+            mapPage.setWebDriver(driver);
             mapPage.clickShowAll();
+            
+            searchPage.setWebDriver(driver);
+            searchPage.applyPublicationDateFilter(filterAttributes);
+            
             String categoryUrl = driver.getCurrentUrl();
             LOGGER.info("Found new category url: {}", categoryUrl);
             mapPage.clickIdealistaLink();
             if (proxyMonitor.ifVerificationAppered(driver))
             {
-                driver = proxyMonitor.restartDriver(webDriverProvider);
+                driver = proxyMonitor.restartDriver();
                 driver.navigate().to("https://www.idealista.com/");
             }
             return new Category(new URL(categoryUrl), location, operation, typology);
@@ -149,7 +167,7 @@ public class CategoriesChooser
     {
         Set<String> categoriesUrls = new HashSet<>();
         WebDriver driver = webDriverProvider.get();
-        StartPage startPage = new StartPage(driver);
+        startPage.setWebDriver(driver);
         startPage.selectOperation(operationName);
         if (!startPage.getAvailableTypologies().contains(typologyName))
         {
@@ -161,11 +179,11 @@ public class CategoriesChooser
             selectOptionsAndStartSearch(startPage, operationName, typologyName, location);
             if (proxyMonitor.ifVerificationAppered(driver))
             {
-                driver = proxyMonitor.restartDriver(webDriverProvider);
+                driver = proxyMonitor.restartDriver();
                 driver.navigate().to("https://www.idealista.com/en/");
                 continue;
             }
-            MapPage mapPage = new MapPage(driver);
+            mapPage.setWebDriver(driver);
             mapPage.clickShowAll();
             String currentUrl = driver.getCurrentUrl();
             categoriesUrls.add(currentUrl);
@@ -173,7 +191,7 @@ public class CategoriesChooser
             mapPage.clickIdealistaLink();
             if (proxyMonitor.ifVerificationAppered(driver))
             {
-                driver = proxyMonitor.restartDriver(webDriverProvider);
+                driver = proxyMonitor.restartDriver();
                 driver.navigate().to("https://www.idealista.com/");
             }
         }
@@ -185,7 +203,7 @@ public class CategoriesChooser
     {
         Set<String> categoriesUrls = new HashSet<>();
         WebDriver driver = webDriverProvider.get();
-        StartPage startPage = new StartPage(driver);
+        startPage.setWebDriver(driver);
         startPage.selectOperation(operationName);
         if (!startPage.getAvailableTypologies().contains(typologyName))
         {
@@ -195,18 +213,18 @@ public class CategoriesChooser
         selectOptionsAndStartSearch(startPage, operationName, typologyName, locationName);
         if (proxyMonitor.ifVerificationAppered(driver))
         {
-            driver = proxyMonitor.restartDriver(webDriverProvider);
+            driver = proxyMonitor.restartDriver();
             driver.navigate().to("https://www.idealista.com/en/");
             selectOptionsAndStartSearch(startPage, operationName, typologyName, locationName);
         }
-        MapPage mapPage = new MapPage(driver);
+        mapPage.setWebDriver(driver);
         mapPage.clickShowAll();
         String currentUrl = driver.getCurrentUrl();
         LOGGER.info("Added new category url: {}", currentUrl);
         mapPage.clickIdealistaLink();
         if (proxyMonitor.ifVerificationAppered(driver))
         {
-            driver = proxyMonitor.restartDriver(webDriverProvider);
+            driver = proxyMonitor.restartDriver();
             driver.navigate().to("https://www.idealista.com/");
         }
         return categoriesUrls;

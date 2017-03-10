@@ -1,13 +1,13 @@
 package com.idealista.scraper.webdriver.proxy;
 
 import com.idealista.scraper.ui.SearchActions;
-import com.idealista.scraper.webdriver.INavigateActions;
-import com.idealista.scraper.webdriver.NavigateActions;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,29 +16,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class ProxyFetcher
 {
     private static final String US_PROXY_ORG = "https://www.us-proxy.org/";
-
     private static final Logger LOGGER = LogManager.getLogger(ProxyFetcher.class);
 
-    private INavigateActions navigateActions;
-    
-    private SearchActions searchActions;
-    
     private WebDriver driver;
 
-    public ProxyFetcher(WebDriver driver)
-    {
-        this.driver = driver;
-        navigateActions = new NavigateActions(driver);
-        searchActions = new SearchActions(driver);
-    }
+    @Autowired
+    private SearchActions searchActions;
 
     public Set<String> fetchProxies()
     {
         LOGGER.info("Fetching new proxies from {}", US_PROXY_ORG);
-        navigateActions.navigateWithoutValidations(US_PROXY_ORG);
+        driver.get(US_PROXY_ORG);
         List<WebElement> select = searchActions.findElementsByXpath("//select[@name='proxylisttable_length']");
         Set<String> proxies = new HashSet<>();
         if (!select.isEmpty())
@@ -72,5 +64,11 @@ public class ProxyFetcher
             return tds.get(0).getText() + ':' + tds.get(1).getText();
         }
         return null;
+    }
+
+    public void setDriver(WebDriver driver)
+    {
+        this.driver = driver;
+        searchActions.setWebDriver(driver);
     }
 }

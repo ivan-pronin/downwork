@@ -5,6 +5,7 @@ import com.idealista.scraper.webdriver.WebDriverProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,6 +13,7 @@ public class ProxyMonitor
 {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    @Autowired
     private WebDriverProvider webDriverProvider;
 
     public WebDriver checkForVerificationAndRestartDriver(WebDriver driver)
@@ -19,7 +21,7 @@ public class ProxyMonitor
         if (ifVerificationAppered(driver))
         {
             LOGGER.info("Verification page is opened, restarting driver");
-            return restartDriver(webDriverProvider);
+            return restartDriver();
         }
         return driver;
     }
@@ -29,7 +31,7 @@ public class ProxyMonitor
         return driver.getCurrentUrl().contains("checkvalidation");
     }
 
-    public WebDriver restartDriver(WebDriverProvider webDriverProvider)
+    public WebDriver restartDriver()
     {
         webDriverProvider.end();
         return webDriverProvider.get();

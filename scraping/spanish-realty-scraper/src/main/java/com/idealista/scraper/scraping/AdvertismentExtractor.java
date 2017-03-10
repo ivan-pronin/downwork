@@ -5,8 +5,6 @@ import com.idealista.scraper.model.Category;
 import com.idealista.scraper.model.RealtyType;
 import com.idealista.scraper.ui.page.AdvertismentPage;
 import com.idealista.scraper.webdriver.INavigateActions;
-import com.idealista.scraper.webdriver.NavigateActions;
-import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,14 +17,16 @@ public final class AdvertismentExtractor implements Callable<Advertisment>
 {
     private static final Logger LOGGER = LogManager.getLogger(AdvertismentExtractor.class);
 
-    private WebDriverProvider webDriverProvider;
-
+    private INavigateActions navigateActions;
     private Category category;
+    private AdvertismentPage page;
 
-    public AdvertismentExtractor(WebDriverProvider webDriverProvider, Category category)
+    public AdvertismentExtractor(Category category,
+            INavigateActions navigateActions, AdvertismentPage page)
     {
-        this.webDriverProvider = webDriverProvider;
         this.category = category;
+        this.navigateActions = navigateActions;
+        this.page = page;
     }
 
     @Override
@@ -34,10 +34,8 @@ public final class AdvertismentExtractor implements Callable<Advertisment>
     {
         URL url = category.getUrl();
         LOGGER.info("Scrapping the page: {}", url);
-        WebDriver driver = webDriverProvider.get();
-        INavigateActions navigateActions = new NavigateActions(webDriverProvider);
-        driver = navigateActions.get(url);
-        AdvertismentPage page = new AdvertismentPage(driver);
+        WebDriver driver = navigateActions.get(url);
+        page.setWebDriver(driver);
         Advertisment ad = new Advertisment(url, page.getTitle(), category.getType());
         ad.setSubType(RealtyType.fromString(category.getSubType()));
         ad.setDateOfListing(page.getListingDate());
@@ -61,5 +59,4 @@ public final class AdvertismentExtractor implements Callable<Advertisment>
         ad.setTags(page.getTags());
         return ad;
     }
-
 }

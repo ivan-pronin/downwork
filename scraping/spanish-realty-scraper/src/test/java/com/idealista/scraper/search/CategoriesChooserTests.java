@@ -71,7 +71,7 @@ public class CategoriesChooserTests
         Queue<Future<Category>> results = new ConcurrentLinkedQueue<>();
         for (String location : locations)
         {
-            results.add(executor.submit(chooser.new CategoryByOperationTypeLocation("Share", "Homes", location)));
+            results.add(executor.submit(chooser.new CategoryBySearchAndFilterAttributes("Share", "Homes", location)));
         }
         executor.shutdown();
         executor.awaitTermination(600, TimeUnit.SECONDS);
