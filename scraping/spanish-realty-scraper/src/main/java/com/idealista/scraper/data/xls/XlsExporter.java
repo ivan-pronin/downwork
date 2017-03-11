@@ -96,38 +96,39 @@ public class XlsExporter
             LOGGER.error("Could not write advertisment to XLS - row is NULL");
             return;
         }
-        row.createCell(0).setCellValue(ad.getTitle());
-        row.createCell(1).setCellValue(ad.getType());
-        row.createCell(2).setCellValue(ad.getSubType().name());
-        row.createCell(3).setCellValue(ad.getDateOfListing());
-        row.createCell(4).setCellValue("todo:number_of_views");
-        row.createCell(5).setCellValue(ad.getAddress());
-        row.createCell(6).setCellValue(ad.getState());
-        row.createCell(7).setCellValue(ad.getCity());
-        row.createCell(8).setCellValue(ad.getPostalCode());
-        row.createCell(9).setCellValue("todo:age");
-        row.createCell(10).setCellValue(ad.getDescription());
-        row.createCell(11).setCellValue(ad.getBedRooms());
-        row.createCell(12).setCellValue(ad.getBathRooms());
-        row.createCell(13).setCellValue(ad.getSize());
-        row.createCell(14).setCellValue(ad.getPrice());
-        row.createCell(15).setCellValue(ad.getEnergyCertification());
-        row.createCell(16).setCellValue(ad.getProfessional());
-        row.createCell(17).setCellValue(ad.getAgent());
-        row.createCell(18).setCellValue(ad.getAgentPhone());
-        row.createCell(19).setCellValue("todo:email_listing_agent");
-        row.createCell(20).setCellValue(ad.getUrl().toString());
-        row.createCell(21).setCellValue(ad.isHasImages());
-        fillInTags(row, ad.getTags());
+        int columnIndex = 0;
+        row.createCell(columnIndex).setCellValue(ad.getTitle());
+        row.createCell(++columnIndex).setCellValue(ad.getType());
+        row.createCell(++columnIndex).setCellValue(ad.getSubType().name());
+        row.createCell(++columnIndex).setCellValue(ad.getProvince());
+        row.createCell(++columnIndex).setCellValue(ad.getDateOfListing());
+        row.createCell(++columnIndex).setCellValue("todo:number_of_views");
+        row.createCell(++columnIndex).setCellValue(ad.getAddress());
+        row.createCell(++columnIndex).setCellValue(ad.getState());
+        row.createCell(++columnIndex).setCellValue(ad.getCity());
+        row.createCell(++columnIndex).setCellValue(ad.getPostalCode());
+        row.createCell(++columnIndex).setCellValue("todo:age");
+        row.createCell(++columnIndex).setCellValue(ad.getDescription());
+        row.createCell(++columnIndex).setCellValue(ad.getBedRooms());
+        row.createCell(++columnIndex).setCellValue(ad.getBathRooms());
+        row.createCell(++columnIndex).setCellValue(ad.getSize());
+        row.createCell(++columnIndex).setCellValue(ad.getPrice());
+        row.createCell(++columnIndex).setCellValue(ad.getEnergyCertification());
+        row.createCell(++columnIndex).setCellValue(ad.getProfessional());
+        row.createCell(++columnIndex).setCellValue(ad.getAgent());
+        row.createCell(++columnIndex).setCellValue(ad.getAgentPhone());
+        row.createCell(++columnIndex).setCellValue("todo:email_listing_agent");
+        row.createCell(++columnIndex).setCellValue(ad.getUrl().toString());
+        row.createCell(++columnIndex).setCellValue(ad.isHasImages());
+        fillInTags(row, ad.getTags(), ++columnIndex);
     }
 
-    private void fillInTags(Row row, List<String> tags)
+    private void fillInTags(Row row, List<String> tags, int startIndex)
     {
-        int index = 22;
         for (String tag : tags)
         {
-            row.createCell(index).setCellValue(tag);
-            index++;
+            row.createCell(startIndex).setCellValue(tag);
+            startIndex++;
         }
     }
 

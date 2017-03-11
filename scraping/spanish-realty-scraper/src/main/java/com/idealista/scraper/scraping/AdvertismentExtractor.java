@@ -38,6 +38,7 @@ public final class AdvertismentExtractor implements Callable<Advertisment>
         page.setWebDriver(driver);
         Advertisment ad = new Advertisment(url, page.getTitle(), category.getType());
         ad.setSubType(RealtyType.fromString(category.getSubType()));
+        ad.setProvince(category.getProvince());
         ad.setDateOfListing(page.getListingDate());
         // number_of_views
         ad.setAddress(page.getAddress());

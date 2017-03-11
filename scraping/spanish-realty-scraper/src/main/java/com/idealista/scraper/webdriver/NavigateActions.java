@@ -23,8 +23,6 @@ public class NavigateActions implements INavigateActions
     @Autowired
     private ProxyMonitor proxyMonitor;
 
-    private WebDriver driver;
-
     @Override
     public void navigateWithoutValidations(String page)
     {

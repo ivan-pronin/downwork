@@ -50,7 +50,7 @@ public class DataSource implements IDataSource
     public void writeUrlsToFile(DataType type, Set<URL> urlsToAdd)
     {
         String fileName = type.getFileName();
-        LOGGER.info("Writing new <{}> URLs to {} file: {}", urlsToAdd.size(), type.name(), fileName);
+        LOGGER.info("Writing <{}> URLs to {} file: {}", urlsToAdd.size(), type.name(), fileName);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true)))
         {
             updateFile(type, urlsToAdd, writer);

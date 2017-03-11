@@ -2,7 +2,6 @@ package com.idealista.scraper.webdriver.proxy;
 
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
-import org.springframework.stereotype.Component;
 
 public class ProxyAdapter
 {

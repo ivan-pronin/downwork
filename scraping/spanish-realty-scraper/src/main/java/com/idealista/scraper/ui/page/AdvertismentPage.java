@@ -1,8 +1,10 @@
 package com.idealista.scraper.ui.page;
 
+import com.idealista.scraper.RealtyApp;
 import com.idealista.scraper.util.RegexUtils;
 
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,9 +15,11 @@ import java.util.List;
 public class AdvertismentPage extends BasePage
 {
     private static final String M_2 = "m²";
-    private static final String BATHROOM = "bathroom";
-    private static final String BEDROOM = "bedroom";
-    private static final String ENERGY_CERTIFICATION = "Energy certification:";
+    private static final String EN = "en";
+    private static final String ES = "es";
+
+    @Autowired
+    private RealtyApp realtyApp;
 
     public String getDescription()
     {
@@ -24,6 +28,8 @@ public class AdvertismentPage extends BasePage
         {
             List<WebElement> textElement = searchActions.findElementsByXpath(container,
                     "//div[@class='adCommentsLanguage expandable']");
+            List<WebElement> expander = searchActions.findElementsByXpath(textElement, "//a[@class='expander']");
+            clickActions.click(expander);
             return searchActions.getElementText(textElement);
         }
         return null;
@@ -31,14 +37,44 @@ public class AdvertismentPage extends BasePage
 
     public int getBedrooms()
     {
-        return extractSpecificCharacteristics(BEDROOM).isEmpty() ? -1
-                : Integer.parseInt(extractSpecificCharacteristics(BEDROOM).get(0));
+        String bedroom = getLocalizedBedroom();
+        return extractSpecificCharacteristics(bedroom).isEmpty() ? -1
+                : Integer.parseInt(extractSpecificCharacteristics(bedroom).get(0));
     }
 
     public int getBathrooms()
     {
-        return extractSpecificCharacteristics(BATHROOM).isEmpty() ? -1
-                : Integer.parseInt(extractSpecificCharacteristics(BATHROOM).get(0));
+        String bathroom = getLocalizedBathroom();
+        return extractSpecificCharacteristics(bathroom).isEmpty() ? -1
+                : Integer.parseInt(extractSpecificCharacteristics(bathroom).get(0));
+    }
+
+    private String getLocalizedBathroom()
+    {
+        String language = getLanguage();
+        if (language.equalsIgnoreCase(EN))
+        {
+            return "bathroom";
+        }
+        if (language.equalsIgnoreCase(ES))
+        {
+            return "baño";
+        }
+        return null;
+    }
+
+    private String getLocalizedBedroom()
+    {
+        String language = getLanguage();
+        if (language.equalsIgnoreCase(EN))
+        {
+            return "bedroom";
+        }
+        if (language.equalsIgnoreCase(ES))
+        {
+            return "habitacion";
+        }
+        return null;
     }
 
     public String getSize()
@@ -54,18 +90,37 @@ public class AdvertismentPage extends BasePage
 
     public List<String> getTags()
     {
-        List<WebElement> ulElements = searchActions
-                .findElementsByXpath("//h2[contains(.,'Specific characteristics')]/..//ul//li");
+        List<WebElement> ulElements = findSpecificCharactefisticsList();
         List<String> results = new ArrayList<>();
         for (WebElement item : ulElements)
         {
             String text = item.getText().toLowerCase();
-            if (!text.contains(BEDROOM) && !text.contains(BATHROOM) && !text.contains(M_2))
+            if (!text.contains(getLocalizedBedroom()) && !text.contains(getLocalizedBathroom()) && !text.contains(M_2))
             {
                 results.add(text);
             }
         }
         return results;
+    }
+
+    private List<WebElement> findSpecificCharactefisticsList()
+    {
+        String xpath = "//h2[contains(.,'%s')]/..//ul//li";
+        return searchActions.findElementsByXpath(String.format(xpath, getLocalizedSpecificCharacteristics()));
+    }
+
+    private String getLocalizedSpecificCharacteristics()
+    {
+        String language = getLanguage();
+        if (language.equalsIgnoreCase(EN))
+        {
+            return "Specific characteristics";
+        }
+        if (language.equalsIgnoreCase(ES))
+        {
+            return "Características básicas";
+        }
+        return null;
     }
 
     public int getPrice()
@@ -88,15 +143,14 @@ public class AdvertismentPage extends BasePage
 
     private List<String> extractSpecificCharacteristics(String type)
     {
-        List<WebElement> ulElements = searchActions
-                .findElementsByXpath("//h2[contains(.,'Specific characteristics')]/..//ul//li");
+        List<WebElement> ulElements = findSpecificCharactefisticsList();
         List<String> results = new ArrayList<>();
         for (WebElement item : ulElements)
         {
             String text = item.getText().toLowerCase();
             if (text.contains(type))
             {
-                if (type.equals(BEDROOM) || type.equals(BATHROOM))
+                if (type.equals(getLocalizedBedroom()) || type.equals(getLocalizedBathroom()))
                 {
                     return Arrays.asList("" + RegexUtils.extractDigit(text));
                 }
@@ -137,25 +191,75 @@ public class AdvertismentPage extends BasePage
                 String text = searchActions.getElementText(p);
                 if (text != null)
                 {
-                    return text.replaceAll("Listing updated on ", "");
+                    return text.replaceAll(getLocalizedListingUpdatedText(), "");
                 }
             }
         }
         return null;
     }
 
+    private String getLocalizedListingUpdatedText()
+    {
+        String language = getLanguage();
+        if (language.equalsIgnoreCase(EN))
+        {
+            return "Listing updated on ";
+        }
+        if (language.equalsIgnoreCase(ES))
+        {
+            return "Anuncio actualizado el ";
+        }
+        return null;
+    }
+
     public String getEnergyCertification()
     {
-        List<WebElement> ulElements = searchActions.findElementsByXpath("//h2[contains(.,'Construction')]/..//ul//li");
+        String xpath = "//h2[contains(.,'%s')]/..//ul//li";
+        List<WebElement> ulElements = searchActions
+                .findElementsByXpath(String.format(xpath, getLocalizedConstruction()));
         for (WebElement item : ulElements)
         {
             String text = item.getText();
-            if (text.contains(ENERGY_CERTIFICATION))
+            String energyCertification = getLocalizedEnergyCert();
+            if (text.contains(energyCertification))
             {
-                return RegexUtils.extractTextAfterAnchor(text, ENERGY_CERTIFICATION);
+                return RegexUtils.extractTextAfterAnchor(text, energyCertification);
             }
         }
         return null;
+    }
+
+    private String getLocalizedEnergyCert()
+    {
+        String language = getLanguage();
+        if (language.equalsIgnoreCase(EN))
+        {
+            return "Energy certification:";
+        }
+        if (language.equalsIgnoreCase(ES))
+        {
+            return "Certificación energética:";
+        }
+        return null;
+    }
+
+    private String getLocalizedConstruction()
+    {
+        String language = getLanguage();
+        if (language.equalsIgnoreCase(EN))
+        {
+            return "Construction";
+        }
+        if (language.equalsIgnoreCase(ES))
+        {
+            return "Edificio";
+        }
+        return null;
+    }
+
+    private String getLanguage()
+    {
+        return realtyApp.getLanguage();
     }
 
     public String getAddress()

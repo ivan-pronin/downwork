@@ -9,6 +9,7 @@ public class Category
     private String state;
     private String type;
     private String subType;
+    private String province;
 
     public Category(URL url, Category templateCategory)
     {
@@ -16,6 +17,7 @@ public class Category
         this.state = templateCategory.getState();
         this.type = templateCategory.getType();
         this.subType = templateCategory.getSubType();
+        this.province = templateCategory.getProvince();
     }
 
     public Category(URL url, String state, String type, String subType)
@@ -69,5 +71,15 @@ public class Category
     public String toString()
     {
         return "Category [url=" + url + "]";
+    }
+
+    public String getProvince()
+    {
+        return province;
+    }
+
+    public void setProvince(String province)
+    {
+        this.province = province;
     }
 }

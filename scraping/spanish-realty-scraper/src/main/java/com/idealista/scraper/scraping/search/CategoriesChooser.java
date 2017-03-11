@@ -1,5 +1,6 @@
 package com.idealista.scraper.scraping.search;
 
+import com.idealista.scraper.RealtyApp;
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.service.model.FilterAttributes;
 import com.idealista.scraper.ui.page.MapPage;
@@ -39,6 +40,9 @@ public class CategoriesChooser
     
     @Autowired
     private ProxyMonitor proxyMonitor;
+    
+    @Autowired
+    private RealtyApp realtyApp;
 
     public Set<String> getAllCategoriesUrls()
     {
@@ -67,7 +71,7 @@ public class CategoriesChooser
                     if (proxyMonitor.ifVerificationAppered(driver))
                     {
                         driver = proxyMonitor.restartDriver();
-                        driver.navigate().to("https://www.idealista.com/");
+                        driver.navigate().to(realtyApp.getMainLocalizedPageUrl());
                     }
                 }
             }
@@ -98,7 +102,7 @@ public class CategoriesChooser
                 if (proxyMonitor.ifVerificationAppered(driver))
                 {
                     driver = proxyMonitor.restartDriver();
-                    driver.navigate().to("https://www.idealista.com/");
+                    driver.navigate().to(realtyApp.getMainLocalizedPageUrl());
                 }
             }
         }
@@ -110,14 +114,16 @@ public class CategoriesChooser
         private String operation;
         private String typology;
         private String location;
+        private String province;
         private FilterAttributes filterAttributes;
 
         public CategoryBySearchAndFilterAttributes(String operation, String typology, String location,
-                FilterAttributes filterAttributes)
+                FilterAttributes filterAttributes, String province)
         {
             this.operation = operation;
             this.typology = typology;
             this.location = location;
+            this.province = province;
             this.filterAttributes = filterAttributes;
         }
 
@@ -130,7 +136,7 @@ public class CategoriesChooser
                 return null;
             }
             WebDriver driver = webDriverProvider.get();
-            driver.navigate().to("https://www.idealista.com/en/");
+            driver.navigate().to(realtyApp.getMainLocalizedPageUrl());
             startPage.setWebDriver(driver);
             startPage.selectOperation(operation);
             if (!startPage.getAvailableTypologies().contains(typology))
@@ -142,13 +148,14 @@ public class CategoriesChooser
             if (proxyMonitor.ifVerificationAppered(driver))
             {
                 driver = proxyMonitor.restartDriver();
-                driver.navigate().to("https://www.idealista.com/en/");
+                driver.navigate().to(realtyApp.getMainLocalizedPageUrl());
                 selectOptionsAndStartSearch(startPage, operation, typology, location);
             }
             mapPage.setWebDriver(driver);
             mapPage.clickShowAll();
             
             searchPage.setWebDriver(driver);
+            searchPage.selectProvince(province);
             searchPage.applyPublicationDateFilter(filterAttributes);
             
             String categoryUrl = driver.getCurrentUrl();
@@ -157,12 +164,14 @@ public class CategoriesChooser
             if (proxyMonitor.ifVerificationAppered(driver))
             {
                 driver = proxyMonitor.restartDriver();
-                driver.navigate().to("https://www.idealista.com/");
+                driver.navigate().to(realtyApp.getMainLocalizedPageUrl());
             }
-            return new Category(new URL(categoryUrl), location, operation, typology);
+            Category category = new Category(new URL(categoryUrl), location, operation, typology);
+            category.setProvince(province);
+            return category;
         }
     }
-
+    
     public Set<String> getCategoriesUrlsByOperationAndTypology(String operationName, String typologyName)
     {
         Set<String> categoriesUrls = new HashSet<>();
@@ -180,7 +189,7 @@ public class CategoriesChooser
             if (proxyMonitor.ifVerificationAppered(driver))
             {
                 driver = proxyMonitor.restartDriver();
-                driver.navigate().to("https://www.idealista.com/en/");
+                driver.navigate().to(realtyApp.getMainLocalizedPageUrl());
                 continue;
             }
             mapPage.setWebDriver(driver);
@@ -192,7 +201,7 @@ public class CategoriesChooser
             if (proxyMonitor.ifVerificationAppered(driver))
             {
                 driver = proxyMonitor.restartDriver();
-                driver.navigate().to("https://www.idealista.com/");
+                driver.navigate().to(realtyApp.getMainLocalizedPageUrl());
             }
         }
         return categoriesUrls;
@@ -214,7 +223,7 @@ public class CategoriesChooser
         if (proxyMonitor.ifVerificationAppered(driver))
         {
             driver = proxyMonitor.restartDriver();
-            driver.navigate().to("https://www.idealista.com/en/");
+            driver.navigate().to(realtyApp.getMainLocalizedPageUrl());
             selectOptionsAndStartSearch(startPage, operationName, typologyName, locationName);
         }
         mapPage.setWebDriver(driver);
@@ -225,7 +234,7 @@ public class CategoriesChooser
         if (proxyMonitor.ifVerificationAppered(driver))
         {
             driver = proxyMonitor.restartDriver();
-            driver.navigate().to("https://www.idealista.com/");
+            driver.navigate().to(realtyApp.getMainLocalizedPageUrl());
         }
         return categoriesUrls;
     }

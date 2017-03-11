@@ -18,17 +18,19 @@ public final class FileUtils
 {
     private static final Logger LOGGER = LogManager.getLogger(FileUtils.class);
 
+    public static Set<String> readStringToLines(String source)
+    {
+        try (Scanner scanner = new Scanner(source))
+        {
+            return readLinesFromScanner(scanner);
+        }
+    }
+
     public static Set<String> readFileToLines(String fileName)
     {
         try (Scanner scanner = new Scanner(new File(fileName)))
         {
-            Set<String> lines = new HashSet<>();
-            while (scanner.hasNextLine())
-            {
-                lines.add(scanner.nextLine());
-            }
-            LOGGER.info("Successfully read the file: {}. Total lines read: {}", fileName, lines.size());
-            return lines;
+            return readLinesFromScanner(scanner);
         }
         catch (FileNotFoundException e)
         {
@@ -93,5 +95,16 @@ public final class FileUtils
             }
             LOGGER.info("Created a new file: {}", fileName);
         }
+    }
+
+    private static Set<String> readLinesFromScanner(Scanner scanner)
+    {
+        Set<String> lines = new HashSet<>();
+        while (scanner.hasNextLine())
+        {
+            lines.add(scanner.nextLine().trim());
+        }
+        LOGGER.info("Successfully read the source. Total lines read: {}", lines.size());
+        return lines;
     }
 }

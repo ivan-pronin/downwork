@@ -3,7 +3,6 @@ package com.idealista.scraper.scraping;
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.util.URLUtils;
 import com.idealista.scraper.webdriver.INavigateActions;
-import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
 
@@ -23,7 +22,6 @@ import java.util.concurrent.Callable;
 public class SearchPageProcessor implements Callable<Set<Category>>
 {
     private static final Logger LOGGER = LogManager.getLogger(SearchPageProcessor.class);
-    private static volatile int totalAdsCounter;
 
     private Category category;
 
@@ -64,9 +62,7 @@ public class SearchPageProcessor implements Callable<Set<Category>>
                     adUrls.add(new Category(URLUtils.generateUrl(attribute), category));
                 }
             }
-            int adsCount = ads.size();
-            totalAdsCounter += adsCount;
-            LOGGER.info("Added new advertisment urls: {}, total ads count: {}", adsCount, totalAdsCounter);
+            LOGGER.info("Page has been processed successfully: {}", page);
             return adUrls;
         }
         LOGGER.error("Search page is empty.. Smth bad happened, returning empty collection from page: {}", page);

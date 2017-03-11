@@ -1,9 +1,12 @@
 package com.idealista.scraper.webdriver.proxy;
 
+import com.idealista.scraper.ui.ClickActions;
 import com.idealista.scraper.ui.SearchActions;
+import com.idealista.scraper.util.FileUtils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class ProxyFetcher
 {
     private static final String US_PROXY_ORG = "https://www.us-proxy.org/";
+    private static final String FREE_PROXY_CZ = "http://free-proxy.cz/en/proxylist/main/date/1";
     private static final Logger LOGGER = LogManager.getLogger(ProxyFetcher.class);
 
     private WebDriver driver;
@@ -27,7 +31,50 @@ public class ProxyFetcher
     @Autowired
     private SearchActions searchActions;
 
+    @Autowired
+    private ClickActions clickActions;
+
     public Set<String> fetchProxies()
+    {
+        Set<String> proxies = new HashSet<>();
+        proxies.addAll(fetchProxiesFromUsProxyOrg());
+        proxies.addAll(fetchProxiesFromFreeProxyCz());
+        LOGGER.info("Printing all fetched proxies ... ");
+        proxies.forEach(LOGGER::info);
+        driver.quit();
+        return proxies;
+    }
+
+    private Set<String> fetchProxiesFromFreeProxyCz()
+    {
+        LOGGER.info("Fetching new proxies from {}", FREE_PROXY_CZ);
+        driver.get(FREE_PROXY_CZ);
+        Set<String> proxies = new HashSet<>();
+        for (int i = 0; i < 9; i++)
+        {
+            proxies.addAll(getProxiesFromNextFreeProxyCzPage(driver));
+        }
+        LOGGER.info("Fetched <{}> proxies", proxies.size());
+        return proxies;
+    }
+
+    private Set<String> getProxiesFromNextFreeProxyCzPage(WebDriver driver)
+    {
+        Set<String> proxies = new HashSet<>();
+        List<WebElement> exportButton = searchActions.findElementsById(Collections.emptyList(), "clickexport");
+        clickActions.click(exportButton);
+        WebElement proxiesBlock = searchActions.waitForElement(By.id("zkzk"), 5);
+        if (proxiesBlock != null)
+        {
+            proxies.addAll(FileUtils.readStringToLines(proxiesBlock.getText()));
+        }
+        clickActions.click(exportButton);
+        List<WebElement> nextButton = searchActions.findElementsByXpath("//a[contains(.,'Next')]");
+        clickActions.click(nextButton);
+        return proxies;
+    }
+
+    private Set<String> fetchProxiesFromUsProxyOrg()
     {
         LOGGER.info("Fetching new proxies from {}", US_PROXY_ORG);
         driver.get(US_PROXY_ORG);
@@ -46,13 +93,11 @@ public class ProxyFetcher
                     {
                         List<WebElement> rows = searchActions.findElementsByXpath(table, "//tbody//tr");
                         proxies = rows.stream().map(this::extractProxyFromRow).collect(Collectors.toSet());
-                        LOGGER.info("Fetched <{}> proxies, printing them...", proxies.size());
-                        proxies.forEach(LOGGER::info);
+                        LOGGER.info("Fetched <{}> proxies", proxies.size());
                     }
                 }
             }
         }
-        driver.quit();
         return proxies;
     }
 
@@ -70,5 +115,6 @@ public class ProxyFetcher
     {
         this.driver = driver;
         searchActions.setWebDriver(driver);
+        clickActions.setWebDriver(driver);
     }
 }

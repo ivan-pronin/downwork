@@ -100,6 +100,10 @@
 		<Logger name="com.idealista.scraper.ui" level="debug" additivity="false">
 			<appender-ref ref="debugLog" />			
 		</Logger>	
+		<Logger name="com.idealista.scraper.ui" level="info" additivity="false">
+			<appender-ref ref="realtyLog" />
+			<AppenderRef ref="Console" />			
+		</Logger>	
 
 	</Loggers>
 </Configuration>

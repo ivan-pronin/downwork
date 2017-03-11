@@ -52,7 +52,7 @@ public class ClickActions
         LOGGER.debug("Element was clicked: {}", element);
     }
 
-    public void setDriver(WebDriver driver)
+    public void setWebDriver(WebDriver driver)
     {
         this.driver = driver;
     }

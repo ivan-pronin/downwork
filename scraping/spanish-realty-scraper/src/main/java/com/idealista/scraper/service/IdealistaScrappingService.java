@@ -1,5 +1,6 @@
 package com.idealista.scraper.service;
 
+import com.idealista.scraper.RealtyApp;
 import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.model.Category;
@@ -12,7 +13,6 @@ import com.idealista.scraper.service.model.FilterAttributes;
 import com.idealista.scraper.service.model.IFilterAttributesFactory;
 import com.idealista.scraper.ui.page.StartPage;
 import com.idealista.scraper.webdriver.INavigateActions;
-import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
@@ -40,7 +40,21 @@ import java.util.stream.Collectors;
 public class IdealistaScrappingService
 {
     private static final Logger LOGGER = LogManager.getLogger(IdealistaScrappingService.class);
-    private static final String IDEALISTA_COM_EN = "https://www.idealista.com/en/";
+
+    @Value("${operation}")
+    private String userOperation;
+
+    @Value("${typology}")
+    private String userTypology;
+
+    @Value("${location}")
+    private String userLocation;
+
+    @Value("${province}")
+    private String userProvince;
+
+    @Value("${publicationDateFilter}")
+    private String publicationDateFilter;
 
     @Autowired
     private WebDriverProvider webDriverProvider;
@@ -53,7 +67,7 @@ public class IdealistaScrappingService
 
     @Autowired
     private CategoriesChooser chooser;
-    
+
     @Autowired
     private INavigateActions navigateActions;
 
@@ -62,9 +76,12 @@ public class IdealistaScrappingService
 
     @Autowired
     private IFilterAttributesFactory filterAttributesFactory;
-    
+
     @Autowired
     private StartPage startPage;
+    
+    @Autowired
+    private RealtyApp realtyApp;
 
     private BlockingQueue<Future<Advertisment>> advertismentExtractorResults;
     private BlockingQueue<URL> advertismentUrlsInProgress = new LinkedBlockingQueue<>();
@@ -72,11 +89,10 @@ public class IdealistaScrappingService
     @Value(value = "${maxAdsToProcess}")
     private int maxIterations;
 
-    public void scrapSite(String userOperation, String userTypology, String userLocation, String publicationDateFilter)
-            throws InterruptedException, MalformedURLException
+    public void scrapSite() throws InterruptedException, MalformedURLException
     {
         WebDriver driver = webDriverProvider.get();
-        navigateActions.get(new URL(IDEALISTA_COM_EN));
+        navigateActions.get(new URL(realtyApp.getMainLocalizedPageUrl()));
 
         startPage.setWebDriver(driver);
         SearchAttributes searchAttributes = startPage.getSearchAttributes(userOperation, userTypology, userLocation);
@@ -86,7 +102,7 @@ public class IdealistaScrappingService
         LOGGER.info(searchAttributes);
         LOGGER.info(" === === === === === === ===  === === === === === ");
         LOGGER.info("");
-        Set<Category> categoriesBaseUrls = getCategoriesUrls(searchAttributes, filterAttributes);
+        Set<Category> categoriesBaseUrls = getCategoriesUrls(searchAttributes, filterAttributes, userProvince);
 
         ((AdUrlsFinder) adUrlsFinder).setCategoriesBaseUrls(categoriesBaseUrls);
         Set<Category> adUrlsToProcess = adUrlsFinder.findNewAdUrlsAmount(maxIterations);
@@ -104,8 +120,8 @@ public class IdealistaScrappingService
         }
     }
 
-    private Set<Category> getCategoriesUrls(SearchAttributes searchAttributes, FilterAttributes filterAttributes)
-            throws InterruptedException
+    private Set<Category> getCategoriesUrls(SearchAttributes searchAttributes, FilterAttributes filterAttributes,
+            String province) throws InterruptedException
     {
         Set<String> userOperations = searchAttributes.getOperations();
         Set<String> userTypologies = searchAttributes.getTypologies();
@@ -131,10 +147,9 @@ public class IdealistaScrappingService
                         {
                             startPage.selectLocation(location);
                             results.add(chooser.new CategoryBySearchAndFilterAttributes(operation, typology, location,
-                                    filterAttributes));
+                                    filterAttributes, province));
                         }
                     }
-
                 }
             }
         }

@@ -2,28 +2,31 @@ package com.idealista.scraper.model;
 
 public enum RealtyType
 {
-    NEW_CONSTRUCTION("New construction"),
-    HOME("Homes"),
-    HOLIDAY("Holiday"),
-    ROOM("Rooms"),
-    OFFICE("Offices"),
-    COMMERCIAL_PROPERTY("Commercial property"),
-    GARAGE("Garages"),
-    STORAGE_ROOM("Storage rooms"),
-    BUILDING("Buildings"),
-    LAND("Land");
+    NEW_CONSTRUCTION("New construction", "Obra nueva"),
+    HOME("Homes", "Viviendas"),
+    HOLIDAY("Holiday", "Vacacional"),
+    ROOM("Rooms", "Habitación"),
+    OFFICE("Offices", "Oficinas"),
+    COMMERCIAL_PROPERTY("Commercial property", "Locales o naves"),
+    GARAGE("Garages", "Garajes"),
+    STORAGE_ROOM("Storage rooms", "Trasteros"),
+    BUILDING("Buildings", "Edificios"),
+    LAND("Land", "Terrenos");
     
-    private String alias;
+    private String aliasEn;
+    private String aliasEs;
     
-    private RealtyType(String alias)
+    private RealtyType(String aliasEn, String aliasEs)
     {
-        this.alias = alias;
+        this.aliasEn = aliasEn;
+        this.aliasEs = aliasEs;
     }
+
     public static RealtyType fromString(String text)
     {
         for (RealtyType type : RealtyType.values())
         {
-            if (text.equalsIgnoreCase(type.alias))
+            if (text.equalsIgnoreCase(type.aliasEn) || text.equalsIgnoreCase(type.aliasEs))
             {
                 return type;
             }

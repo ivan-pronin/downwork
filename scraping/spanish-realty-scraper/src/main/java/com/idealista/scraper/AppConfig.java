@@ -4,7 +4,6 @@ import com.idealista.scraper.data.xls.XlsExporter;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.webdriver.proxy.ProxyProvider;
 
-import org.springframework.aop.framework.ProxyProcessorSupport;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

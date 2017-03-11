@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class AdUrlsFinder implements IAdUrlsFinder
 {
     private static final Logger LOGGER = LogManager.getLogger(AdUrlsFinder.class);
+    private static int totalNewUrlsCounter;
 
     private Queue<Category> searchPagesToProcess = new ConcurrentLinkedQueue<>();
     private Set<Category> categoriesBaseUrls;
@@ -122,7 +123,12 @@ public class AdUrlsFinder implements IAdUrlsFinder
                 LOGGER.error("Error while retrieving ad url from category task: {}", e2);
             }
         });
-        return foundUrls.stream().filter(e -> !processedUrls.contains(e.getUrl())).collect(Collectors.toSet());
+        Set<Category> newUniqueUrls = foundUrls.stream().filter(e -> !processedUrls.contains(e.getUrl()))
+                .collect(Collectors.toSet());
+        int newUrlsCount = newUniqueUrls.size();
+        totalNewUrlsCounter += newUrlsCount;
+        LOGGER.info("Added new advertisment urls: {}, total new ads count: {}", newUrlsCount, totalNewUrlsCounter);
+        return newUniqueUrls;
     }
 
     private static <T> Set<T> newConcurrentHashSet()
