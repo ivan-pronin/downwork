@@ -2,7 +2,6 @@ package com.idealista.scraper.scraping;
 
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.webdriver.INavigateActions;
-import com.idealista.scraper.webdriver.NavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
 

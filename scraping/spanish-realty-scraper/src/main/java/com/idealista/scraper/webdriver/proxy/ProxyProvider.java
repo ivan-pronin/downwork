@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 @Component
@@ -131,6 +132,7 @@ public class ProxyProvider implements IProxyProvider
             return false;
         }
         WebDriver driver = getDriver(proxy);
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
         try
         {
             Instant start = Instant.now();

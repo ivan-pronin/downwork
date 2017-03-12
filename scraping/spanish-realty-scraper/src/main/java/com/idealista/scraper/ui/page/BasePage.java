@@ -18,7 +18,9 @@ public class BasePage
     
     public void setWebDriver(WebDriver driver)
     {
+        searchActions = new SearchActions();
+        clickActions = new ClickActions();
         searchActions.setWebDriver(driver);
-        clickActions.setDriver(driver);
+        clickActions.setWebDriver(driver);
     }
 }

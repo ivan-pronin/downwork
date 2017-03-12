@@ -30,6 +30,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
+    private static final String MAIN_PAGE_URL = "https://www.idealista.com/";
     private static final String APP_VERSION = "rc-1.0.1";
     
     private Instant startTime;
@@ -37,17 +38,8 @@ public class RealtyApp
     @Value("${enableWebdriverLogging}")
     private boolean enableWebdriverLogging;
     
-    @Value("${operation}")
-    private String operation;
-    
-    @Value("${typology}")
-    private String typology;
-    
-    @Value("${location}")
-    private String location;
-    
-    @Value("${publicationDateFilter}")
-    private String publicationDateFilter;
+    @Value("${language}")
+    private String language;
     
     @Autowired
     private TasksListener tasksListener;
@@ -81,7 +73,7 @@ public class RealtyApp
     {
         BlockingQueue<Future<Advertisment>> advertismentExtractorTasks = new LinkedBlockingQueue<>();
         idealistaService.setAdvertismentExtractorResults(advertismentExtractorTasks);
-        idealistaService.scrapSite(operation, typology, location, publicationDateFilter);
+        idealistaService.scrapSite();
         
         tasksListener.setAdvertismentExtractorResults(advertismentExtractorTasks);
         tasksListener.setAdUrlsInProgress(idealistaService.getAdvertismentUrlsInProgress());
@@ -111,6 +103,16 @@ public class RealtyApp
         printExecutionTime(startTime);
     }
 
+    public String getMainLocalizedPageUrl()
+    {
+        String localizationSuffix = "";
+        if (language.equalsIgnoreCase("en"))
+        {
+            localizationSuffix = "en/";
+        }
+        return MAIN_PAGE_URL + localizationSuffix;
+    }
+    
     private static void printEnvironmentInfo()
     {
         LOGGER.info("");
@@ -148,5 +150,10 @@ public class RealtyApp
     {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd_HH-mm-ss_SSS");
         return sdf.format(new Timestamp(new java.util.Date().getTime()));
+    }
+
+    public String getLanguage()
+    {
+        return language;
     }
 }

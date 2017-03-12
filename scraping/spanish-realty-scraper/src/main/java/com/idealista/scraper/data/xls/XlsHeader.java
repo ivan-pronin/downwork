@@ -5,6 +5,7 @@ public enum XlsHeader
     TITLE,
     TYPE,
     SUBTYPE,
+    PROVINCE,
     DATE_OF_LISTING,
     NUMBER_IF_VIEWS,
     ADDRESS,

@@ -9,6 +9,7 @@ public class Advertisment
     // ok Title +++               
     // ok Type +++
     // ok Subtype - equals to <operation>
+    // new Province
     // ok Date of listing +++111
     //    Number of views - requires email registration, will add
     // ok Address +++
@@ -35,6 +36,7 @@ public class Advertisment
     private String title;
     private String type;
     private RealtyType subType;
+    private String province;
     private String dateOfListing;
     private int numberOfViews;
     private String address;
@@ -294,5 +296,15 @@ public class Advertisment
     public void setTags(List<String> tags)
     {
         this.tags = tags;
+    }
+
+    public String getProvince()
+    {
+        return province;
+    }
+
+    public void setProvince(String province)
+    {
+        this.province = province;
     }
 }

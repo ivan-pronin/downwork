@@ -52,7 +52,9 @@ public final class Paginator
     {
         try
         {
-            return new Category(new URL(basePagePath + "pagina-" + pageNumber + ".htm"), baseCategory);
+            Category category = new Category(new URL(basePagePath + "pagina-" + pageNumber + ".htm"), baseCategory);
+            category.setProvince(baseCategory.getProvince());
+            return category;
         }
         catch (MalformedURLException e)
         {
