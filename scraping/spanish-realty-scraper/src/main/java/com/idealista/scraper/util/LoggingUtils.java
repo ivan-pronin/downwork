@@ -4,7 +4,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.logging.Level;
 
-public class LoggingUtils
+public final class LoggingUtils
 {
     public static void turnOffHtmlUnitWarnings()
     {
