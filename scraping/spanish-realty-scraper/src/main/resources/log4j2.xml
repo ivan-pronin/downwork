@@ -27,7 +27,6 @@
 			<Policies>
 				<SizeBasedTriggeringPolicy size="32 MB" />
 				<OnStartupTriggeringPolicy />
-				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>
 
@@ -38,7 +37,6 @@
 			<Policies>
 				<SizeBasedTriggeringPolicy size="32 MB" />
 				<OnStartupTriggeringPolicy />
-				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>
 
@@ -49,7 +47,6 @@
 			<Policies>
 				<SizeBasedTriggeringPolicy size="32 MB" />
 				<OnStartupTriggeringPolicy />
-				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>
 
@@ -60,7 +57,6 @@
 			<Policies>
 				<SizeBasedTriggeringPolicy size="32 MB" />
 				<OnStartupTriggeringPolicy />
-				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>
 		
