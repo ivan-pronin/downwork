@@ -1,9 +1,20 @@
 package com.idealista.scraper;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Properties;
+import java.util.Timer;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.executor.listener.TasksListener;
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.service.IdealistaScrappingService;
+import com.idealista.scraper.util.DateTimeUtil;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,53 +25,42 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Properties;
-import java.util.Timer;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-
 @Component
 public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
     private static final String MAIN_PAGE_URL = "https://www.idealista.com/";
-    private static final String APP_VERSION = "rc-1.0.1";
-    
+    private static final String APP_VERSION = "rc-1.0.2";
+
     private Instant startTime;
-    
+
     @Value("${enableWebdriverLogging}")
     private boolean enableWebdriverLogging;
-    
+
     @Value("${language}")
     private String language;
-    
+
     @Autowired
     private TasksListener tasksListener;
-    
+
     @Autowired
     private ExecutorServiceProvider executorService;
-    
+
     @Autowired
     private IdealistaScrappingService idealistaService;
-    
+
     @Autowired
     private WebDriverProvider webDriverProvider;
-    
+
     public void initSystemProperties()
     {
         if (enableWebdriverLogging)
         {
-            System.setProperty("webdriver.chrome.logfile", "./logs/chromedriver_" + getTimeStamp() + ".log");
+            System.setProperty("webdriver.chrome.logfile",
+                    "./logs/chromedriver_" + DateTimeUtil.getTimeStamp() + ".log");
         }
     }
-    
+
     public void printInfo() throws IOException
     {
         LOGGER.info("Program started");
@@ -74,7 +74,7 @@ public class RealtyApp
         BlockingQueue<Future<Advertisment>> advertismentExtractorTasks = new LinkedBlockingQueue<>();
         idealistaService.setAdvertismentExtractorResults(advertismentExtractorTasks);
         idealistaService.scrapSite();
-        
+
         tasksListener.setAdvertismentExtractorResults(advertismentExtractorTasks);
         tasksListener.setAdUrlsInProgress(idealistaService.getAdvertismentUrlsInProgress());
 
@@ -112,7 +112,7 @@ public class RealtyApp
         }
         return MAIN_PAGE_URL + localizationSuffix;
     }
-    
+
     private static void printEnvironmentInfo()
     {
         LOGGER.info("");
@@ -144,12 +144,6 @@ public class RealtyApp
     private static void logEntry(Object k, Object v)
     {
         LOGGER.info("{} = {}", k, v);
-    }
-
-    private String getTimeStamp()
-    {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd_HH-mm-ss_SSS");
-        return sdf.format(new Timestamp(new java.util.Date().getTime()));
     }
 
     public String getLanguage()

@@ -10,95 +10,112 @@
 		<Console name="Console">
 			<PatternLayout pattern="${mainPatternLayout}" />
 		</Console>
-		<RollingFile name="realtyLog" fileName="logs/realty_app.log"
+		<RollingFile name="realtyAppender" fileName="logs/realty_app.log"
 			filePattern="logs/$${date:yyyy-MM-dd}/realty_app_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="32 MB" />
 				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>
 
-		<RollingFile name="searchPageProcessorLog" fileName="logs/searchProcessor.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/searchProcessor_%d{yyyy-MM-dd}-%i.log"
+		<RollingFile name="dataAppender" fileName="logs/debug/data.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/data_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="32 MB" />
 				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>
 
-		<RollingFile name="adsExtractorLog" fileName="logs/adsExtractor.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/adsExtractor_%d{yyyy-MM-dd}-%i.log"
+		<RollingFile name="executorAppender" fileName="logs/debug/executor.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/executor_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="32 MB" />
 				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>
 
-		<RollingFile name="xlsReporterLog" fileName="logs/xlsReporter.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/xlsReporter_%d{yyyy-MM-dd}-%i.log"
+		<RollingFile name="scrapingAppender" fileName="logs/debug/scraping.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/scraping_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="32 MB" />
 				<OnStartupTriggeringPolicy />
-			</Policies>
-		</RollingFile>
-
-		<RollingFile name="errorLog" fileName="logs/error.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/error_%d{yyyy-MM-dd}-%i.log"
-			append="true">
-			<PatternLayout pattern="${mainPatternLayout}" />
-			<Policies>
-				<SizeBasedTriggeringPolicy size="32 MB" />
-				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>
 		
-		<RollingFile name="debugLog" fileName="logs/debug.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/debug_%d{yyyy-MM-dd}-%i.log"
+		<RollingFile name="uiAppender" fileName="logs/debug/ui.log" 
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/ui_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="32 MB" />
 				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>		
+
+		<RollingFile name="errorAppender" fileName="logs/debug/error.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/error_%d{yyyy-MM-dd}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+		
+		<RollingFile name="debugAppender" fileName="logs/debug/debug.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/debug_%d{yyyy-MM-dd}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
 			</Policies>
 		</RollingFile>		
 
 	</Appenders>
 	<Loggers>
 	
-		<Root level="INFO">
-			<AppenderRef ref="Console" />
-			<AppenderRef ref="realtyLog" />
+		<Root level="DEBUG">
+			<AppenderRef ref="Console" level="info"/>
+			<AppenderRef ref="realtyAppender" level="info" />
+ 			<AppenderRef ref="debugAppender" level="debug" />
+			<AppenderRef ref="errorAppender" level="error" />
 		</Root>
-		<Logger name="com.idealista.scraper">
-			<appender-ref ref="errorLog" level="error"/>
+
+		<Logger name="com.idealista.scraper.data" level="info">
+			<appender-ref ref="dataAppender" level="info"/>
+		</Logger>
+		<Logger name="com.idealista.scraper.executor" level="info">
+			<appender-ref ref="executorAppender" level="info"/>
+		</Logger>
+		<Logger name="com.idealista.scraper.scraping" level="info">
+			<appender-ref ref="scrapingAppender" level="info"/>
+		</Logger>
+		<Logger name="com.idealista.scraper.ui" level="debug">
+			<appender-ref ref="uiAppender" level="debug"/>			
+		</Logger>
+  
+		<Logger name="com.idealista.scraper" level="debug">
+			<appender-ref ref="debugAppender" level="debug"/>			
 		</Logger>	
-		<Logger name="com.idealista.scraper.page.SearchPageProcessor" level="info">
-			<appender-ref ref="searchPageProcessorLog" level="info"/>
-		</Logger>
-		<Logger name="com.idealista.scraper.page.AdvertismentExtractor" level="info">
-			<appender-ref ref="adsExtractorLog" level="info"/>
-		</Logger>
-		<Logger name="com.idealista.scraper.xls.XlsExporter" level="info" >
-			<appender-ref ref="xlsReporterLog" level="info"/>
-		</Logger>
-		<Logger name="com.idealista.scraper.webdriver.NavigateActions" level="debug" additivity="false">
-			<appender-ref ref="debugLog" />
-		</Logger>
-		<Logger name="com.idealista.scraper.ui" level="debug" additivity="false">
-			<appender-ref ref="debugLog" />			
-		</Logger>	
-		<Logger name="com.idealista.scraper.ui" level="info" additivity="false">
-			<appender-ref ref="realtyLog" />
-			<AppenderRef ref="Console" />			
-		</Logger>	
+		<Logger name="com.idealista.scraper" >
+			<appender-ref ref="errorAppender" level="error"/>
+		</Logger>			
 
 	</Loggers>
 </Configuration>

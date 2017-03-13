@@ -4,12 +4,30 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import com.idealista.scraper.data.DataSource;
+import com.idealista.scraper.scraping.Paginator;
+import com.idealista.scraper.ui.SearchActions;
+
 public class LoggerTests
 {
+    
+    private static final Logger LOGGER = LogManager.getLogger(LoggerTests.class);
+
+    @Test
+    public void testName() throws Exception
+    {
+        LOGGER.info("info 1");
+        LOGGER.warn("warn 1");
+        LOGGER.error("error 222");
+        LOGGER.debug("debug 222");
+    }
+    
     // @Test
     public void testJUL() throws Exception
     {
@@ -54,7 +72,7 @@ public class LoggerTests
         LOGGER.info("Total time taken: {} hrs {} mins {} sec", d.toHours(), d.toMinutes() % 60, d.getSeconds() % 60);
     }
     
-    @Test
+    //@Test
     public void testPrintEnvironmentInfo() throws Exception
     {
         System.getenv().forEach( (k,v) -> System.out.println(k + " = " + v));
