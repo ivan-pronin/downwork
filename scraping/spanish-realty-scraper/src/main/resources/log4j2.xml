@@ -11,7 +11,7 @@
 			<PatternLayout pattern="${mainPatternLayout}" />
 		</Console>
 		<RollingFile name="realtyLog" fileName="logs/realty_app.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/realty_app_%d{yyyyMMdd-HH}-%i.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/realty_app_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
@@ -21,7 +21,7 @@
 		</RollingFile>
 
 		<RollingFile name="searchPageProcessorLog" fileName="logs/searchProcessor.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/searchProcessor_%d{yyyyMMdd-HH}-%i.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/searchProcessor_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
@@ -31,7 +31,7 @@
 		</RollingFile>
 
 		<RollingFile name="adsExtractorLog" fileName="logs/adsExtractor.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/adsExtractor_%d{yyyyMMdd-HH}-%i.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/adsExtractor_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
@@ -41,7 +41,7 @@
 		</RollingFile>
 
 		<RollingFile name="xlsReporterLog" fileName="logs/xlsReporter.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/xlsReporter_%d{yyyyMMdd-HH}-%i.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/xlsReporter_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
@@ -51,7 +51,7 @@
 		</RollingFile>
 
 		<RollingFile name="errorLog" fileName="logs/error.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/error_%d{yyyyMMdd-HH}-%i.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/error_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
@@ -61,7 +61,7 @@
 		</RollingFile>
 		
 		<RollingFile name="debugLog" fileName="logs/debug.log"
-			filePattern="logs/$${date:yyyy-MM-dd}/debug_%d{yyyyMMdd-HH}-%i.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug_%d{yyyy-MM-dd}-%i.log"
 			append="true">
 			<PatternLayout pattern="${mainPatternLayout}" />
 			<Policies>
