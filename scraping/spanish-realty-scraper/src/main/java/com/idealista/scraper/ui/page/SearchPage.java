@@ -27,6 +27,7 @@ public class SearchPage extends BasePage
                 String.format(xpath, filterAttributes.getPublicationDateFilter().getRelativeUrl()));
         clickActions.click(publicationDateFilter);
         searchActions.waitForElement(By.xpath("//div[@class='listing-loading-content']"), 5);
+        System.out.println("");
         searchActions.waitForElementDisappear(By.xpath("//div[@class='listing-loading-content']"), 5);
         LOGGER.info("Filter has been applied");
     }
