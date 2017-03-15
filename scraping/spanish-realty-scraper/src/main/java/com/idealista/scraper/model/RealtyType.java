@@ -1,5 +1,7 @@
 package com.idealista.scraper.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 public enum RealtyType
 {
     NEW_CONSTRUCTION("New construction", "Obra nueva"),
@@ -24,6 +26,10 @@ public enum RealtyType
 
     public static RealtyType fromString(String text)
     {
+        if (StringUtils.isEmpty(text))
+        {
+            return null;
+        }
         for (RealtyType type : RealtyType.values())
         {
             if (text.equalsIgnoreCase(type.aliasEn) || text.equalsIgnoreCase(type.aliasEs))

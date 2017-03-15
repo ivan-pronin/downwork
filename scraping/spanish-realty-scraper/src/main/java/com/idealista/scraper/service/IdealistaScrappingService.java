@@ -5,7 +5,7 @@ import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.model.Advertisment;
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.model.SearchAttributes;
-import com.idealista.scraper.scraping.IAdvertismentExtractorFactory;
+import com.idealista.scraper.scraping.AdvertismentExtractor;
 import com.idealista.scraper.scraping.search.AdUrlsFinder;
 import com.idealista.scraper.scraping.search.CategoriesChooser;
 import com.idealista.scraper.scraping.search.IAdUrlsFinder;
@@ -72,14 +72,11 @@ public class IdealistaScrappingService
     private INavigateActions navigateActions;
 
     @Autowired
-    private IAdvertismentExtractorFactory advertismentExtractorFactory;
-
-    @Autowired
     private IFilterAttributesFactory filterAttributesFactory;
 
     @Autowired
     private StartPage startPage;
-    
+
     @Autowired
     private RealtyApp realtyApp;
 
@@ -113,8 +110,11 @@ public class IdealistaScrappingService
             if (iterator.hasNext())
             {
                 Category page = iterator.next();
-                advertismentExtractorResults
-                        .put(executor.getExecutor().submit(advertismentExtractorFactory.create(page)));
+                AdvertismentExtractor advertismentExtractor = new AdvertismentExtractor();
+                advertismentExtractor.setCategory(page);
+                advertismentExtractor.setNavigateActions(navigateActions);
+                advertismentExtractor.setLanguage(realtyApp.getLanguage());
+                advertismentExtractorResults.put(executor.getExecutor().submit(advertismentExtractor));
                 advertismentUrlsInProgress.put(page.getUrl());
             }
         }
@@ -202,10 +202,5 @@ public class IdealistaScrappingService
     public void setAdvertismentExtractorResults(BlockingQueue<Future<Advertisment>> advertismentExtractorResults)
     {
         this.advertismentExtractorResults = advertismentExtractorResults;
-    }
-
-    public void setAdvertismentExtractorFactory(IAdvertismentExtractorFactory advertismentExtractorFactory)
-    {
-        this.advertismentExtractorFactory = advertismentExtractorFactory;
     }
 }
