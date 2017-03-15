@@ -19,15 +19,7 @@ public final class AdvertismentExtractor implements Callable<Advertisment>
 
     private INavigateActions navigateActions;
     private Category category;
-    private AdvertismentPage page;
-
-    public AdvertismentExtractor(Category category,
-            INavigateActions navigateActions, AdvertismentPage page)
-    {
-        this.category = category;
-        this.navigateActions = navigateActions;
-        this.page = page;
-    }
+    private String language;
 
     @Override
     public Advertisment call()
@@ -35,7 +27,9 @@ public final class AdvertismentExtractor implements Callable<Advertisment>
         URL url = category.getUrl();
         LOGGER.info("Scrapping the page: {}", url);
         WebDriver driver = navigateActions.get(url);
+        AdvertismentPage page = new AdvertismentPage();
         page.setWebDriver(driver);
+        page.setLanguage(language);
         Advertisment ad = new Advertisment(url, page.getTitle(), category.getType());
         ad.setSubType(RealtyType.fromString(category.getSubType()));
         ad.setProvince(category.getProvince());
@@ -59,5 +53,20 @@ public final class AdvertismentExtractor implements Callable<Advertisment>
         ad.setHasImages(page.hasImages());
         ad.setTags(page.getTags());
         return ad;
+    }
+
+    public void setNavigateActions(INavigateActions navigateActions)
+    {
+        this.navigateActions = navigateActions;
+    }
+
+    public void setCategory(Category category)
+    {
+        this.category = category;
+    }
+
+    public void setLanguage(String language)
+    {
+        this.language = language;
     }
 }

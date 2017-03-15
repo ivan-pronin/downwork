@@ -11,6 +11,15 @@ public class Category
     private String subType;
     private String province;
 
+    /**
+     * Default constructor is used when we don't know, what Categories are used: this may
+     * happen, when URLS to be processed are taken from file
+     */
+    public Category()
+    {
+        // nothing to do
+    }
+
     public Category(URL url, Category templateCategory)
     {
         this.url = url;

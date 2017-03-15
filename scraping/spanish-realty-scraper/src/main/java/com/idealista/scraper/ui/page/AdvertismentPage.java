@@ -1,25 +1,19 @@
 package com.idealista.scraper.ui.page;
 
-import com.idealista.scraper.RealtyApp;
 import com.idealista.scraper.util.RegexUtils;
 
 import org.openqa.selenium.WebElement;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Component
 public class AdvertismentPage extends BasePage
 {
     private static final String M_2 = "m²";
     private static final String EN = "en";
     private static final String ES = "es";
-
-    @Autowired
-    private RealtyApp realtyApp;
+    private String language;
 
     public String getDescription()
     {
@@ -259,7 +253,7 @@ public class AdvertismentPage extends BasePage
 
     private String getLanguage()
     {
-        return realtyApp.getLanguage();
+        return language;
     }
 
     public String getAddress()
@@ -311,5 +305,10 @@ public class AdvertismentPage extends BasePage
     public String getAgentPhone()
     {
         return searchActions.getElementText(searchActions.findElementsByXpath("//div[@class='phone first-phone']"));
+    }
+
+    public void setLanguage(String language)
+    {
+        this.language = language;
     }
 }

@@ -27,7 +27,7 @@ public class XlsExporter
     private Workbook wb;
     private Sheet sheet;
     private String fileName;
-    
+
     public XlsExporter(@Value(value = "${xlsFileName}") String fileName)
     {
         this.fileName = fileName;
@@ -99,7 +99,7 @@ public class XlsExporter
         int columnIndex = 0;
         row.createCell(columnIndex).setCellValue(ad.getTitle());
         row.createCell(++columnIndex).setCellValue(ad.getType());
-        row.createCell(++columnIndex).setCellValue(ad.getSubType().name());
+        row.createCell(++columnIndex).setCellValue(ad.getSubType() == null ? "" : ad.getSubType().name());
         row.createCell(++columnIndex).setCellValue(ad.getProvince());
         row.createCell(++columnIndex).setCellValue(ad.getDateOfListing());
         row.createCell(++columnIndex).setCellValue("todo:number_of_views");

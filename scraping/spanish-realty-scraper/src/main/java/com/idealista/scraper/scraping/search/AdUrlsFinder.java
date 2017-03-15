@@ -63,7 +63,8 @@ public class AdUrlsFinder implements IAdUrlsFinder
         processedUrls = dataSource.getUrlsFromFile(DataType.PROCESSED_ADS);
 
         int diff = newUrls.size() - neededAmount;
-        Category templateCategory = categoriesBaseUrls.iterator().next();
+        Category templateCategory = categoriesBaseUrls.isEmpty() ? new Category()
+                : categoriesBaseUrls.iterator().next();
         if (diff >= 0)
         {
             Iterator<URL> iterator = newUrls.iterator();
