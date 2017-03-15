@@ -30,7 +30,7 @@ public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
     private static final String MAIN_PAGE_URL = "https://www.idealista.com/";
-    private static final String APP_VERSION = "rc-1.0.2";
+    private static final String APP_VERSION = "rc-1.0.3b";
 
     private Instant startTime;
 
