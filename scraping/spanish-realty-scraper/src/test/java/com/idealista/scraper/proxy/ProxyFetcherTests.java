@@ -41,7 +41,7 @@ public class ProxyFetcherTests
         searchActions.setWebDriver(driver);
         clickActions.setWebDriver(driver);
         Set<String> proxies = new HashSet<>();
-        List<WebElement> exportButton = searchActions.findElementsById(Collections.emptyList(), "clickexport");
+        List<WebElement> exportButton = searchActions.findElementsById("clickexport");
         clickActions.click(exportButton);
         
         WebElement proxiesBlock = searchActions.waitForElement(By.id("zkzk"), 5);

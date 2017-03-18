@@ -1,6 +1,6 @@
 package com.idealista.scraper.ui.page;
 
-import com.idealista.scraper.service.model.FilterAttributes;
+import com.idealista.scraper.model.filter.FilterAttributes;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -10,7 +10,6 @@ import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -21,7 +20,7 @@ public class SearchPage extends BasePage
     public void applyPublicationDateFilter(FilterAttributes filterAttributes)
     {
         LOGGER.info("Applying search filter: {}", filterAttributes);
-        List<WebElement> filterForm = searchActions.findElementsById(Collections.emptyList(), "filter-form");
+        List<WebElement> filterForm = searchActions.findElementsById("filter-form");
         String xpath = "//label[@class='input-radio']//a[contains(@href,'%s')]";
         List<WebElement> publicationDateFilter = searchActions.findElementsByXpath(filterForm,
                 String.format(xpath, filterAttributes.getPublicationDateFilter().getRelativeUrl()));

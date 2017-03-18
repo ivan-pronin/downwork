@@ -1,9 +1,11 @@
 package com.idealista.scraper.search;
 
 import com.idealista.scraper.model.Category;
+import com.idealista.scraper.model.parser.ISearchAttributesParser;
 import com.idealista.scraper.page.StartPageTests;
-import com.idealista.scraper.scraping.search.CategoriesChooser;
-import com.idealista.scraper.ui.page.StartPage;
+import com.idealista.scraper.scraping.category.ICategoriesChooser;
+import com.idealista.scraper.scraping.category.IdealistaCategoriesChooser;
+import com.idealista.scraper.ui.page.IdealistaStartPage;
 import com.idealista.scraper.util.PropertiesLoader;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
@@ -33,7 +35,7 @@ public class CategoriesChooserTests
     {
         WebDriverProvider webDriverProvider = new WebDriverProvider();
         webDriverProvider.get().navigate().to(IDEALISTA_COM_EN);
-        CategoriesChooser chooser = new CategoriesChooser(webDriverProvider);
+        IdealistaCategoriesChooser chooser = new IdealistaCategoriesChooser(webDriverProvider);
         chooser.getAllCategoriesUrls();
     }
 
@@ -42,7 +44,7 @@ public class CategoriesChooserTests
     {
         WebDriverProvider webDriverProvider = new WebDriverProvider();
         webDriverProvider.get().navigate().to(IDEALISTA_COM_EN);
-        CategoriesChooser chooser = new CategoriesChooser(webDriverProvider);
+        IdealistaCategoriesChooser chooser = new IdealistaCategoriesChooser(webDriverProvider);
         Set<String> result = chooser.getCategoriesUrlsByOperationAndTypology("Share", "Homes");
         LOGGER.info("Total cats for Share + Homes: {} LIST: {}", result.size(), result);
     }
@@ -52,7 +54,7 @@ public class CategoriesChooserTests
     {
         WebDriverProvider webDriverProvider = new WebDriverProvider();
         webDriverProvider.get().navigate().to(IDEALISTA_COM_EN);
-        CategoriesChooser chooser = new CategoriesChooser(webDriverProvider);
+        IdealistaCategoriesChooser chooser = new IdealistaCategoriesChooser(webDriverProvider);
         Set<String> result = chooser.getCategoryUrlByOperationTypologyAndLocation("Share", "Homes", "Fuerteventura");
         LOGGER.info("REsult: {}", result);
     }
@@ -62,8 +64,8 @@ public class CategoriesChooserTests
     {
         WebDriverProvider webDriverProvider = new WebDriverProvider();
         webDriverProvider.get().navigate().to(IDEALISTA_COM_EN);
-        CategoriesChooser chooser = new CategoriesChooser(webDriverProvider);
-        StartPage startPage = new StartPage(webDriverProvider.get());
+        ICategoriesChooser chooser = new IdealistaCategoriesChooser(webDriverProvider);
+        IdealistaStartPage startPage = new IdealistaStartPage(webDriverProvider.get());
         startPage.selectOperation("Share");
         startPage.selectTypology("Homes");
         Set<String> locations = startPage.getAvailableLocations();
@@ -105,8 +107,8 @@ public class CategoriesChooserTests
 
         WebDriver driver = new ChromeDriver();
         driver.navigate().to(IDEALISTA_COM_EN);
-        StartPage page = new StartPage(driver);
-        System.out.println(page.getSearchAttributes(operation, typology, location));
+        ISearchAttributesParser page = new IdealistaStartPage(driver);
+        System.out.println(page.parseSearchAttributes(operation));
     }
     @Test
     public void testParsingProps() throws Exception

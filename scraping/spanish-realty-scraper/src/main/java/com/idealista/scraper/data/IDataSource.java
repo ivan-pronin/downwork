@@ -5,9 +5,9 @@ import java.util.Set;
 
 public interface IDataSource
 {
-    Set<URL> getUrlsFromFile(DataType type);
+    Set<URL> getUrlsFromFile(String fileName);
 
-    void writeUrlsToFile(DataType type, Set<URL> urlsToAdd);
+    void writeUrlsToFile(String fileName, Set<URL> urlsToAdd);
 
-    void removeUrlsFromFile(DataType type, Set<URL> urlsToRemove);
+    void removeUrlsFromFile(String fileName, Set<URL> urlsToRemove);
 }

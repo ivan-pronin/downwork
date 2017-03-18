@@ -2,7 +2,7 @@ package com.idealista.scraper.xls;
 
 import com.idealista.scraper.data.xls.XlsExporter;
 import com.idealista.scraper.data.xls.XlsHeader;
-import com.idealista.scraper.model.Advertisment;
+import com.idealista.scraper.model.Advertisement;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -57,12 +57,12 @@ public class XlsExporterTests
         xls.appendResults(createAds(5));
     }
 
-    private Set<Advertisment> createAds(int numberOfAds) throws MalformedURLException
+    private Set<Advertisement> createAds(int numberOfAds) throws MalformedURLException
     {
-        Set<Advertisment> results = new HashSet<>();
+        Set<Advertisement> results = new HashSet<>();
         for (int i = 0; i < numberOfAds; i++)
         {
-            results.add(new Advertisment(new URL("http://www.url-" + i + ".com"), "title-" + i, "RealtyType.BUILDING"));
+            results.add(new Advertisement(new URL("http://www.url-" + i + ".com"), "title-" + i, "RealtyType.BUILDING"));
         }
         return results;
     }

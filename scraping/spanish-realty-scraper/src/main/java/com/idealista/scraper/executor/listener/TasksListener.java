@@ -1,9 +1,9 @@
 package com.idealista.scraper.executor.listener;
 
-import com.idealista.scraper.data.DataType;
 import com.idealista.scraper.data.IDataSource;
+import com.idealista.scraper.data.IDataTypeService;
 import com.idealista.scraper.data.xls.XlsExporter;
-import com.idealista.scraper.model.Advertisment;
+import com.idealista.scraper.model.Advertisement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class TasksListener extends TimerTask
 {
     private static final Logger LOGGER = LogManager.getLogger(TasksListener.class);
-    private BlockingQueue<Future<Advertisment>> advertismentExtractorResults;
+    private BlockingQueue<Future<Advertisement>> advertismentExtractorResults;
     private BlockingQueue<URL> adUrlsInProgress;
 
     @Autowired
@@ -32,6 +32,9 @@ public class TasksListener extends TimerTask
 
     @Autowired
     private XlsExporter xlsExporter;
+    
+    @Autowired
+    private IDataTypeService dataTypeService;
 
     private int processedUrls;
     private int failedUrls;
@@ -40,11 +43,11 @@ public class TasksListener extends TimerTask
     public void run()
     {
         LOGGER.info("Polling the queue for newly scrapped advertisments ...");
-        Iterator<Future<Advertisment>> iterator = advertismentExtractorResults.iterator();
-        Set<Advertisment> advertisments = new HashSet<>();
+        Iterator<Future<Advertisement>> iterator = advertismentExtractorResults.iterator();
+        Set<Advertisement> advertisments = new HashSet<>();
         while (iterator.hasNext())
         {
-            Future<Advertisment> task = iterator.next();
+            Future<Advertisement> task = iterator.next();
             if (task.isDone())
             {
                 try
@@ -65,8 +68,8 @@ public class TasksListener extends TimerTask
             LOGGER.info("Prepared <{}> results for exporting", advertisments.size());
             xlsExporter.appendResults(advertisments);
             Set<URL> urls = advertisments.stream().map(e -> e.getUrl()).collect(Collectors.toSet());
-            dataSource.writeUrlsToFile(DataType.PROCESSED_ADS, urls);
-            dataSource.removeUrlsFromFile(DataType.NEW_ADS, urls);
+            dataSource.writeUrlsToFile(dataTypeService.getProcessedAdsFileName(), urls);
+            dataSource.removeUrlsFromFile(dataTypeService.getNewAdsFileName(), urls);
         }
         LOGGER.info(
                 "AD urls in progress: {} | Processed urls so far: {} | Remaining URLs to process: {} | Failed urls: {}",
@@ -79,18 +82,8 @@ public class TasksListener extends TimerTask
         this.adUrlsInProgress = adUrlsInProgress;
     }
 
-    public void setAdvertismentExtractorResults(BlockingQueue<Future<Advertisment>> advertismentExtractorResults)
+    public void setAdvertismentExtractorResults(BlockingQueue<Future<Advertisement>> advertismentExtractorResults)
     {
         this.advertismentExtractorResults = advertismentExtractorResults;
-    }
-
-    public void setDataSource(IDataSource dataSource)
-    {
-        this.dataSource = dataSource;
-    }
-
-    public void setXlsExporter(XlsExporter xlsExporter)
-    {
-        this.xlsExporter = xlsExporter;
     }
 }

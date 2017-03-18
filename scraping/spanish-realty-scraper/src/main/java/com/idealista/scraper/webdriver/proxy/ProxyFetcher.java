@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +44,23 @@ public class ProxyFetcher
         return proxies;
     }
 
+    public void setDriver(WebDriver driver)
+    {
+        this.driver = driver;
+        searchActions.setWebDriver(driver);
+        clickActions.setWebDriver(driver);
+    }
+
+    private String extractProxyFromRow(WebElement row)
+    {
+        List<WebElement> tds = searchActions.findElementsByTagName(Arrays.asList(row), "td");
+        if (tds.size() >= 2)
+        {
+            return tds.get(0).getText() + ':' + tds.get(1).getText();
+        }
+        return null;
+    }
+
     private Set<String> fetchProxiesFromFreeProxyCz()
     {
         LOGGER.info("Fetching new proxies from {}", FREE_PROXY_CZ);
@@ -55,22 +71,6 @@ public class ProxyFetcher
             proxies.addAll(getProxiesFromNextFreeProxyCzPage(driver));
         }
         LOGGER.info("Fetched <{}> proxies", proxies.size());
-        return proxies;
-    }
-
-    private Set<String> getProxiesFromNextFreeProxyCzPage(WebDriver driver)
-    {
-        Set<String> proxies = new HashSet<>();
-        List<WebElement> exportButton = searchActions.findElementsById(Collections.emptyList(), "clickexport");
-        clickActions.click(exportButton);
-        WebElement proxiesBlock = searchActions.waitForElement(By.id("zkzk"), 5);
-        if (proxiesBlock != null)
-        {
-            proxies.addAll(FileUtils.readStringToLines(proxiesBlock.getText()));
-        }
-        clickActions.click(exportButton);
-        List<WebElement> nextButton = searchActions.findElementsByXpath("//a[contains(.,'Next')]");
-        clickActions.click(nextButton);
         return proxies;
     }
 
@@ -88,7 +88,7 @@ public class ProxyFetcher
                 if (option.getAttribute("value").equalsIgnoreCase("80"))
                 {
                     option.click();
-                    List<WebElement> table = searchActions.findElementsById(Collections.emptyList(), "proxylisttable");
+                    List<WebElement> table = searchActions.findElementsById("proxylisttable");
                     if (!table.isEmpty())
                     {
                         List<WebElement> rows = searchActions.findElementsByXpath(table, "//tbody//tr");
@@ -101,20 +101,19 @@ public class ProxyFetcher
         return proxies;
     }
 
-    private String extractProxyFromRow(WebElement row)
+    private Set<String> getProxiesFromNextFreeProxyCzPage(WebDriver driver)
     {
-        List<WebElement> tds = searchActions.findElementsByTagName(Arrays.asList(row), "td");
-        if (tds.size() >= 2)
+        Set<String> proxies = new HashSet<>();
+        List<WebElement> exportButton = searchActions.findElementsById("clickexport");
+        clickActions.click(exportButton);
+        WebElement proxiesBlock = searchActions.waitForElement(By.id("zkzk"), 5);
+        if (proxiesBlock != null)
         {
-            return tds.get(0).getText() + ':' + tds.get(1).getText();
+            proxies.addAll(FileUtils.readStringToLines(proxiesBlock.getText()));
         }
-        return null;
-    }
-
-    public void setDriver(WebDriver driver)
-    {
-        this.driver = driver;
-        searchActions.setWebDriver(driver);
-        clickActions.setWebDriver(driver);
+        clickActions.click(exportButton);
+        List<WebElement> nextButton = searchActions.findElementsByXpath("//a[contains(.,'Next')]");
+        clickActions.click(nextButton);
+        return proxies;
     }
 }

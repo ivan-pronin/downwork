@@ -1,6 +1,6 @@
 package com.idealista.scraper.page;
 
-import com.idealista.scraper.ui.page.AdvertismentPage;
+import com.idealista.scraper.ui.page.advertisement.IdealistaAdvertisementPage;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -41,7 +41,7 @@ public class AdvertismentPageTests
     {
         WebDriver driver = new ChromeDriver();
         driver.navigate().to("https://www.idealista.com/en/inmueble/26660304/");
-        AdvertismentPage p = new AdvertismentPage(driver);
+        IdealistaAdvertisementPage p = new IdealistaAdvertisementPage(driver);
         System.out.println(p.getPrice());
     }
     
@@ -50,10 +50,10 @@ public class AdvertismentPageTests
     {
         WebDriver driver = new ChromeDriver();
         driver.navigate().to("https://www.idealista.com/en/inmueble/30322581/");
-        AdvertismentPage p = new AdvertismentPage(driver);
+        IdealistaAdvertisementPage p = new IdealistaAdvertisementPage(driver);
         System.out.println(p.getSize());
         driver.navigate().to("https://www.idealista.com/en/inmueble/36004377/");
-        p = new AdvertismentPage(driver);
+        p = new IdealistaAdvertisementPage(driver);
         System.out.println(p.getSize());
     }
     
@@ -62,10 +62,10 @@ public class AdvertismentPageTests
     {
         WebDriver driver = new ChromeDriver();
         driver.navigate().to("https://www.idealista.com/en/inmueble/30322581/");
-        AdvertismentPage p = new AdvertismentPage(driver);
+        IdealistaAdvertisementPage p = new IdealistaAdvertisementPage(driver);
         System.out.println(p.getTags());
         driver.navigate().to("https://www.idealista.com/en/inmueble/36004377/");
-        p = new AdvertismentPage(driver);
+        p = new IdealistaAdvertisementPage(driver);
         System.out.println(p.getTags());
     }
 }

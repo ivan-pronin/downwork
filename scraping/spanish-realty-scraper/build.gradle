@@ -16,14 +16,13 @@ dependencies {
 	compile 'org.springframework:spring-context:4.3.7.RELEASE'
 
 	compile 'org.seleniumhq.selenium:selenium-htmlunit-driver:2.52.0'
-	compile 'net.sourceforge.htmlunit:htmlunit:2.24'
 	compile 'com.machinepublishers:jbrowserdriver:0.17.3'
 	compile 'org.apache.logging.log4j:log4j-api:2.7'
 	compile 'org.apache.logging.log4j:log4j-core:2.7'
 	compile group: 'org.apache.poi', name: 'poi', version: '3.15'
 	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
 
-	compile 'org.seleniumhq.selenium:selenium-java:3.0.1'
+	compile 'org.seleniumhq.selenium:selenium-java:3.3.1'
 
 	testCompile 'org.springframework:spring-test:4.3.7.RELEASE'
 	testCompile 'org.seleniumhq.selenium:selenium-java:3.0.1'
@@ -40,3 +39,4 @@ buildscript {
     classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'	
   }		
 }
+

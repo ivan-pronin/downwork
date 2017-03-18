@@ -1,6 +1,6 @@
 package com.idealista.scraper.page;
 
-import com.idealista.scraper.ui.page.StartPage;
+import com.idealista.scraper.ui.page.IdealistaStartPage;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +21,7 @@ public class StartPageTests
     {
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to("https://www.idealista.com/en/");
-        StartPage startPage = new StartPage(driver);
+        IdealistaStartPage startPage = new IdealistaStartPage(driver);
         startPage.selectOperation("Buy");
         synchronized (this)
         {
@@ -40,7 +40,7 @@ public class StartPageTests
     {
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to("https://www.idealista.com/en/");
-        StartPage startPage = new StartPage(driver);
+        IdealistaStartPage startPage = new IdealistaStartPage(driver);
         startPage.selectOperation("Buy");
         LOGGER.info(startPage.getAvailableTypologies());
         startPage.selectOperation("Share");
@@ -54,7 +54,7 @@ public class StartPageTests
     {
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to("https://www.idealista.com/en/");
-        StartPage startPage = new StartPage(driver);
+        IdealistaStartPage startPage = new IdealistaStartPage(driver);
         startPage.selectOperation("Buy");
         startPage.selectTypology("Homes");
         Set<String> availableLocations = startPage.getAvailableLocations();
@@ -67,7 +67,7 @@ public class StartPageTests
     {
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to("https://www.idealista.com/en/");
-        StartPage startPage = new StartPage(driver);
+        IdealistaStartPage startPage = new IdealistaStartPage(driver);
         startPage.selectOperation("Buy");
         startPage.selectTypology("Homes");
         startPage.selectLocation("Barcelona");

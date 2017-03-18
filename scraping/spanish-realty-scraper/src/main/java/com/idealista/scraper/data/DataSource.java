@@ -19,15 +19,15 @@ import java.util.Set;
 public class DataSource implements IDataSource
 {
     private static final Logger LOGGER = LogManager.getLogger(DataSource.class);
+
     private static Set<URL> cachedProcessedURLs;
     private static Set<URL> cachedNewURLs;
 
     @Override
-    public Set<URL> getUrlsFromFile(DataType type)
+    public Set<URL> getUrlsFromFile(String fileName)
     {
-        String fileName = type.getFileName();
         FileUtils.createFileIfNotExists(fileName);
-        LOGGER.info("Getting {} URLs from file: {}", type.name(), fileName);
+        LOGGER.info("Getting URLs from file: {}", fileName);
         Set<String> data = FileUtils.readFileToLines(fileName);
         Set<URL> result = new HashSet<>();
         for (String row : data)
@@ -42,38 +42,21 @@ public class DataSource implements IDataSource
             }
         }
         LOGGER.info("Got <{}> URLs from file: {}", result.size(), fileName);
-        initCachedUrls(type, result);
+        initCachedUrls(DataType.fromString(fileName), result);
         return result;
     }
 
     @Override
-    public void writeUrlsToFile(DataType type, Set<URL> urlsToAdd)
-    {
-        String fileName = type.getFileName();
-        LOGGER.info("Writing <{}> URLs to {} file: {}", urlsToAdd.size(), type.name(), fileName);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true)))
-        {
-            updateFile(type, urlsToAdd, writer);
-            LOGGER.info("New <{}> URLs have been written to file: {}", urlsToAdd.size(), fileName);
-        }
-        catch (IOException e)
-        {
-            LOGGER.error("Error while writing to file: {}", fileName);
-        }
-    }
-
-    @Override
-    public void removeUrlsFromFile(DataType type, Set<URL> urlsToRemove)
+    public void removeUrlsFromFile(String fileName, Set<URL> urlsToRemove)
     {
         if (urlsToRemove.isEmpty())
         {
             LOGGER.warn("Nothing to remove..");
             return;
         }
-        LOGGER.info("Removing <{}> URLs from {} file", urlsToRemove.size(), type.getFileName());
-        Set<URL> cachedData = getCachedData(type);
+        LOGGER.info("Removing <{}> URLs from {} file", urlsToRemove.size(), fileName);
+        Set<URL> cachedData = getCachedData(DataType.fromString(fileName));
         cachedData.removeAll(urlsToRemove);
-        String fileName = type.getFileName();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName)))
         {
             for (URL url : cachedData)
@@ -88,32 +71,19 @@ public class DataSource implements IDataSource
         }
     }
 
-    private void updateFile(DataType type, Set<URL> urlsToAdd, BufferedWriter writer) throws IOException
+    @Override
+    public void writeUrlsToFile(String fileName, Set<URL> urlsToAdd)
     {
-        if (urlsToAdd.isEmpty())
+        LOGGER.info("Writing <{}> URLs to file: {}", urlsToAdd.size(), fileName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true)))
         {
-            LOGGER.warn("Nothing to update..");
-            return;
+            updateFile(fileName, urlsToAdd, writer);
+            LOGGER.info("New <{}> URLs have been written to file: {}", urlsToAdd.size(), fileName);
         }
-        Set<URL> cachedData = getCachedData(type);
-        if (!cachedData.isEmpty())
+        catch (IOException e)
         {
-            urlsToAdd.removeAll(cachedData);
+            LOGGER.error("Error while writing to file: {}", fileName);
         }
-        cachedData.addAll(urlsToAdd);
-        for (URL url : urlsToAdd)
-        {
-            writer.write(url.toString() + System.lineSeparator());
-        }
-    }
-
-    private void initCachedUrls(DataType type, Set<URL> data)
-    {
-        if (data.isEmpty())
-        {
-            return;
-        }
-        getCachedData(type).addAll(data);
     }
 
     private Set<URL> getCachedData(DataType type)
@@ -134,6 +104,34 @@ public class DataSource implements IDataSource
                 return cachedNewURLs;
             default:
                 return Collections.emptySet();
+        }
+    }
+
+    private void initCachedUrls(DataType type, Set<URL> data)
+    {
+        if (data.isEmpty())
+        {
+            return;
+        }
+        getCachedData(type).addAll(data);
+    }
+
+    private void updateFile(String fileName, Set<URL> urlsToAdd, BufferedWriter writer) throws IOException
+    {
+        if (urlsToAdd.isEmpty())
+        {
+            LOGGER.warn("Nothing to update..");
+            return;
+        }
+        Set<URL> cachedData = getCachedData(DataType.fromString(fileName));
+        if (!cachedData.isEmpty())
+        {
+            urlsToAdd.removeAll(cachedData);
+        }
+        cachedData.addAll(urlsToAdd);
+        for (URL url : urlsToAdd)
+        {
+            writer.write(url.toString() + System.lineSeparator());
         }
     }
 }

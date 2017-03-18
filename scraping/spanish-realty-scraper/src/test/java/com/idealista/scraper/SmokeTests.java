@@ -1,6 +1,7 @@
 package com.idealista.scraper;
 
-import com.idealista.scraper.scraping.Paginator;
+import com.idealista.scraper.scraping.paginator.IPaginator;
+import com.idealista.scraper.scraping.paginator.IdealistaPaginator;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.junit.Test;
@@ -19,20 +20,20 @@ public class SmokeTests
         WebDriverProvider webDriverProvider = new WebDriverProvider();
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to(baseUrl);
-        Paginator paginator = new Paginator();
+        IPaginator paginator = new IdealistaPaginator();
         Queue<URL> pagesToProcess = new ConcurrentLinkedQueue<>();
 //        pagesToProcess.addAll(paginator.getAllPageUrls(driver, baseUrl));
 
         URL randomPage = pagesToProcess.iterator().next();
         System.out.println("Random page is: " + randomPage);
-//        SearchPageProcessor searchPageProcessor = new SearchPageProcessor(webDriverProvider, randomPage);
+//        ISearchPageProcessor searchPageProcessor = new ISearchPageProcessor(webDriverProvider, randomPage);
         Queue<URL> adUrls = new ConcurrentLinkedQueue<>();
 //        adUrls.addAll(searchPageProcessor.call());
         System.out.println(adUrls);
 
         URL randomAdvUrl = adUrls.iterator().next();
         System.out.println("Random Adv url: " + randomAdvUrl);
-//        AdvertismentExtractor advPage = new AdvertismentExtractor(webDriverProvider, randomAdvUrl);
+//        IdealistaAdvertisementExtractor advPage = new IdealistaAdvertisementExtractor(webDriverProvider, randomAdvUrl);
 //        System.out.println(advPage.call());
     }
 }
