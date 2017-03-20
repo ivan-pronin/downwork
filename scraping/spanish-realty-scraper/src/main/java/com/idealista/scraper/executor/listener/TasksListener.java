@@ -66,7 +66,7 @@ public class TasksListener extends TimerTask
         if (!advertisments.isEmpty())
         {
             LOGGER.info("Prepared <{}> results for exporting", advertisments.size());
-            xlsExporter.appendResults(advertisments);
+            xlsExporter.writeResultsToXls(advertisments);
             Set<URL> urls = advertisments.stream().map(e -> e.getUrl()).collect(Collectors.toSet());
             dataSource.writeUrlsToFile(dataTypeService.getProcessedAdsFileName(), urls);
             dataSource.removeUrlsFromFile(dataTypeService.getNewAdsFileName(), urls);

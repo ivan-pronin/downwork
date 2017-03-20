@@ -29,7 +29,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
-    private static final String APP_VERSION = "rc-1.1.0";
+    private static final String APP_VERSION = "rc-1.1.0.a";
 
     private Instant startTime;
 
