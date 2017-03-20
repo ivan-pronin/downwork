@@ -52,9 +52,9 @@ public class XlsExporterTests
     public void testAppend() throws Exception
     {
         XlsExporter xls = new XlsExporter("test1.xls");
-        xls.appendResults(createAds(2));
-        xls.appendResults(createAds(3));
-        xls.appendResults(createAds(5));
+        xls.writeResultsToXls(createAds(2));
+        xls.writeResultsToXls(createAds(3));
+        xls.writeResultsToXls(createAds(5));
     }
 
     private Set<Advertisement> createAds(int numberOfAds) throws MalformedURLException
