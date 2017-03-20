@@ -21,11 +21,6 @@ public class ProxyAdapter
         this.port = port;
     }
 
-    public Proxy getSeleniumProxy()
-    {
-        return seleniumProxy;
-    }
-
     public String getHost()
     {
         return host;
@@ -34,6 +29,11 @@ public class ProxyAdapter
     public int getPort()
     {
         return port;
+    }
+
+    public Proxy getSeleniumProxy()
+    {
+        return seleniumProxy;
     }
 
     @Override

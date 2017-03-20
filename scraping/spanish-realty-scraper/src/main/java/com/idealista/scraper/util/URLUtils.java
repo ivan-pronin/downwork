@@ -12,19 +12,6 @@ public final class URLUtils
 {
     private static final Logger LOGGER = LogManager.getLogger(URLUtils.class);
     
-    public static URL generateUrl(String text)
-    {
-        try
-        {
-            return new URL(text);
-        }
-        catch (MalformedURLException e)
-        {
-            System.err.println("Error while generating URL for string: " + text + ": " + e.getMessage());
-        }
-        return null;
-    }
-    
     public static Set<URL> convertStringToUrls(Set<String> input)
     {
         return input.stream().map(t ->
@@ -39,5 +26,18 @@ public final class URLUtils
             }
             return null;
         }).collect(Collectors.toSet());
+    }
+    
+    public static URL generateUrl(String text)
+    {
+        try
+        {
+            return new URL(text);
+        }
+        catch (MalformedURLException e)
+        {
+            System.err.println("Error while generating URL for string: " + text + ": " + e.getMessage());
+        }
+        return null;
     }
 }

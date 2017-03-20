@@ -47,11 +47,6 @@ public class ProxyProvider implements IProxyProvider
     @Value("${maxProxyResponseTime}")
     private long maxProxyResponseTime;
 
-    public void initProxiesList()
-    {
-        proxiesInputData = FileUtils.readFileToLines("proxies.txt");
-    }
-
     @Override
     public ProxyAdapter getNextWorkingProxy()
     {
@@ -92,6 +87,33 @@ public class ProxyProvider implements IProxyProvider
         return workingProxy;
     }
 
+    public void initProxiesList()
+    {
+        proxiesInputData = FileUtils.readFileToLines("settings/proxies.txt");
+    }
+
+    public void setWebDriverFactory(WebDriverFactory webDriverFactory)
+    {
+        this.webDriverFactory = webDriverFactory;
+    }
+
+    private ProxyAdapter buildProxy(String address)
+    {
+        Proxy seleniumProxy = new Proxy().setHttpProxy(address).setFtpProxy(address).setSslProxy(address);
+        String[] parts = address.split(":");
+        return new ProxyAdapter(seleniumProxy, parts[0], Integer.parseInt(parts[1]));
+    }
+
+    private WebDriver getDriver()
+    {
+        return webDriverFactory.create(DriverType.CHROME);
+    }
+
+    private WebDriver getDriver(ProxyAdapter proxy)
+    {
+        return webDriverFactory.create(proxy, DriverType.CHROME);
+    }
+
     private ProxyAdapter getWorkingProxyFromSet(Set<String> inputData)
     {
         Iterator<String> iterator = inputData.iterator();
@@ -116,11 +138,29 @@ public class ProxyProvider implements IProxyProvider
         return null;
     }
 
+    private boolean isAddressValid(String address)
+    {
+        return VALID_PROXY_ADDRESS_PATTERN.matcher(address).matches();
+    }
+
     private boolean isProxyFastEnough(Duration pageLoad)
     {
         long actualResponseTime = pageLoad.toMillis();
         LOGGER.info("Validating connection speed to the proxy: {} millis", actualResponseTime);
         return actualResponseTime <= maxProxyResponseTime;
+    }
+
+    private boolean isProxyReachable(ProxyAdapter proxy)
+    {
+        try
+        {
+            return InetAddress.getByName(proxy.getHost()).isReachable(500);
+        }
+        catch (IOException e)
+        {
+            LOGGER.error("Error while checking if proxy reachable: {}", e.getMessage());
+            return false;
+        }
     }
 
     private boolean isProxyWorking(ProxyAdapter proxy)
@@ -152,45 +192,5 @@ public class ProxyProvider implements IProxyProvider
         {
             driver.quit();
         }
-    }
-
-    private boolean isProxyReachable(ProxyAdapter proxy)
-    {
-        try
-        {
-            return InetAddress.getByName(proxy.getHost()).isReachable(500);
-        }
-        catch (IOException e)
-        {
-            LOGGER.error("Error while checking if proxy reachable: {}", e.getMessage());
-            return false;
-        }
-    }
-
-    private WebDriver getDriver()
-    {
-        return webDriverFactory.create(DriverType.CHROME);
-    }
-
-    private WebDriver getDriver(ProxyAdapter proxy)
-    {
-        return webDriverFactory.create(proxy, DriverType.CHROME);
-    }
-
-    private boolean isAddressValid(String address)
-    {
-        return VALID_PROXY_ADDRESS_PATTERN.matcher(address).matches();
-    }
-
-    private ProxyAdapter buildProxy(String address)
-    {
-        Proxy seleniumProxy = new Proxy().setHttpProxy(address).setFtpProxy(address).setSslProxy(address);
-        String[] parts = address.split(":");
-        return new ProxyAdapter(seleniumProxy, parts[0], Integer.parseInt(parts[1]));
-    }
-
-    public void setWebDriverFactory(WebDriverFactory webDriverFactory)
-    {
-        this.webDriverFactory = webDriverFactory;
     }
 }

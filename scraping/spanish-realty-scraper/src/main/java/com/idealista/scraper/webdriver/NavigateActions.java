@@ -24,14 +24,6 @@ public class NavigateActions implements INavigateActions
     private ProxyMonitor proxyMonitor;
 
     @Override
-    public void navigateWithoutValidations(String page)
-    {
-        LOGGER.debug("Trying to load the page: {}", page);
-        getDriver().navigate().to(page);
-        LOGGER.debug("Page {} loaded", page);
-    }
-
-    @Override
     public WebDriver get(URL page)
     {
         try
@@ -57,6 +49,24 @@ public class NavigateActions implements INavigateActions
         }
     }
 
+    @Override
+    public void navigateWithoutValidations(String page)
+    {
+        LOGGER.debug("Trying to load the page: {}", page);
+        getDriver().navigate().to(page);
+        LOGGER.debug("Page {} loaded", page);
+    }
+
+    public void setWebDriverProvider(WebDriverProvider webDriverProvider)
+    {
+        this.webDriverProvider = webDriverProvider;
+    }
+
+    private WebDriver getDriver()
+    {
+        return webDriverProvider.get();
+    }
+
     private boolean proxyConnectionAlive(WebDriver driver)
     {
         return driver.findElements(By.xpath("//div[@class='error-code']")).isEmpty();
@@ -67,15 +77,5 @@ public class NavigateActions implements INavigateActions
         LOGGER.info("Restarting driver ...");
         webDriverProvider.end();
         return webDriverProvider.get();
-    }
-
-    private WebDriver getDriver()
-    {
-        return webDriverProvider.get();
-    }
-
-    public void setWebDriverProvider(WebDriverProvider webDriverProvider)
-    {
-        this.webDriverProvider = webDriverProvider;
     }
 }

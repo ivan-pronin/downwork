@@ -36,14 +36,6 @@ public class WebDriverProvider implements IWebDriverProvider
 
     private ProxyAdapter proxy;
 
-    public void init()
-    {
-        if (useProxy)
-        {
-            proxy = proxyProvider.getNextWorkingProxy();
-        }
-    }
-
     private final ThreadLocal<Boolean> isWebDriverInitialized = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
     private final ThreadLocal<WebDriver> threadedWebDriver = new ThreadLocal<WebDriver>()
@@ -76,16 +68,13 @@ public class WebDriverProvider implements IWebDriverProvider
     };
 
     @Override
-    public WebDriver get()
+    public void destroy()
     {
-        WebDriver webDriver = threadedWebDriver.get();
-        isWebDriverInitialized.set(Boolean.TRUE);
-        return webDriver;
-    }
-
-    private int getStartCounterIndex()
-    {
-        return ++driverStartCounter;
+        for (WebDriver webDriver : webDrivers)
+        {
+            webDriver.quit();
+        }
+        webDriverFactory.shutDown();
     }
 
     @Override
@@ -111,25 +100,30 @@ public class WebDriverProvider implements IWebDriverProvider
     }
 
     @Override
+    public WebDriver get()
+    {
+        WebDriver webDriver = threadedWebDriver.get();
+        isWebDriverInitialized.set(Boolean.TRUE);
+        return webDriver;
+    }
+
+    public void init()
+    {
+        if (useProxy)
+        {
+            proxy = proxyProvider.getNextWorkingProxy();
+        }
+    }
+
+    @Override
     public boolean isWebDriverInitialized()
     {
         return isWebDriverInitialized.get().booleanValue();
     }
 
-    @Override
-    public void destroy()
+    public void setProxyProvider(ProxyProvider proxyProvider)
     {
-        for (WebDriver webDriver : webDrivers)
-        {
-            webDriver.quit();
-        }
-        webDriverFactory.shutDown();
-    }
-
-    private void reset()
-    {
-        threadedWebDriver.remove();
-        isWebDriverInitialized.set(Boolean.FALSE);
+        this.proxyProvider = proxyProvider;
     }
 
     public void setWebDriverFactory(WebDriverFactory webDriverFactory)
@@ -137,8 +131,14 @@ public class WebDriverProvider implements IWebDriverProvider
         this.webDriverFactory = webDriverFactory;
     }
 
-    public void setProxyProvider(ProxyProvider proxyProvider)
+    private int getStartCounterIndex()
     {
-        this.proxyProvider = proxyProvider;
+        return ++driverStartCounter;
+    }
+
+    private void reset()
+    {
+        threadedWebDriver.remove();
+        isWebDriverInitialized.set(Boolean.FALSE);
     }
 }

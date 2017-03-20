@@ -1,5 +1,10 @@
 package com.idealista.scraper.webdriver;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
 import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
 import com.machinepublishers.jbrowserdriver.JBrowserDriver;
 import com.machinepublishers.jbrowserdriver.ProxyConfig;
@@ -14,6 +19,8 @@ import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -21,16 +28,14 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-
 @Component
 public class WebDriverFactory implements IWebDriverFactory
 {
     private static final Logger LOGGER = LogManager.getLogger(WebDriverFactory.class);
     private static final TimeUnit TIME_UNIT_SECONDS = TimeUnit.SECONDS;
     private static final int PAGE_LOAD_TIMEOUT = 60;
+
+    private static ChromeDriverService service;
 
     @Value("${useDriverService}")
     private boolean useChromeService;
@@ -44,7 +49,22 @@ public class WebDriverFactory implements IWebDriverFactory
     @Value("${maximizeBrowserWindow}")
     private boolean maximizeBrowserWindow;
 
-    private static ChromeDriverService service;
+    public enum DriverType
+    {
+        HTMLUNIT, CHROME, JBROWSER, FIREFOX;
+
+        public static DriverType fromString(String str)
+        {
+            for (DriverType type : DriverType.values())
+            {
+                if (str.equalsIgnoreCase(type.name()))
+                {
+                    return type;
+                }
+            }
+            return null;
+        }
+    }
 
     @Override
     public WebDriver create(DriverType type)
@@ -76,6 +96,7 @@ public class WebDriverFactory implements IWebDriverFactory
         if (!enableJavascript)
         {
             cap.setJavascriptEnabled(false);
+            cap.setCapability("chrome.switches", Arrays.asList("--disable-javascript"));
         }
 
         if (useChromeService && service == null)
@@ -95,6 +116,8 @@ public class WebDriverFactory implements IWebDriverFactory
         Settings settings = Settings.builder().proxy(proxyConfig).build();
 
         WebDriver driver = null;
+
+        FirefoxProfile profile = new FirefoxProfile();
         switch (type)
         {
             case CHROME:
@@ -107,6 +130,12 @@ public class WebDriverFactory implements IWebDriverFactory
                 break;
             case JBROWSER:
                 driver = new JBrowserDriver(settings);
+                break;
+            case HTMLUNIT:
+                driver = new HtmlUnitDriver();
+                break;
+            case FIREFOX:
+                driver = new FirefoxDriver(profile);
                 break;
             default:
                 driver = new HtmlUnitDriver();
@@ -121,23 +150,6 @@ public class WebDriverFactory implements IWebDriverFactory
             manage.window().maximize();
         }
         return driver;
-    }
-
-    public enum DriverType
-    {
-        HTMLUNIT, CHROME, JBROWSER;
-
-        public static DriverType fromString(String str)
-        {
-            for (DriverType type : DriverType.values())
-            {
-                if (str.equalsIgnoreCase(type.name()))
-                {
-                    return type;
-                }
-            }
-            return null;
-        }
     }
 
     @Override

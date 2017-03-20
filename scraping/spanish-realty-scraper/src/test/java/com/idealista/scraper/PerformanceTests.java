@@ -1,5 +1,7 @@
 package com.idealista.scraper;
 
+import java.util.List;
+
 import com.machinepublishers.jbrowserdriver.JBrowserDriver;
 
 import org.junit.Test;
@@ -11,8 +13,6 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import java.util.List;
 
 public class PerformanceTests
 {

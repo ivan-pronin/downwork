@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import com.idealista.scraper.util.WebDriverUtil;
+import com.idealista.scraper.util.WebDriverUtils;
 
 @Component
 public class ClickActions
@@ -47,10 +47,10 @@ public class ClickActions
         {
             // scrolling for element into view
             LOGGER.debug("Could not click the element: {}", e.getMessage());
-            WebDriverUtil.takeScreenShot("Right after error", driver);
+            WebDriverUtils.takeScreenShot("Right after error", driver);
             JavascriptExecutor js = ((JavascriptExecutor) driver);
             js.executeScript("arguments[0].scrollIntoView();", element);
-            WebDriverUtil.takeScreenShot("After scrollIntoView() attempt", driver);
+            WebDriverUtils.takeScreenShot("After scrollIntoView() attempt", driver);
             element.click();
         }
         LOGGER.debug("Element was clicked: {}", element);

@@ -18,11 +18,25 @@ public final class FileUtils
 {
     private static final Logger LOGGER = LogManager.getLogger(FileUtils.class);
 
-    public static Set<String> readStringToLines(String source)
+    public static void createFileIfNotExists(String fileName)
     {
-        try (Scanner scanner = new Scanner(source))
+        File f = new File(fileName);
+        if (!f.exists())
         {
-            return readLinesFromScanner(scanner);
+            File parentFile = f.getParentFile();
+            if (parentFile != null)
+            {
+                parentFile.mkdirs();
+            }
+            try
+            {
+                f.createNewFile();
+            }
+            catch (IOException e)
+            {
+                LOGGER.error("Failed to create a new file: {}, {}", fileName, e.getMessage());
+            }
+            LOGGER.info("Created a new file: {}", fileName);
         }
     }
 
@@ -36,6 +50,14 @@ public final class FileUtils
         {
             LOGGER.error("Error while reading the file: {}, error: {}", fileName, e);
             return Collections.emptySet();
+        }
+    }
+
+    public static Set<String> readStringToLines(String source)
+    {
+        try (Scanner scanner = new Scanner(source))
+        {
+            return readLinesFromScanner(scanner);
         }
     }
 
@@ -73,28 +95,6 @@ public final class FileUtils
             }
             return null;
         }).collect(Collectors.toSet());
-    }
-
-    public static void createFileIfNotExists(String fileName)
-    {
-        File f = new File(fileName);
-        if (!f.exists())
-        {
-            File parentFile = f.getParentFile();
-            if (parentFile != null)
-            {
-                parentFile.mkdirs();
-            }
-            try
-            {
-                f.createNewFile();
-            }
-            catch (IOException e)
-            {
-                LOGGER.error("Failed to create a new file: {}, {}", fileName, e.getMessage());
-            }
-            LOGGER.info("Created a new file: {}", fileName);
-        }
     }
 
     private static Set<String> readLinesFromScanner(Scanner scanner)

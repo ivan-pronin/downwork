@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import com.idealista.scraper.data.DataSource;
-import com.idealista.scraper.scraping.Paginator;
+import com.idealista.scraper.scraping.paginator.IdealistaPaginator;
 import com.idealista.scraper.ui.SearchActions;
 
 public class LoggerTests

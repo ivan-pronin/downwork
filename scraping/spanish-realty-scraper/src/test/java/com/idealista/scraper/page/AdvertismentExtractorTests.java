@@ -1,7 +1,7 @@
 package com.idealista.scraper.page;
 
-import com.idealista.scraper.model.Advertisment;
-import com.idealista.scraper.ui.page.AdvertismentPage;
+import com.idealista.scraper.model.Advertisement;
+import com.idealista.scraper.ui.page.advertisement.IdealistaAdvertisementPage;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,8 +27,8 @@ public class AdvertismentExtractorTests
         URL url1 = new URL("https://www.idealista.com/en/inmueble/35795178/");
         URL url2 = new URL("https://www.idealista.com/en/inmueble/34168360/");
         WebDriverProvider webDriverProvider = new WebDriverProvider();
-//        AdvertismentExtractor extractor1 = new AdvertismentExtractor(webDriverProvider, url1);
-//        AdvertismentExtractor extractor2 = new AdvertismentExtractor(webDriverProvider, url2);
+//        IdealistaAdvertisementExtractor extractor1 = new IdealistaAdvertisementExtractor(webDriverProvider, url1);
+//        IdealistaAdvertisementExtractor extractor2 = new IdealistaAdvertisementExtractor(webDriverProvider, url2);
 //        extractor1.call();
 //        extractor2.call();
         printExecutionTime(startTime);
@@ -58,7 +58,7 @@ public class AdvertismentExtractorTests
         LOGGER.info("Test ended! Total time taken: " + seconds + " seconds.");
     }
 
-    private class TestAdvExtractor implements Callable<Advertisment>
+    private class TestAdvExtractor implements Callable<Advertisement>
     {
         private WebDriver driver;
         private URL pageUrl;
@@ -70,11 +70,11 @@ public class AdvertismentExtractorTests
         }
 
         @Override
-        public Advertisment call()
+        public Advertisement call()
         {
             driver.navigate().to(pageUrl);
-            AdvertismentPage page = new AdvertismentPage(driver);
-            Advertisment ad = new Advertisment(pageUrl, page.getTitle(), "RealtyType.BUILDING");
+            IdealistaAdvertisementPage page = new IdealistaAdvertisementPage(driver);
+            Advertisement ad = new Advertisement(pageUrl, page.getTitle(), "RealtyType.BUILDING");
             ad.setAddress(page.getAddress());
             ad.setDateOfListing(page.getListingDate());
             ad.setState("state");

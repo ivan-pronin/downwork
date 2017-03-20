@@ -29,5 +29,20 @@ public enum XlsHeader
     TAG2,
     TAG3,
     TAG4,
-    TAG5;
+    TAG5,
+    TAG6,
+    TAG7,
+    TAG8,
+    TAG9,
+    TAG10,
+    TAG11,
+    TAG12,
+    TAG13,
+    TAG14,
+    TAG15,
+    TAG16,
+    TAG17,
+    TAG18,
+    TAG19,
+    TAG20;
 }

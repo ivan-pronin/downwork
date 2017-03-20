@@ -2,17 +2,17 @@ package com.idealista.scraper.data;
 
 public enum DataType
 {
-    PROCESSED_ADS("./data/processedAds.txt"), NEW_ADS("./data/newAds.txt");
+    PROCESSED_ADS, NEW_ADS;
 
-    private String fileName;
-
-    private DataType(String fileName)
+    public static DataType fromString(String text)
     {
-        this.fileName = fileName;
-    }
-
-    public String getFileName()
-    {
-        return fileName;
+        for (DataType item : DataType.values())
+        {
+            if (text.toLowerCase().contains(item.name().toLowerCase().replaceAll("_", "")))
+            {
+                return item;
+            }
+        }
+        return null;
     }
 }

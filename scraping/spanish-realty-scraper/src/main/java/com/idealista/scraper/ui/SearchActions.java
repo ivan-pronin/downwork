@@ -1,5 +1,8 @@
 package com.idealista.scraper.ui;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -10,9 +13,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.List;
-
 @Component
 public class SearchActions
 {
@@ -20,18 +20,84 @@ public class SearchActions
 
     private WebDriver driver;
 
+    public List<WebElement> findElementsById(List<WebElement> rootElement, String id)
+    {
+        if (!rootElement.isEmpty())
+        {
+            return rootElement.get(0).findElements(By.id(id));
+        }
+        return driver.findElements(By.id(id));
+    }
+
+    public List<WebElement> findElementsById(String id)
+    {
+        return findElementsById(Collections.emptyList(), id);
+    }
+
+    public List<WebElement> findElementsByTagName(List<WebElement> rootElement, String tagName)
+    {
+        if (!rootElement.isEmpty())
+        {
+            return rootElement.get(0).findElements(By.tagName(tagName));
+        }
+        return Collections.emptyList();
+    }
+
+    public List<WebElement> findElementsByXpath(List<WebElement> rootElement, String xpath)
+    {
+        if (!rootElement.isEmpty())
+        {
+            return findElementsByXpath(rootElement.get(0), xpath);
+        }
+        return Collections.emptyList();
+    }
+
+    public List<WebElement> findElementsByXpath(String xpath)
+    {
+        return driver.findElements(By.xpath(xpath));
+    }
+
+    public List<WebElement> findElementsByXpath(WebElement rootElement, String xpath)
+    {
+        if (rootElement != null)
+        {
+            return rootElement.findElements(By.xpath("." + xpath));
+        }
+        return Collections.emptyList();
+    }
+
+    public String getElementText(List<WebElement> rootElement)
+    {
+        if (!rootElement.isEmpty())
+        {
+            return rootElement.get(0).getText();
+        }
+        return null;
+    }
+
+    public String getElementTextByXpath(String xpath)
+    {
+        return getElementText(findElementsByXpath(xpath));
+    }
+
+    public void setWebDriver(WebDriver driver)
+    {
+        this.driver = driver;
+    }
+
     public WebElement waitForElement(By locator, int seconds)
     {
         try
         {
-            LOGGER.debug("Waiting for an element: {}", locator);
+            LOGGER.debug("Waiting for visibility of an element: {}", locator);
             WebElement element = (new WebDriverWait(driver, seconds))
-                    .until(ExpectedConditions.presenceOfElementLocated(locator));
+                    .until(ExpectedConditions.visibilityOfElementLocated(locator));
             LOGGER.debug("Element appeared!");
             return element;
         }
         catch (TimeoutException e)
         {
+            LOGGER.warn("Failed to wait for visibility of an element: {}", locator);
             return null;
         }
     }
@@ -52,50 +118,21 @@ public class SearchActions
             return false;
         }
     }
-
-    public List<WebElement> findElementsByXpath(String xpath)
+    
+    public List<WebElement> waitForElements(By locator, int seconds)
     {
-        return driver.findElements(By.xpath(xpath));
-    }
-
-    public List<WebElement> findElementsByXpath(List<WebElement> rootElement, String xpath)
-    {
-        if (!rootElement.isEmpty())
+        try
         {
-            return rootElement.get(0).findElements(By.xpath("." + xpath));
+            LOGGER.debug("Waiting for presence of elements: {}", locator);
+            List<WebElement> elements = (new WebDriverWait(driver, seconds))
+                    .until(ExpectedConditions.presenceOfAllElementsLocatedBy(locator));
+            LOGGER.debug("Elements appeared!");
+            return elements;
         }
-        return Collections.emptyList();
-    }
-
-    public List<WebElement> findElementsByTagName(List<WebElement> rootElement, String tagName)
-    {
-        if (!rootElement.isEmpty())
+        catch (TimeoutException e)
         {
-            return rootElement.get(0).findElements(By.tagName(tagName));
+            LOGGER.warn("Failed to wait for presence of elements: {}", locator);
+            return null;
         }
-        return Collections.emptyList();
-    }
-
-    public List<WebElement> findElementsById(List<WebElement> rootElement, String id)
-    {
-        if (!rootElement.isEmpty())
-        {
-            return rootElement.get(0).findElements(By.id(id));
-        }
-        return driver.findElements(By.id(id));
-    }
-
-    public String getElementText(List<WebElement> rootElement)
-    {
-        if (!rootElement.isEmpty())
-        {
-            return rootElement.get(0).getText();
-        }
-        return null;
-    }
-
-    public void setWebDriver(WebDriver driver)
-    {
-        this.driver = driver;
     }
 }

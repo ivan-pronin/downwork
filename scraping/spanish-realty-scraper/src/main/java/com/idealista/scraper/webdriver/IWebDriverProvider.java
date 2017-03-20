@@ -11,5 +11,4 @@ public interface IWebDriverProvider
     boolean isWebDriverInitialized();
 
     void destroy();
-    
 }

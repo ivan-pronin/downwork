@@ -62,6 +62,16 @@ public class RegexUtilsTests
     @Test
     public void testGetTags() throws Exception
     {
-        
+        final String string = "habitaciones";
+        final String text = "Rozas De Madrid (las), Las Rozas de Madrid - Las Matas  - Peñascales, 450 m2, 5 \n"
+             + "habitaciones, 4 baños, 1 aseos, casi nuevo, aa, armarios, calefacción, garaje,\n"
+             + "jardín, terraza, trastero, CocinaOffice, Piscina, suite, Amueblado,\n"
+             + "Electrodomésticos, Horno, Lavadora, Microondas, Nevera, mascotas, videoportero,\n"
+             + "puerta blindada, lavadero, 2900 eur. / mes, Magnifico chalet independiente en los\n"
+             + "Peñascales de 450m sobre terreno de 1000m. Amplios espacios abiertos, muy\n"
+             + "luminoso, primeras calidades. Disribuido en tres plantas + sotano/garaje. ";
+        String foundMatch = RegexUtils.getDigitStringOccurenceInText(string, text);
+        System.out.println(foundMatch);
+        System.out.println("Digit: " + Integer.parseInt(RegexUtils.extractDigit(foundMatch)));
     }
 }

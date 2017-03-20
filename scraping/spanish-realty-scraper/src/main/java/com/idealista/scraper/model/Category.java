@@ -37,32 +37,6 @@ public class Category
         this.subType = subType;
     }
 
-    public URL getUrl()
-    {
-        return url;
-    }
-
-    public String getState()
-    {
-        return state;
-    }
-
-    public String getType()
-    {
-        return type;
-    }
-
-    public String getSubType()
-    {
-        return subType;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(url);
-    }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -76,19 +50,50 @@ public class Category
         return Objects.equals(url, other.url);
     }
 
-    @Override
-    public String toString()
-    {
-        return "Category [url=" + url + "]";
-    }
-
     public String getProvince()
     {
         return province;
     }
 
+    public String getState()
+    {
+        return state;
+    }
+
+    public String getSubType()
+    {
+        return subType;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    public URL getUrl()
+    {
+        return url;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(url);
+    }
+
     public void setProvince(String province)
     {
         this.province = province;
+    }
+
+    public void setUrl(URL url)
+    {
+        this.url = url;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Category [url=" + url + "]";
     }
 }

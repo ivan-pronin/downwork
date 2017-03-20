@@ -1,54 +1,54 @@
 package com.idealista.scraper.service;
 
-import com.idealista.scraper.RealtyApp;
+import com.idealista.scraper.AppConfig;
 import com.idealista.scraper.executor.ExecutorServiceProvider;
-import com.idealista.scraper.model.Advertisment;
+import com.idealista.scraper.model.Advertisement;
 import com.idealista.scraper.model.Category;
-import com.idealista.scraper.model.SearchAttributes;
-import com.idealista.scraper.scraping.AdvertismentExtractor;
-import com.idealista.scraper.scraping.search.AdUrlsFinder;
-import com.idealista.scraper.scraping.search.CategoriesChooser;
-import com.idealista.scraper.scraping.search.IAdUrlsFinder;
-import com.idealista.scraper.service.model.FilterAttributes;
-import com.idealista.scraper.service.model.IFilterAttributesFactory;
-import com.idealista.scraper.ui.page.StartPage;
+import com.idealista.scraper.model.filter.FilterAttributes;
+import com.idealista.scraper.model.filter.IFilterAttributesFactory;
+import com.idealista.scraper.model.parser.ISearchAttributesParser;
+import com.idealista.scraper.model.search.GenericSearchFilterContext;
+import com.idealista.scraper.model.search.IGenericSearchAttributes;
+import com.idealista.scraper.model.search.IdealistaSearchAttributes;
+import com.idealista.scraper.model.search.SearchAttributes;
+import com.idealista.scraper.scraping.advextractor.IdealistaAdvertisementExtractor;
+import com.idealista.scraper.scraping.category.AdUrlsFinder;
+import com.idealista.scraper.scraping.category.IAdUrlsFinder;
+import com.idealista.scraper.scraping.category.ICategoriesChooser;
 import com.idealista.scraper.webdriver.INavigateActions;
-import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Queue;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.stream.Collectors;
 
+@Profile("idealista")
 @Component
-public class IdealistaScrappingService
+public class IdealistaScrappingService implements IScrappingService
 {
     private static final Logger LOGGER = LogManager.getLogger(IdealistaScrappingService.class);
+    private static final ScrapTarget SCRAP_TARGET = ScrapTarget.IDEALISTA;
 
-    @Value("${operation}")
-    private String userOperation;
+    @Value("#{ T(org.springframework.util.StringUtils).commaDelimitedListToSet('${operation}') }")
+    private Set<String> userOperation;
 
-    @Value("${typology}")
-    private String userTypology;
+    @Value("#{ T(org.springframework.util.StringUtils).commaDelimitedListToSet('${typology}') }")
+    private Set<String> userTypology;
 
-    @Value("${location}")
-    private String userLocation;
+    @Value("#{ T(org.springframework.util.StringUtils).commaDelimitedListToSet('${location}') }")
+    private Set<String> userLocation;
 
     @Value("${province}")
     private String userProvince;
@@ -56,17 +56,14 @@ public class IdealistaScrappingService
     @Value("${publicationDateFilter}")
     private String publicationDateFilter;
 
-    @Autowired
-    private WebDriverProvider webDriverProvider;
-
+    @Value(value = "${maxAdsToProcess}")
+    private int maxAdsToProcess;
+    
     @Autowired
     private ExecutorServiceProvider executor;
 
     @Autowired
     private IAdUrlsFinder adUrlsFinder;
-
-    @Autowired
-    private CategoriesChooser chooser;
 
     @Autowired
     private INavigateActions navigateActions;
@@ -75,132 +72,74 @@ public class IdealistaScrappingService
     private IFilterAttributesFactory filterAttributesFactory;
 
     @Autowired
-    private StartPage startPage;
+    private ISearchAttributesParser searchAttributesParser;
 
     @Autowired
-    private RealtyApp realtyApp;
+    private AppConfig appConfig;
 
-    private BlockingQueue<Future<Advertisment>> advertismentExtractorResults;
+    @Autowired
+    private ICategoriesChooser categoriesChooser;
+
+    private BlockingQueue<Future<Advertisement>> advertismentExtractorResults;
     private BlockingQueue<URL> advertismentUrlsInProgress = new LinkedBlockingQueue<>();
 
-    @Value(value = "${maxAdsToProcess}")
-    private int maxIterations;
-
+    @Override
     public void scrapSite() throws InterruptedException, MalformedURLException
     {
-        WebDriver driver = webDriverProvider.get();
-        navigateActions.get(new URL(realtyApp.getMainLocalizedPageUrl()));
-
-        startPage.setWebDriver(driver);
-        SearchAttributes searchAttributes = startPage.getSearchAttributes(userOperation, userTypology, userLocation);
+        navigateActions.get(new URL(SCRAP_TARGET.getMainPageLocalizedUrl(appConfig.getLanguage())));
+        SearchAttributes searchAttributes = searchAttributesParser.parseSearchAttributes(getAttributesMap());
         FilterAttributes filterAttributes = filterAttributesFactory.create(publicationDateFilter);
-
+        GenericSearchFilterContext context = new GenericSearchFilterContext();
+        context.setSearchAttributes(searchAttributes);
+        context.setFilterAttributes(filterAttributes);
+        context.setProvince(userProvince);
         LOGGER.info(" === === Printing parsed SearchAttributes === === ");
         LOGGER.info(searchAttributes);
         LOGGER.info(" === === === === === === ===  === === === === === ");
         LOGGER.info("");
-        Set<Category> categoriesBaseUrls = getCategoriesUrls(searchAttributes, filterAttributes, userProvince);
+
+        Set<Category> categoriesBaseUrls = categoriesChooser.getCategoriesUrls(context);
 
         ((AdUrlsFinder) adUrlsFinder).setCategoriesBaseUrls(categoriesBaseUrls);
-        Set<Category> adUrlsToProcess = adUrlsFinder.findNewAdUrlsAmount(maxIterations);
+        Set<Category> adUrlsToProcess = adUrlsFinder.findNewAdUrlsAmount(maxAdsToProcess);
 
         Iterator<Category> iterator = adUrlsToProcess.iterator();
-        for (int i = 0; i < maxIterations; i++)
+        for (int i = 0; i < maxAdsToProcess; i++)
         {
             if (iterator.hasNext())
             {
                 Category page = iterator.next();
-                AdvertismentExtractor advertismentExtractor = new AdvertismentExtractor();
+                IdealistaAdvertisementExtractor advertismentExtractor = new IdealistaAdvertisementExtractor();
                 advertismentExtractor.setCategory(page);
                 advertismentExtractor.setNavigateActions(navigateActions);
-                advertismentExtractor.setLanguage(realtyApp.getLanguage());
+                advertismentExtractor.setLanguage(appConfig.getLanguage());
                 advertismentExtractorResults.put(executor.getExecutor().submit(advertismentExtractor));
                 advertismentUrlsInProgress.put(page.getUrl());
             }
         }
     }
 
-    private Set<Category> getCategoriesUrls(SearchAttributes searchAttributes, FilterAttributes filterAttributes,
-            String province) throws InterruptedException
+    private Map<IGenericSearchAttributes, Set<String>> getAttributesMap()
     {
-        Set<String> userOperations = searchAttributes.getOperations();
-        Set<String> userTypologies = searchAttributes.getTypologies();
-        Set<String> userLocations = searchAttributes.getLocations();
-        startPage.setWebDriver(webDriverProvider.get());
-
-        Queue<Callable<Category>> results = new ConcurrentLinkedQueue<>();
-
-        for (String operation : userOperations)
+        return new HashMap<IGenericSearchAttributes, Set<String>>()
         {
-            startPage.selectOperation(operation);
-            Set<String> availableTypologies = startPage.getAvailableTypologies();
+            private static final long serialVersionUID = -4234938230147805771L;
+            {
+                put(IdealistaSearchAttributes.OPERATION, userOperation);
+                put(IdealistaSearchAttributes.TYPOLOGY, userTypology);
+                put(IdealistaSearchAttributes.LOCATION, userLocation);
+            }
+        };
+    }
 
-            for (String typology : availableTypologies)
-            {
-                if (userTypologies.contains(typology))
-                {
-                    startPage.selectTypology(typology);
-                    Set<String> availableLocations = startPage.getAvailableLocations();
-                    for (String location : availableLocations)
-                    {
-                        if (userLocations.contains(location))
-                        {
-                            startPage.selectLocation(location);
-                            results.add(chooser.new CategoryBySearchAndFilterAttributes(operation, typology, location,
-                                    filterAttributes, province));
-                        }
-                    }
-                }
-            }
-        }
-
-        List<Future<Category>> categories = executor.getExecutor().invokeAll(results);
-        return categories.stream().map(t ->
-        {
-            try
-            {
-                return t.get();
-            }
-            catch (InterruptedException | ExecutionException e)
-            {
-                LOGGER.error("Error while retrieving category task result: {}", e);
-                return null;
-            }
-        }).collect(Collectors.toSet());
+    @Override
+    public void setAdvertismentExtractorResults(BlockingQueue<Future<Advertisement>> advertismentExtractorResults)
+    {
+        this.advertismentExtractorResults = advertismentExtractorResults;
     }
 
     public BlockingQueue<URL> getAdvertismentUrlsInProgress()
     {
         return advertismentUrlsInProgress;
-    }
-
-    public void setWebDriverProvider(WebDriverProvider webDriverProvider)
-    {
-        this.webDriverProvider = webDriverProvider;
-    }
-
-    public void setExecutor(ExecutorServiceProvider executor)
-    {
-        this.executor = executor;
-    }
-
-    public void setAdUrlsFinder(IAdUrlsFinder adUrlsFinder)
-    {
-        this.adUrlsFinder = adUrlsFinder;
-    }
-
-    public void setChooser(CategoriesChooser chooser)
-    {
-        this.chooser = chooser;
-    }
-
-    public void setMaxIterations(int maxIterations)
-    {
-        this.maxIterations = maxIterations;
-    }
-
-    public void setAdvertismentExtractorResults(BlockingQueue<Future<Advertisment>> advertismentExtractorResults)
-    {
-        this.advertismentExtractorResults = advertismentExtractorResults;
     }
 }

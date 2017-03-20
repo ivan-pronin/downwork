@@ -1,6 +1,6 @@
 package com.idealista.scraper.data.xls;
 
-import com.idealista.scraper.model.Advertisment;
+import com.idealista.scraper.model.Advertisement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +24,7 @@ public class XlsExporter
 {
     private static final String IDEALISTA_DATA = "Idealista_data";
     private static final Logger LOGGER = LogManager.getLogger(XlsExporter.class);
+
     private Workbook wb;
     private Sheet sheet;
     private String fileName;
@@ -31,6 +32,24 @@ public class XlsExporter
     public XlsExporter(@Value(value = "${xlsFileName}") String fileName)
     {
         this.fileName = fileName;
+    }
+
+    public void appendResults(Set<Advertisement> advertisments)
+    {
+        LOGGER.info("Writing new <{}> advertisments to XLS...", advertisments.size());
+        try (FileOutputStream fileOut = new FileOutputStream(fileName))
+        {
+            int lastRow = sheet.getLastRowNum();
+            for (Advertisement ad : advertisments)
+            {
+                writeAdvertismentToRow(ad, sheet.createRow(++lastRow));
+            }
+            wb.write(fileOut);
+        }
+        catch (IOException e)
+        {
+            LOGGER.error("Error while writing new results to XLS: {}", e);
+        }
     }
 
     public void initWorkBook()
@@ -66,25 +85,27 @@ public class XlsExporter
         }
     }
 
-    public void appendResults(Set<Advertisment> advertisments)
+    private void createHeader(Row row)
     {
-        LOGGER.info("Writing new <{}> advertisments to XLS...", advertisments.size());
-        try (FileOutputStream fileOut = new FileOutputStream(fileName))
+        int index = 0;
+        for (XlsHeader header : XlsHeader.values())
         {
-            int lastRow = sheet.getLastRowNum();
-            for (Advertisment ad : advertisments)
-            {
-                writeAdvertismentToRow(ad, sheet.createRow(++lastRow));
-            }
-            wb.write(fileOut);
-        }
-        catch (IOException e)
-        {
-            LOGGER.error("Error while writing new results to XLS: {}", e);
+            Cell cell = row.createCell(index);
+            cell.setCellValue(header.name());
+            index++;
         }
     }
 
-    private void writeAdvertismentToRow(Advertisment ad, Row row)
+    private void fillInTags(Row row, List<String> tags, int startIndex)
+    {
+        for (String tag : tags)
+        {
+            row.createCell(startIndex).setCellValue(tag);
+            startIndex++;
+        }
+    }
+
+    private void writeAdvertismentToRow(Advertisement ad, Row row)
     {
         if (ad == null)
         {
@@ -99,15 +120,15 @@ public class XlsExporter
         int columnIndex = 0;
         row.createCell(columnIndex).setCellValue(ad.getTitle());
         row.createCell(++columnIndex).setCellValue(ad.getType());
-        row.createCell(++columnIndex).setCellValue(ad.getSubType() == null ? "" : ad.getSubType().name());
+        row.createCell(++columnIndex).setCellValue(ad.getSubType() == null ? "" : ad.getSubType());
         row.createCell(++columnIndex).setCellValue(ad.getProvince());
         row.createCell(++columnIndex).setCellValue(ad.getDateOfListing());
-        row.createCell(++columnIndex).setCellValue("todo:number_of_views");
+        row.createCell(++columnIndex).setCellValue(ad.getNumberOfViews());
         row.createCell(++columnIndex).setCellValue(ad.getAddress());
         row.createCell(++columnIndex).setCellValue(ad.getState());
         row.createCell(++columnIndex).setCellValue(ad.getCity());
         row.createCell(++columnIndex).setCellValue(ad.getPostalCode());
-        row.createCell(++columnIndex).setCellValue("todo:age");
+        row.createCell(++columnIndex).setCellValue(ad.getAge());
         row.createCell(++columnIndex).setCellValue(ad.getDescription());
         row.createCell(++columnIndex).setCellValue(ad.getBedRooms());
         row.createCell(++columnIndex).setCellValue(ad.getBathRooms());
@@ -117,29 +138,9 @@ public class XlsExporter
         row.createCell(++columnIndex).setCellValue(ad.getProfessional());
         row.createCell(++columnIndex).setCellValue(ad.getAgent());
         row.createCell(++columnIndex).setCellValue(ad.getAgentPhone());
-        row.createCell(++columnIndex).setCellValue("todo:email_listing_agent");
+        row.createCell(++columnIndex).setCellValue(ad.getAgentEmail());
         row.createCell(++columnIndex).setCellValue(ad.getUrl().toString());
-        row.createCell(++columnIndex).setCellValue(ad.isHasImages());
+        row.createCell(++columnIndex).setCellValue(ad.hasImages());
         fillInTags(row, ad.getTags(), ++columnIndex);
-    }
-
-    private void fillInTags(Row row, List<String> tags, int startIndex)
-    {
-        for (String tag : tags)
-        {
-            row.createCell(startIndex).setCellValue(tag);
-            startIndex++;
-        }
-    }
-
-    private void createHeader(Row row)
-    {
-        int index = 0;
-        for (XlsHeader header : XlsHeader.values())
-        {
-            Cell cell = row.createCell(index);
-            cell.setCellValue(header.name());
-            index++;
-        }
     }
 }

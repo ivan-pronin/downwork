@@ -10,19 +10,20 @@ public final class RegexUtils
 {
     private static final Logger LOGGER = LogManager.getLogger(RegexUtils.class);
     
-    public static String extractPostalCode(String text)
+    public static int extractBigNumber(String text)
     {
         if (text == null)
         {
-            return null;
+            return -1;
         }
-        Pattern pattern = Pattern.compile("(\\d{5,})");
+        text = replaceAllNonDigitCharacters(text);
+        Pattern pattern = Pattern.compile("(\\d*)");
         Matcher m = pattern.matcher(text);
         if (m.find())
         {
-            return m.group(1);
+            return Integer.parseInt(m.group(1));
         }
-        return null;
+        return -1;
     }
 
     public static int extractDigit(String text)
@@ -56,20 +57,19 @@ public final class RegexUtils
         return -1;
     }
 
-    public static int extractBigNumber(String text)
+    public static String extractPostalCode(String text)
     {
         if (text == null)
         {
-            return -1;
+            return null;
         }
-        text = text.replaceAll("[^-?0-9]+", "");
-        Pattern pattern = Pattern.compile("(\\d*)");
+        Pattern pattern = Pattern.compile("(\\d{5,})");
         Matcher m = pattern.matcher(text);
         if (m.find())
         {
-            return Integer.parseInt(m.group(1));
+            return m.group(1);
         }
-        return -1;
+        return null;
     }
 
     public static String extractTextAfterAnchor(String text, String anchor)
@@ -92,6 +92,26 @@ public final class RegexUtils
         return getSecondArrayElement(parts);
     }
 
+    public static String getDigitStringOccurenceInText(String string, String text)
+    {
+        if (text == null || string == null)
+        {
+            return null;
+        }
+        Pattern pattern = Pattern.compile("\\d(.?|.?\\n)" + string);
+        Matcher m = pattern.matcher(text);
+        if (m.find())
+        {
+            return m.group(0);
+        }
+        return null;
+    }
+
+    public static String replaceAllNonDigitCharacters(String text)
+    {
+        return text.replaceAll("[^-?0-9]+", "");
+    }
+    
     private static String getSecondArrayElement(String[] parts)
     {
         if (parts.length > 1)
