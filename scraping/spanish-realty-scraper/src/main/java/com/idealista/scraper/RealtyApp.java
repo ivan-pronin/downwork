@@ -25,6 +25,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class RealtyApp
 {
@@ -51,7 +53,8 @@ public class RealtyApp
     @Autowired
     private WebDriverProvider webDriverProvider;
 
-    public void initSystemProperties()
+    @PostConstruct
+    private void initSystemProperties()
     {
         if (enableWebdriverLogging)
         {

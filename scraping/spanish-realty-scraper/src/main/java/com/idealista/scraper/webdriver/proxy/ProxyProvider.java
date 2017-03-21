@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class ProxyProvider implements IProxyProvider
 {
@@ -87,7 +89,8 @@ public class ProxyProvider implements IProxyProvider
         return workingProxy;
     }
 
-    public void initProxiesList()
+    @PostConstruct
+    private void initProxiesList()
     {
         proxiesInputData = FileUtils.readFileToLines("settings/proxies.txt");
     }

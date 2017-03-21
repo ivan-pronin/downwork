@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import com.idealista.scraper.model.Advertisement;
 import com.idealista.scraper.util.DateTimeUtils;
 
@@ -56,7 +58,8 @@ public class XlsExporter
         }
     }
 
-    public void initWorkBook()
+    @PostConstruct
+    private void initWorkBook()
     {
         if (appendTimestampToXls)
         {
