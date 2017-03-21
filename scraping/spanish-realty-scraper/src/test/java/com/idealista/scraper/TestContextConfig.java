@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import com.idealista.scraper.data.DataType;
 import com.idealista.scraper.data.IDataTypeService;
+import com.idealista.scraper.data.xls.XlsExporter;
+import com.idealista.scraper.model.Advertisement;
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.scraping.paginator.IPaginator;
 import com.idealista.scraper.service.IScrappingService;
@@ -26,21 +28,9 @@ import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
-@TestPropertySource("file:settings/test.properties")
+//@TestPropertySource("file:settings/test.properties")
 public class TestContextConfig
 {
-    @Value("${set1}")
-    private Set<String> set1;
-
-    @Value("${set2}")
-    private Set<String> set2;
-
-    @Value("${set3}")
-    private Set<String> set3;
-
-    @Value("${testEnum1}")
-    private String testValue;
-
     @Autowired
     private IScrappingService scrappingService;
 
@@ -52,11 +42,22 @@ public class TestContextConfig
 
     @Autowired
     private AppConfig appConfig;
-    
+
     @Autowired
     private IDataTypeService dataTypeService;
-    
-    //@Test
+
+    @Autowired
+    private XlsExporter xlsExporter;
+
+    @Test
+    public void testName8() throws Exception
+    {
+        xlsExporter.initWorkBook();
+        xlsExporter.writeResultsToXls(
+                new HashSet<>(Arrays.asList(new Advertisement(new URL("http://www.tut.by"), "title"))));
+    }
+
+    // @Test
     public void testName5() throws Exception
     {
         String newAdsFileName = dataTypeService.getNewAdsFileName();
@@ -66,17 +67,17 @@ public class TestContextConfig
         System.out.println(processedAdsFileName);
         System.out.println(DataType.fromString(processedAdsFileName));
     }
-    
-    //@Test
+
+    // @Test
     public void testName3() throws Exception
     {
         String url1 = "http://www.vibbo.com/alquiler-de-casas-y-chales-toda-espana-profesionales/?ca=0_s&fPos=346&fOn=sb_f_input";
         String url2 = "http://www.vibbo.com/alquiler-de-casas-rurales-toda-espana-profesionales/?ca=0_s&fPos=638&fOn=sb_f_input";
         String url3 = "http://www.vibbo.com/alquiler-de-garajes-y-trasteros-toda-espana/?ca=0_s&ss=190&se=270&fPos=368&fOn=sb_se";
         String url4 = "http://www.vibbo.com/alquiler-de-garajes-y-trasteros-toda-espana/?ca=0_s&ss=190&fPos=355&fOn=sb_ss";
-        
-        Set<String> cats = new HashSet<>(Arrays.asList(url1,url2,url3,url4));
-        
+
+        Set<String> cats = new HashSet<>(Arrays.asList(url1, url2, url3, url4));
+
         for (String s : cats)
         {
             Category cat = new Category();
@@ -86,30 +87,17 @@ public class TestContextConfig
         webDriverProvider.destroy();
     }
 
-    @Test
+    //@Test
     public void testName7() throws Exception
     {
         WebDriver driver = webDriverProvider.get();
-        driver.get("http://www.vibbo.com/madrid/chalet-torre-en-rozas-centro-el-cano-maraca/a100501003/?ca=28_s&st=a&c=59");
+        driver.get(
+                "http://www.vibbo.com/madrid/chalet-torre-en-rozas-centro-el-cano-maraca/a100501003/?ca=28_s&st=a&c=59");
         VibboAdvertisementPage page = new VibboAdvertisementPage();
         page.setWebDriver(driver);
-        
+
         String typeText = page.getType();
         String[] parts = typeText.split(" > ");
         System.out.println(typeText);
-    }
-    //@Test
-    public void testName2() throws Exception
-    {
-        scrappingService.scrapSite();
-    }
-
-    // @Test
-    public void testName() throws Exception
-    {
-        System.out.println(set1);
-        System.out.println(set2);
-        System.out.println(set3);
-        System.out.println(testValue);
     }
 }

@@ -25,11 +25,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
-    private static final String APP_VERSION = "rc-1.1.0.a";
+    private static final String APP_VERSION = "rc-1.1.0.c";
 
     private Instant startTime;
 
@@ -51,12 +53,13 @@ public class RealtyApp
     @Autowired
     private WebDriverProvider webDriverProvider;
 
-    public void initSystemProperties()
+    @PostConstruct
+    private void initSystemProperties()
     {
         if (enableWebdriverLogging)
         {
             System.setProperty("webdriver.chrome.logfile",
-                    "./logs/chromedriver_" + DateTimeUtils.getTimeStamp() + ".log");
+                    "./logs/chromedriver_" + DateTimeUtils.getTimestamp() + ".log");
         }
     }
 

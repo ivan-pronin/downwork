@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class WebDriverProvider implements IWebDriverProvider
 {
@@ -107,7 +109,8 @@ public class WebDriverProvider implements IWebDriverProvider
         return webDriver;
     }
 
-    public void init()
+    @PostConstruct
+    private void init()
     {
         if (useProxy)
         {

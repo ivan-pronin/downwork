@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import com.idealista.scraper.model.Advertisement;
+import com.idealista.scraper.util.DateTimeUtils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +31,9 @@ public class XlsExporter
     private Workbook wb;
     private Sheet sheet;
     private String fileName;
+
+    @Value("${appendTimestampToXls}")
+    private boolean appendTimestampToXls;
 
     public XlsExporter(@Value(value = "${xlsFileName}") String fileName)
     {
@@ -52,8 +58,16 @@ public class XlsExporter
         }
     }
 
-    public void initWorkBook()
+    @PostConstruct
+    private void initWorkBook()
     {
+        if (appendTimestampToXls)
+        {
+            int dotIndex = fileName.lastIndexOf(".");
+            String extension = dotIndex > 0 ? fileName.substring(dotIndex) : "";
+            String namePart = fileName.replace(extension, "");
+            fileName = namePart + '_' + DateTimeUtils.getFilenameTimestamp() + extension;
+        }
         if (!new File(fileName).exists())
         {
             try (FileOutputStream fileOut = new FileOutputStream(fileName, true))
@@ -98,10 +112,13 @@ public class XlsExporter
 
     private void fillInTags(Row row, List<String> tags, int startIndex)
     {
-        for (String tag : tags)
+        if (tags != null)
         {
-            row.createCell(startIndex).setCellValue(tag);
-            startIndex++;
+            for (String tag : tags)
+            {
+                row.createCell(startIndex).setCellValue(tag);
+                startIndex++;
+            }
         }
     }
 
@@ -141,6 +158,7 @@ public class XlsExporter
         row.createCell(++columnIndex).setCellValue(ad.getAgentEmail());
         row.createCell(++columnIndex).setCellValue(ad.getUrl().toString());
         row.createCell(++columnIndex).setCellValue(ad.hasImages());
+        row.createCell(++columnIndex).setCellValue(DateTimeUtils.getScrapTimestamp());
         fillInTags(row, ad.getTags(), ++columnIndex);
     }
 }

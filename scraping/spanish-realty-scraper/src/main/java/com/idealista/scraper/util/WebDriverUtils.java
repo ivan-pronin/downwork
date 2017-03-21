@@ -20,7 +20,7 @@ public final class WebDriverUtils
 
     public static void takeScreenShot(String message, WebDriver driver)
     {
-        String fileName = DateTimeUtils.getTimeStamp() + ".png";
+        String fileName = DateTimeUtils.getTimestamp() + ".png";
         LOGGER.info("{}. Taking screenshot with name: {}", message, fileName);
         try
         {

@@ -1,6 +1,7 @@
 package com.idealista.scraper;
 
-import com.idealista.scraper.data.xls.XlsExporter;
+import java.io.IOException;
+
 import com.idealista.scraper.model.parser.ISearchAttributesParser;
 import com.idealista.scraper.model.parser.IdealistaSearchAttributesParser;
 import com.idealista.scraper.model.parser.VibboSearchAttributesParser;
@@ -15,8 +16,6 @@ import com.idealista.scraper.service.IdealistaScrappingService;
 import com.idealista.scraper.service.ScrapTarget;
 import com.idealista.scraper.service.VibboScrappingService;
 import com.idealista.scraper.util.PropertiesLoader;
-import com.idealista.scraper.webdriver.WebDriverProvider;
-import com.idealista.scraper.webdriver.proxy.ProxyProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,14 +28,18 @@ import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
-import java.io.IOException;
-
 @Configuration
 @ComponentScan
 @PropertySources({@PropertySource("file:settings/realty.properties"),
         @PropertySource("file:settings/sources/${scrapTarget}.properties")})
 public class AppConfig
 {
+    @Autowired
+    private Environment environment;
+
+    @Value("#{ '${scrapTarget}'.toUpperCase() }")
+    private ScrapTarget scrapTarget;
+
     public static void main(String[] args) throws InterruptedException, IOException
     {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
@@ -45,7 +48,6 @@ public class AppConfig
         ctx.refresh();
         RealtyApp app = ctx.getBean(RealtyApp.class);
         app.printInfo();
-        constructBeans(ctx);
         app.run();
         ctx.close();
     }
@@ -55,20 +57,6 @@ public class AppConfig
     {
         return new PropertySourcesPlaceholderConfigurer();
     }
-
-    private static void constructBeans(AnnotationConfigApplicationContext ctx)
-    {
-        ctx.getBean(RealtyApp.class).initSystemProperties();
-        ctx.getBean(XlsExporter.class).initWorkBook();
-        ctx.getBean(ProxyProvider.class).initProxiesList();
-        ctx.getBean(WebDriverProvider.class).init();
-    }
-
-    @Autowired
-    private Environment environment;
-
-    @Value("#{ '${scrapTarget}'.toUpperCase() }")
-    private ScrapTarget scrapTarget;
 
     @Bean
     public ICategoriesChooser categoriesChooser()
@@ -82,20 +70,6 @@ public class AppConfig
             default:
                 throw illegalException("ICategoriesChooser");
         }
-    }
-
-    public String getLanguage()
-    {
-        if (scrapTarget.equals(ScrapTarget.IDEALISTA))
-        {
-            return environment.getProperty("language");
-        }
-        throw new UnsupportedOperationException("GetLanguage method is not supported by this configuration");
-    }
-
-    public ScrapTarget getScrapTarget()
-    {
-        return scrapTarget;
     }
 
     @Bean
@@ -139,6 +113,20 @@ public class AppConfig
             default:
                 throw illegalException("ISearchAttributesParser");
         }
+    }
+
+    public String getLanguage()
+    {
+        if (scrapTarget.equals(ScrapTarget.IDEALISTA))
+        {
+            return environment.getProperty("language");
+        }
+        throw new UnsupportedOperationException("GetLanguage method is not supported by this configuration");
+    }
+
+    public ScrapTarget getScrapTarget()
+    {
+        return scrapTarget;
     }
 
     private IllegalArgumentException illegalException(String beanType)
