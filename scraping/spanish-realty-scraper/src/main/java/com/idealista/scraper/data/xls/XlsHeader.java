@@ -25,6 +25,7 @@ public enum XlsHeader
     EMAIL_LISTING_AGENT,
     LINK,
     HAS_IMAGES,
+    TIMESTAMP_SCRAPED,
     TAG1,
     TAG2,
     TAG3,

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.idealista.scraper.model.Advertisement;
+import com.idealista.scraper.util.DateTimeUtils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -98,10 +99,13 @@ public class XlsExporter
 
     private void fillInTags(Row row, List<String> tags, int startIndex)
     {
-        for (String tag : tags)
+        if (tags != null)
         {
-            row.createCell(startIndex).setCellValue(tag);
-            startIndex++;
+            for (String tag : tags)
+            {
+                row.createCell(startIndex).setCellValue(tag);
+                startIndex++;
+            }
         }
     }
 
@@ -141,6 +145,7 @@ public class XlsExporter
         row.createCell(++columnIndex).setCellValue(ad.getAgentEmail());
         row.createCell(++columnIndex).setCellValue(ad.getUrl().toString());
         row.createCell(++columnIndex).setCellValue(ad.hasImages());
+        row.createCell(++columnIndex).setCellValue(DateTimeUtils.getTimestampFoXls());
         fillInTags(row, ad.getTags(), ++columnIndex);
     }
 }
