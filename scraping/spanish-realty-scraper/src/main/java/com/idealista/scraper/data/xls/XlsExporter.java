@@ -30,6 +30,9 @@ public class XlsExporter
     private Sheet sheet;
     private String fileName;
 
+    @Value("${appendTimestampToXls}")
+    private boolean appendTimestampToXls;
+
     public XlsExporter(@Value(value = "${xlsFileName}") String fileName)
     {
         this.fileName = fileName;
@@ -55,6 +58,13 @@ public class XlsExporter
 
     public void initWorkBook()
     {
+        if (appendTimestampToXls)
+        {
+            int dotIndex = fileName.lastIndexOf(".");
+            String extension = dotIndex > 0 ? fileName.substring(dotIndex) : "";
+            String namePart = fileName.replace(extension, "");
+            fileName = namePart + '_' + DateTimeUtils.getFilenameTimestamp() + extension;
+        }
         if (!new File(fileName).exists())
         {
             try (FileOutputStream fileOut = new FileOutputStream(fileName, true))
@@ -145,7 +155,7 @@ public class XlsExporter
         row.createCell(++columnIndex).setCellValue(ad.getAgentEmail());
         row.createCell(++columnIndex).setCellValue(ad.getUrl().toString());
         row.createCell(++columnIndex).setCellValue(ad.hasImages());
-        row.createCell(++columnIndex).setCellValue(DateTimeUtils.getTimestampFoXls());
+        row.createCell(++columnIndex).setCellValue(DateTimeUtils.getScrapTimestamp());
         fillInTags(row, ad.getTags(), ++columnIndex);
     }
 }

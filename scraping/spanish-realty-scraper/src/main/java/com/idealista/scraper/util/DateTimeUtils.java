@@ -5,12 +5,17 @@ import java.text.SimpleDateFormat;
 
 public final class DateTimeUtils
 {
-    public static String getTimeStamp()
+    public static String getTimestamp()
     {
-        return getFormattedTimestamp(new SimpleDateFormat("yyyy.MM.dd_HH-mm-ss_SSS"));
+        return getFormattedTimestamp(new SimpleDateFormat("(dd-MM-yyyy)_(HH-mm-ss)_SSS"));
     }
 
-    public static String getTimestampFoXls()
+    public static String getFilenameTimestamp()
+    {
+        return getFormattedTimestamp(new SimpleDateFormat("(dd-MM-yyyy_HH-mm)"));
+    }
+    
+    public static String getScrapTimestamp()
     {
         return getFormattedTimestamp(new SimpleDateFormat("HH:mm dd/MM/yy"));
     }
