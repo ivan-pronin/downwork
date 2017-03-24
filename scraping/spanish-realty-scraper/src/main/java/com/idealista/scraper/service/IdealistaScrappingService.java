@@ -13,6 +13,7 @@ import com.idealista.scraper.model.search.IdealistaSearchAttributes;
 import com.idealista.scraper.model.search.SearchAttributes;
 import com.idealista.scraper.scraping.advextractor.IdealistaAdvertisementExtractor;
 import com.idealista.scraper.scraping.category.AdUrlsFinder;
+import com.idealista.scraper.scraping.category.FoundUrlsManager;
 import com.idealista.scraper.scraping.category.IAdUrlsFinder;
 import com.idealista.scraper.scraping.category.ICategoriesChooser;
 import com.idealista.scraper.webdriver.INavigateActions;
@@ -79,6 +80,9 @@ public class IdealistaScrappingService implements IScrappingService
 
     @Autowired
     private ICategoriesChooser categoriesChooser;
+    
+    @Autowired
+    private FoundUrlsManager foundUrlsManager;
 
     private BlockingQueue<Future<Advertisement>> advertismentExtractorResults;
     private BlockingQueue<URL> advertismentUrlsInProgress = new LinkedBlockingQueue<>();
@@ -102,7 +106,9 @@ public class IdealistaScrappingService implements IScrappingService
 
         ((AdUrlsFinder) adUrlsFinder).setCategoriesBaseUrls(categoriesBaseUrls);
         Set<Category> adUrlsToProcess = adUrlsFinder.findNewAdUrlsAmount(maxAdsToProcess);
-
+        
+        adUrlsToProcess = foundUrlsManager.getNewestAdsById(adUrlsToProcess);
+        
         Iterator<Category> iterator = adUrlsToProcess.iterator();
         for (int i = 0; i < maxAdsToProcess; i++)
         {

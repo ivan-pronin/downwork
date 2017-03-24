@@ -1,24 +1,23 @@
 package com.idealista.scraper;
 
-import static org.junit.Assert.*;
-
 import com.idealista.scraper.data.DataType;
 import com.idealista.scraper.data.IDataTypeService;
 import com.idealista.scraper.data.xls.XlsExporter;
 import com.idealista.scraper.model.Advertisement;
 import com.idealista.scraper.model.Category;
+import com.idealista.scraper.scraping.category.FoundUrlsManager;
 import com.idealista.scraper.scraping.paginator.IPaginator;
 import com.idealista.scraper.service.IScrappingService;
 import com.idealista.scraper.ui.page.advertisement.VibboAdvertisementPage;
+import com.idealista.scraper.util.FileUtils;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
+import org.apache.poi.ddf.EscherColorRef.SysIndexSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URL;
@@ -48,11 +47,25 @@ public class TestContextConfig
 
     @Autowired
     private XlsExporter xlsExporter;
+    
+    @Autowired
+    private FoundUrlsManager foundUrlsManager;
 
     @Test
+    public void testName23() throws Exception
+    {
+        Set<URL> urls = FileUtils.readUrlsFromFile("urls.txt");
+        Set<Category> cats = new HashSet<>();
+        
+        urls.forEach(e -> cats.add(new Category(e, null)));
+        
+        Set<Category> result = foundUrlsManager.getNewestAdsById(cats);
+        result.forEach(System.out::println);        
+    }
+    
+    //@Test
     public void testName8() throws Exception
     {
-        xlsExporter.initWorkBook();
         xlsExporter.writeResultsToXls(
                 new HashSet<>(Arrays.asList(new Advertisement(new URL("http://www.tut.by"), "title"))));
     }

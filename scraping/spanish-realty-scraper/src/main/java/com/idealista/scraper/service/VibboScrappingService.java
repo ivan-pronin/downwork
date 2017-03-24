@@ -10,6 +10,7 @@ import com.idealista.scraper.model.search.SearchAttributes;
 import com.idealista.scraper.model.search.VibboSearchAttributes;
 import com.idealista.scraper.scraping.advextractor.IAdvertisementExtractorFactory;
 import com.idealista.scraper.scraping.category.AdUrlsFinder;
+import com.idealista.scraper.scraping.category.FoundUrlsManager;
 import com.idealista.scraper.scraping.category.IAdUrlsFinder;
 import com.idealista.scraper.scraping.category.ICategoriesChooser;
 import com.idealista.scraper.webdriver.INavigateActions;
@@ -70,6 +71,9 @@ public class VibboScrappingService implements IScrappingService
 
     @Autowired
     private IAdvertisementExtractorFactory advertismentExtractorFactory;
+    
+    @Autowired
+    private FoundUrlsManager foundUrlsManager;
 
     private BlockingQueue<Future<Advertisement>> advertismentExtractorResults;
     private BlockingQueue<URL> advertismentUrlsInProgress = new LinkedBlockingQueue<>();
@@ -96,6 +100,8 @@ public class VibboScrappingService implements IScrappingService
         ((AdUrlsFinder) adUrlsFinder).setCategoriesBaseUrls(categoriesBaseUrls);
         Set<Category> adUrlsToProcess = adUrlsFinder.findNewAdUrlsAmount(maxAdsToProcess);
 
+        adUrlsToProcess = foundUrlsManager.getNewestAdsById(adUrlsToProcess);
+        
         Iterator<Category> iterator = adUrlsToProcess.iterator();
         for (int i = 0; i < maxAdsToProcess; i++)
         {

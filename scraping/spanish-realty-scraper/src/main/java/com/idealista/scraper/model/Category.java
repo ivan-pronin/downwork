@@ -3,7 +3,7 @@ package com.idealista.scraper.model;
 import java.net.URL;
 import java.util.Objects;
 
-public class Category
+public class Category 
 {
     private URL url;
     private String state;
@@ -23,10 +23,13 @@ public class Category
     public Category(URL url, Category templateCategory)
     {
         this.url = url;
-        this.state = templateCategory.getState();
-        this.type = templateCategory.getType();
-        this.subType = templateCategory.getSubType();
-        this.province = templateCategory.getProvince();
+        if (templateCategory != null)
+        {
+            this.state = templateCategory.getState();
+            this.type = templateCategory.getType();
+            this.subType = templateCategory.getSubType();
+            this.province = templateCategory.getProvince();
+        }
     }
 
     public Category(URL url, String state, String type, String subType)
