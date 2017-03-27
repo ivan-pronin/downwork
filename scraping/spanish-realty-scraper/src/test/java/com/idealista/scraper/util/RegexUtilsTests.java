@@ -8,6 +8,13 @@ import java.util.regex.Pattern;
 
 public class RegexUtilsTests
 {
+    
+    @Test
+    public void testName() throws Exception
+    {
+        String str = "http://www.vibbo.com/cadiz/local-en-cadiz-centro-cadiz/a98275762/?ca=0_s&st=a&c=62";
+        System.out.println(RegexUtils.extractPostalCode(str));
+    }
     //@Test
     public void testExtractDigit() throws Exception
     {
@@ -59,7 +66,7 @@ public class RegexUtilsTests
         System.out.println("" + RegexUtils.extractNumber(s3));
     }
     
-    @Test
+    //@Test
     public void testGetTags() throws Exception
     {
         final String string = "habitaciones";
@@ -72,6 +79,6 @@ public class RegexUtilsTests
              + "luminoso, primeras calidades. Disribuido en tres plantas + sotano/garaje. ";
         String foundMatch = RegexUtils.getDigitStringOccurenceInText(string, text);
         System.out.println(foundMatch);
-        System.out.println("Digit: " + Integer.parseInt(RegexUtils.extractDigit(foundMatch)));
+        //System.out.println("Digit: " + Integer.parseInt(RegexUtils.extractDigit(foundMatch)));
     }
 }
