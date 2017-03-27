@@ -109,7 +109,7 @@ public final class RegexUtils
 
     public static String replaceAllNonDigitCharacters(String text)
     {
-        return text.replaceAll("[^-?0-9]+", "");
+        return text.replaceAll("[^0-9]+", "");
     }
     
     private static String getSecondArrayElement(String[] parts)

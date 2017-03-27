@@ -73,24 +73,20 @@ public final class FileUtils
             e.printStackTrace();
         }
         Set<String> urlsString = new HashSet<>();
-        String separator = "https://";
         while (sc.hasNextLine())
         {
-            String line = sc.nextLine();
-            if (line.contains(separator))
-            {
-                urlsString.add(line.split(separator)[1]);
-            }
+            urlsString.add(sc.nextLine());
             continue;
         }
         return urlsString.stream().map(t ->
         {
             try
             {
-                return new URL(separator + t);
+                return new URL(t);
             }
             catch (MalformedURLException e)
             {
+                System.out.println("Error while parsing URL for: " + t);
                 e.printStackTrace();
             }
             return null;
