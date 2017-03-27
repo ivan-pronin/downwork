@@ -175,17 +175,18 @@ public class VibboAdvertisementPage extends BasePage
 
     private String findBedroomsTechInfo()
     {
-        return findTechInfo(1);
+        return findTechInfo("hab");
     }
 
     private String findSizeTechInfo()
     {
-        return findTechInfo(2);
+        return findTechInfo("Superficie");
     }
 
-    private String findTechInfo(int index)
+    private String findTechInfo(String spanContents)
     {
-        return searchActions.getElementTextByXpath(String.format("(//div[@class='techInfo']//span)[%s]", index));
+        return searchActions.getElementTextByXpath(
+                String.format("//div[@class='techInfo']//span[contains(.,'%s')]/b", spanContents));
     }
 
     private String[] getAddressParts()
