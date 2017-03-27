@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+	<Properties>
+		<Property name="mainPatternLayout">%d{HH:mm:ss.SSS} [%-15t] %-5level %-26C{1} - %msg%n
+		</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console">
+			<PatternLayout pattern="${mainPatternLayout}" />
+		</Console>
+		
+		<RollingFile name="fileAppender" fileName="logs/crunchbase_app.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/realty_app_%d{yyyy-MM-dd}-%i.log" append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+		
+	</Appenders>
+	<Loggers>
+	
+		<Root level="DEBUG">
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="fileAppender"/>
+		</Root>
+
+	</Loggers>
+</Configuration>
