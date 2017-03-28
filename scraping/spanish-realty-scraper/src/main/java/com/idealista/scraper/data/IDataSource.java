@@ -10,4 +10,6 @@ public interface IDataSource
     void writeUrlsToFile(String fileName, Set<URL> urlsToAdd);
 
     void removeUrlsFromFile(String fileName, Set<URL> urlsToRemove);
+    
+    void writeProxiesToFile(Set<String> proxies);
 }

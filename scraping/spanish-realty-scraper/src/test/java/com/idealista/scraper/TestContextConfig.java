@@ -1,5 +1,7 @@
 package com.idealista.scraper;
 
+import static org.junit.Assert.*;
+
 import com.idealista.scraper.data.DataType;
 import com.idealista.scraper.data.IDataTypeService;
 import com.idealista.scraper.data.xls.XlsExporter;
@@ -12,17 +14,18 @@ import com.idealista.scraper.ui.page.advertisement.VibboAdvertisementPage;
 import com.idealista.scraper.util.FileUtils;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
-import org.apache.poi.ddf.EscherColorRef.SysIndexSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RunWith(SpringRunner.class)
@@ -50,8 +53,25 @@ public class TestContextConfig
     
     @Autowired
     private FoundUrlsManager foundUrlsManager;
+    
+    @Value("#{ T(java.util.Arrays).asList(${proxySources}) }")
+    private List<Integer> proxies;
+    
+    //@Value("#{ T(java.util.Arrays).asList(${proxySourcesEmpty}) }")
+    private List<Integer> proxiesEmpty;
+    
+    //@Value("#{ T(java.util.Arrays).asList(${proxySourcesSingle}) }")
+    private List<Integer> proxiesSingle;
 
     @Test
+    public void testNamePr1() throws Exception
+    {
+        System.out.println(proxies);
+        System.out.println(proxiesEmpty);
+        System.out.println(proxiesSingle);
+    }
+    
+    //@Test
     public void testName23() throws Exception
     {
         Set<URL> urls = FileUtils.readUrlsFromFile("urls.txt");

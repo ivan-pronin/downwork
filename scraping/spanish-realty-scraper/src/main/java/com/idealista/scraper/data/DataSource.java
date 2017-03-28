@@ -72,6 +72,25 @@ public class DataSource implements IDataSource
     }
 
     @Override
+    public void writeProxiesToFile(Set<String> proxies)
+    {
+        LOGGER.info("Writing <{}> proxies to file: /settings/proxies.txt", proxies.size());
+        String fileName = "./settings/proxies.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName)))
+        {
+            for (String proxy : proxies)
+            {
+                writer.write(proxy + System.lineSeparator());
+            }
+            LOGGER.info("Proxies file has been updated.");
+        }
+        catch (IOException e)
+        {
+            LOGGER.error("Error while writing to file: {}", fileName);
+        }
+    }
+
+    @Override
     public void writeUrlsToFile(String fileName, Set<URL> urlsToAdd)
     {
         LOGGER.info("Writing <{}> URLs to file: {}", urlsToAdd.size(), fileName);
