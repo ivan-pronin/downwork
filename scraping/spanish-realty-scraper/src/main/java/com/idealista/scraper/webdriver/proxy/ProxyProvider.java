@@ -1,5 +1,6 @@
 package com.idealista.scraper.webdriver.proxy;
 
+import com.idealista.scraper.data.IDataSource;
 import com.idealista.scraper.util.FileUtils;
 import com.idealista.scraper.webdriver.WebDriverFactory;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
@@ -46,9 +47,12 @@ public class ProxyProvider implements IProxyProvider
     @Autowired
     private ProxyFetcher proxyFetcher;
     
+    @Autowired
+    private IDataSource dataSource;
+    
     @Value("${maxProxyResponseTime}")
     private long maxProxyResponseTime;
-
+    
     @Override
     public ProxyAdapter getNextWorkingProxy()
     {
@@ -62,6 +66,7 @@ public class ProxyProvider implements IProxyProvider
             {
                 proxyFetcher.setDriver(getDriver());
                 fetchedProxies = proxyFetcher.fetchProxies();
+                dataSource.writeProxiesToFile(fetchedProxies);
             }
             workingProxy = getWorkingProxyFromSet(fetchedProxies);
             if (workingProxy == null)
@@ -84,8 +89,10 @@ public class ProxyProvider implements IProxyProvider
                 }
                 return getNextWorkingProxy();
             }
+            dataSource.writeProxiesToFile(fetchedProxies);
             return workingProxy;
         }
+        dataSource.writeProxiesToFile(proxiesInputData);
         return workingProxy;
     }
 

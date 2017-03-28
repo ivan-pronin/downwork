@@ -152,7 +152,7 @@ public class IdealistaAdvertisementPage extends BasePage
         {
             return extractSpecificCharacteristics(M_2).toString();
         }
-        int size = RegexUtils.extractNumber(text);
+        int size = RegexUtils.extractBigNumber(text);
         return size > 0 ? "" + size : INFO_NOT_FOUND;
     }
 

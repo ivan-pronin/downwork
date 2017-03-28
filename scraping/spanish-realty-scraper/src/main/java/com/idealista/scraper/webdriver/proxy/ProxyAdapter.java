@@ -39,6 +39,6 @@ public class ProxyAdapter
     @Override
     public String toString()
     {
-        return "ProxyAdapter [" + host + ":" + port + "]";
+        return "[" + host + ":" + port + "]";
     }
 }

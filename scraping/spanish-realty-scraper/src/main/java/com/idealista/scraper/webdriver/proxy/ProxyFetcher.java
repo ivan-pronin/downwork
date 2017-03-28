@@ -10,6 +10,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -33,11 +34,20 @@ public class ProxyFetcher
     @Autowired
     private ClickActions clickActions;
 
+    @Value("#{ T(java.util.Arrays).asList(${proxySources}) }")
+    private List<Integer> proxySources;
+
     public Set<String> fetchProxies()
     {
         Set<String> proxies = new HashSet<>();
-        proxies.addAll(fetchProxiesFromUsProxyOrg());
-        proxies.addAll(fetchProxiesFromFreeProxyCz());
+        if (proxySources.contains(1))
+        {
+            proxies.addAll(fetchProxiesFromUsProxyOrg());
+        }
+        if (proxySources.contains(2))
+        {
+            proxies.addAll(fetchProxiesFromFreeProxyCz());
+        }
         LOGGER.info("Printing all fetched proxies ... ");
         proxies.forEach(LOGGER::info);
         driver.quit();
