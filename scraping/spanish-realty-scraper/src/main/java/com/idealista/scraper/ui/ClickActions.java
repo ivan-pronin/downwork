@@ -47,10 +47,10 @@ public class ClickActions
         {
             // scrolling for element into view
             LOGGER.debug("Could not click the element: {}", e.getMessage());
-            WebDriverUtils.takeScreenShot("Right after error", driver);
+            //WebDriverUtils.takeScreenShot("Right after error", driver);
             JavascriptExecutor js = ((JavascriptExecutor) driver);
             js.executeScript("arguments[0].scrollIntoView();", element);
-            WebDriverUtils.takeScreenShot("After scrollIntoView() attempt", driver);
+            //WebDriverUtils.takeScreenShot("After scrollIntoView() attempt", driver);
             element.click();
         }
         LOGGER.debug("Element was clicked: {}", element);
