@@ -5,8 +5,14 @@
 .settings
 .project
 .classpath
-*bin*
-*output*
+/bin/
+/output/
 /build/
-*logs*
-*screenshots*
+
+#Ignore non-project files
+*.log
+*.7z
+*.txt
+*.xls*
+*.html
+*.csv
