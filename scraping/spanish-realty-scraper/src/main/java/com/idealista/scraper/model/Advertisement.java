@@ -48,7 +48,7 @@ public class Advertisement
     private int bedRooms;
     private int bathRooms;
     private String size;
-    private int price;
+    private String price;
     private String energyCertification;
     private String professional;
     private String agent;
@@ -148,7 +148,7 @@ public class Advertisement
         return postalCode;
     }
 
-    public int getPrice()
+    public String getPrice()
     {
         return price;
     }
@@ -279,7 +279,7 @@ public class Advertisement
         this.postalCode = postalCode;
     }
 
-    public void setPrice(int price)
+    public void setPrice(String price)
     {
         this.price = price;
     }

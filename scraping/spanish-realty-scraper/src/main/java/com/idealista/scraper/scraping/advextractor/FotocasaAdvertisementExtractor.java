@@ -2,8 +2,7 @@ package com.idealista.scraper.scraping.advextractor;
 
 import com.idealista.scraper.model.Advertisement;
 import com.idealista.scraper.model.Category;
-import com.idealista.scraper.model.RealtyType;
-import com.idealista.scraper.ui.page.advertisement.IdealistaAdvertisementPage;
+import com.idealista.scraper.ui.page.advertisement.FotocasaAdvertisementPage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,33 +10,33 @@ import org.openqa.selenium.WebDriver;
 
 import java.net.URL;
 
-public final class IdealistaAdvertisementExtractor extends AbstractAdvertisementExtractor 
+public class FotocasaAdvertisementExtractor extends AbstractAdvertisementExtractor
 {
-    private static final Logger LOGGER = LogManager.getLogger(IdealistaAdvertisementExtractor.class);
-    private String language;
-    
-    protected IdealistaAdvertisementExtractor(Category category)
+    public FotocasaAdvertisementExtractor(Category category)
     {
         super(category);
     }
 
+    private static final Logger LOGGER = LogManager.getLogger(VibboAdvertisementExtractor.class);
+
     @Override
-    public Advertisement call()
+    public Advertisement call() throws Exception
     {
         Category category = getCategory();
         URL url = category.getUrl();
         LOGGER.info("Scrapping the page: {}", url);
         WebDriver driver = getNavigateActions().get(url);
-        IdealistaAdvertisementPage page = new IdealistaAdvertisementPage();
+        FotocasaAdvertisementPage page = new FotocasaAdvertisementPage();
         page.setWebDriver(driver);
-        page.setLanguage(language);
-        Advertisement ad = new Advertisement(url, page.getTitle(), category.getType());
-        ad.setSubType(RealtyType.fromString(category.getSubType()).name());
-        ad.setProvince(category.getProvince());
+        Advertisement ad = new Advertisement(url, page.getTitle());
+        page.scrollToTheBottom();
+        ad.setType(page.getType());
+        ad.setSubType(page.getSubType());
+        ad.setProvince(page.getProvince());
         ad.setDateOfListing(page.getListingDate());
         ad.setNumberOfViews(page.getNumberOfViews());
         ad.setAddress(page.getAddress());
-        ad.setState(category.getState());
+        ad.setState(page.getState());
         ad.setCity(page.getCity());
         ad.setPostalCode(page.getPostalCode());
         ad.setAge(page.getAge());
@@ -54,10 +53,5 @@ public final class IdealistaAdvertisementExtractor extends AbstractAdvertisement
         ad.setHasImages(page.hasImages());
         ad.setTags(page.getTags());
         return ad;
-    }
-
-    public void setLanguage(String language)
-    {
-        this.language = language;
     }
 }

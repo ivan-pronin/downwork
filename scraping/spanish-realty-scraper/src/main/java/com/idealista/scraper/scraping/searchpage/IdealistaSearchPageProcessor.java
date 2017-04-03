@@ -2,9 +2,6 @@ package com.idealista.scraper.scraping.searchpage;
 
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.util.URLUtils;
-import com.idealista.scraper.webdriver.INavigateActions;
-import com.idealista.scraper.webdriver.WebDriverProvider;
-import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,28 +15,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class IdealistaSearchPageProcessor implements ISeachPageProcessor
+public class IdealistaSearchPageProcessor extends AbstractSearchPageProcessor
 {
     private static final Logger LOGGER = LogManager.getLogger(IdealistaSearchPageProcessor.class);
 
-    private Category category;
-    private WebDriverProvider webDriverProvider;
-    private INavigateActions navigateActions;
-    private ProxyMonitor proxyMonitor;
-
     public IdealistaSearchPageProcessor(Category category)
     {
-        this.category = category;
+        super(category);
     }
 
     @Override
     public Set<Category> call()
     {
+        Category category = getCategory();
         URL page = category.getUrl();
         LOGGER.info("Processing search page: {}", page);
-        WebDriver driver = webDriverProvider.get();
-        driver = navigateActions.get(page);
-        driver = proxyMonitor.checkForVerificationAndRestartDriver(driver);
+        WebDriver driver = getWebDriverProvider().get();
+        driver = getNavigateActions().get(page);
+        driver = getProxyMonitor().checkForVerificationAndRestartDriver(driver);
         List<WebElement> divContainer = driver.findElements(By.xpath("//div[@class='items-container']"));
         if (!divContainer.isEmpty())
         {
@@ -61,20 +54,5 @@ public class IdealistaSearchPageProcessor implements ISeachPageProcessor
         }
         LOGGER.error("Search page is empty.. Smth bad happened, returning empty collection from page: {}", page);
         return Collections.emptySet();
-    }
-
-    public void setNavigateActions(INavigateActions navigateActions)
-    {
-        this.navigateActions = navigateActions;
-    }
-
-    public void setProxyMonitor(ProxyMonitor proxyMonitor)
-    {
-        this.proxyMonitor = proxyMonitor;
-    }
-
-    public void setWebDriverProvider(WebDriverProvider webDriverProvider)
-    {
-        this.webDriverProvider = webDriverProvider;
     }
 }

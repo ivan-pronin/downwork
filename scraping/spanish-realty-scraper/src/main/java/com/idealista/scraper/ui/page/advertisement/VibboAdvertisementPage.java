@@ -18,12 +18,12 @@ public class VibboAdvertisementPage extends BasePage
 
     public String getAge()
     {
-        return INFO_NOT_PRESENT;
+        return NA_FOR_THIS_SITE;
     }
 
     public String getAgentEmail()
     {
-        return INFO_NOT_PRESENT;
+        return NA_FOR_THIS_SITE;
     }
 
     public String getAgentPhone()
@@ -58,7 +58,7 @@ public class VibboAdvertisementPage extends BasePage
 
     public String getEnergyCertification()
     {
-        return INFO_NOT_PRESENT;
+        return NA_FOR_THIS_SITE;
     }
 
     public String getListingAgent()
@@ -93,10 +93,10 @@ public class VibboAdvertisementPage extends BasePage
         return null;
     }
 
-    public int getPrice()
+    public String getPrice()
     {
         String priceText = searchActions.getElementTextByXpath("//span[@class='price']");
-        return RegexUtils.extractBigNumber(priceText);
+        return "" + RegexUtils.extractBigNumber(priceText);
     }
 
     public String getProfessional()
@@ -125,7 +125,7 @@ public class VibboAdvertisementPage extends BasePage
 
     public String getState()
     {
-        return INFO_NOT_PRESENT;
+        return NA_FOR_THIS_SITE;
     }
 
     public String getSubType()

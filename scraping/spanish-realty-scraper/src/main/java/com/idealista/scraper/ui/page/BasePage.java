@@ -9,10 +9,9 @@ public abstract class BasePage
 {
     protected static final String TODO = "// TODO";
     protected static final String INFO_NOT_FOUND = "Info not found";
-    protected static final String INFO_NOT_PRESENT = "N/A for this site";
-
+    protected static final String NA_FOR_THIS_SITE = "N/A for this site";
     protected static final String PRIVATE = "Private";
-    private static final String PROFESSIONAL = "Professional";
+    protected static final String PROFESSIONAL = "Professional";
 
     protected SearchActions searchActions = new SearchActions();
     protected ClickActions clickActions = new ClickActions();

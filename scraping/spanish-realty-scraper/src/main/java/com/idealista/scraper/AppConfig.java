@@ -5,12 +5,15 @@ import java.io.IOException;
 import com.idealista.scraper.model.parser.ISearchAttributesParser;
 import com.idealista.scraper.model.parser.IdealistaSearchAttributesParser;
 import com.idealista.scraper.model.parser.VibboSearchAttributesParser;
+import com.idealista.scraper.scraping.category.FotocasaCategoriesChooser;
 import com.idealista.scraper.scraping.category.ICategoriesChooser;
 import com.idealista.scraper.scraping.category.IdealistaCategoriesChooser;
 import com.idealista.scraper.scraping.category.VibboCategoriesChooser;
+import com.idealista.scraper.scraping.paginator.FotocasaPaginator;
 import com.idealista.scraper.scraping.paginator.IPaginator;
 import com.idealista.scraper.scraping.paginator.IdealistaPaginator;
 import com.idealista.scraper.scraping.paginator.VibboPaginator;
+import com.idealista.scraper.service.FotocasaScrappingService;
 import com.idealista.scraper.service.IScrappingService;
 import com.idealista.scraper.service.IdealistaScrappingService;
 import com.idealista.scraper.service.ScrapTarget;
@@ -67,6 +70,8 @@ public class AppConfig
                 return new VibboCategoriesChooser();
             case IDEALISTA:
                 return new IdealistaCategoriesChooser();
+            case FOTOCASA:
+                return new FotocasaCategoriesChooser();
             default:
                 throw illegalException("ICategoriesChooser");
         }
@@ -81,6 +86,8 @@ public class AppConfig
                 return new VibboPaginator();
             case IDEALISTA:
                 return new IdealistaPaginator();
+            case FOTOCASA:
+                return new FotocasaPaginator();
             default:
                 throw illegalException("IPaginator");
         }
@@ -95,6 +102,8 @@ public class AppConfig
                 return new VibboScrappingService();
             case IDEALISTA:
                 return new IdealistaScrappingService();
+            case FOTOCASA:
+                return new FotocasaScrappingService();                
             default:
                 illegalException("IScrappingService");
         }
@@ -110,6 +119,8 @@ public class AppConfig
                 return new VibboSearchAttributesParser();
             case IDEALISTA:
                 return new IdealistaSearchAttributesParser();
+            case FOTOCASA:
+                return null;
             default:
                 throw illegalException("ISearchAttributesParser");
         }

@@ -150,6 +150,10 @@ public class DataSource implements IDataSource
         cachedData.addAll(urlsToAdd);
         for (URL url : urlsToAdd)
         {
+            if (url == null)
+            {
+                continue;
+            }
             writer.write(url.toString() + System.lineSeparator());
         }
     }

@@ -22,6 +22,14 @@ public enum ScrapTarget
             }
             return getMainPageUrl() + localizationSuffix;
         }
+    }, 
+    FOTOCASA("http://www.fotocasa.es/es/")
+    {
+        @Override
+        public String getMainPageLocalizedUrl(String language)
+        {
+            throw new UnsupportedOperationException("Property <language> is not applicable to FOTOCASA");
+        }
     };
 
     private String mainPageUrl;

@@ -96,4 +96,10 @@ public final class WebDriverUtils
         }
         LOGGER.error("Failed to load the page");
     }
+
+    public static void waitForAllContentToLoad(WebDriver webDriver)
+    {
+        waitForJSToLoad(webDriver);
+        waitForPageLoad(webDriver);
+    }
 }

@@ -47,17 +47,53 @@ public class ClickActions
         {
             // scrolling for element into view
             LOGGER.debug("Could not click the element: {}", e.getMessage());
-            //WebDriverUtils.takeScreenShot("Right after error", driver);
+            // WebDriverUtils.takeScreenShot("Right after error", driver);
             JavascriptExecutor js = ((JavascriptExecutor) driver);
             js.executeScript("arguments[0].scrollIntoView();", element);
-            //WebDriverUtils.takeScreenShot("After scrollIntoView() attempt", driver);
+            // WebDriverUtils.takeScreenShot("After scrollIntoView() attempt", driver);
             element.click();
         }
         LOGGER.debug("Element was clicked: {}", element);
     }
 
+    public void setElementTextFast(WebElement element, String text)
+    {
+        if (element == null)
+        {
+            LOGGER.debug("Element to enter text is null ...");
+            return;
+        }
+        element.clear();
+        element.sendKeys(text);
+        LOGGER.info("Text <{}> was entered to element <{}>", text, element);
+    }
+
     public void setWebDriver(WebDriver driver)
     {
         this.driver = driver;
+    }
+
+    public void scrollToTheBottom()
+    {
+        JavascriptExecutor js = ((JavascriptExecutor) driver);
+        js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+    }
+    
+    public void scrollToTheTop()
+    {
+        JavascriptExecutor js = ((JavascriptExecutor) driver);
+        js.executeScript("window.scrollTo(0, 0)");
+    }
+
+    public void scrollScreenDown()
+    {
+        JavascriptExecutor js = ((JavascriptExecutor) driver);
+        js.executeScript("window.scrollBy(0, 1000)");
+    }
+    
+    public void scrollToElement(WebElement element)
+    {
+        JavascriptExecutor js = ((JavascriptExecutor) driver);
+        js.executeScript("arguments[0].scrollIntoView(true);",element);
     }
 }

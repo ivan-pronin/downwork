@@ -1,77 +1,38 @@
 package com.idealista.scraper.page;
 
+import com.idealista.scraper.AppConfig;
+import com.idealista.scraper.service.ScrapTarget;
+import com.idealista.scraper.ui.page.FotocasaStartPage;
 import com.idealista.scraper.ui.page.IdealistaStartPage;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Set;
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class StartPageTests
 {
 
+    @Autowired
+    private WebDriverProvider webDriverProvider;
     private static final Logger LOGGER = LogManager.getLogger(StartPageTests.class);
-    private WebDriverProvider webDriverProvider = new WebDriverProvider();
+    
+//    private WebDriverProvider webDriverProvider = new WebDriverProvider();
 
-    // @Test
+    @Test
     public void testSelectAction() throws Exception
     {
         WebDriver driver = webDriverProvider.get();
-        driver.navigate().to("https://www.idealista.com/en/");
-        IdealistaStartPage startPage = new IdealistaStartPage(driver);
-        startPage.selectOperation("Buy");
-        synchronized (this)
-        {
-            this.wait(1000);
-        }
-        startPage.selectOperation("Share");
-        synchronized (this)
-        {
-            this.wait(1000);
-        }
-        startPage.selectOperation("Rent");
+        driver.navigate().to(ScrapTarget.FOTOCASA.getMainPageUrl());
+        FotocasaStartPage startPage = new FotocasaStartPage();
+        startPage.setWebDriver(driver);
+        startPage.selectOptionsAndStartSearch("Alquiler", "Barcelona", true);
     }
-
-    // @Test
-    public void testGetAvailableTypologies()
-    {
-        WebDriver driver = webDriverProvider.get();
-        driver.navigate().to("https://www.idealista.com/en/");
-        IdealistaStartPage startPage = new IdealistaStartPage(driver);
-        startPage.selectOperation("Buy");
-        LOGGER.info(startPage.getAvailableTypologies());
-        startPage.selectOperation("Share");
-        LOGGER.info(startPage.getAvailableTypologies());
-        startPage.selectOperation("Rent");
-        LOGGER.info(startPage.getAvailableTypologies());
-    }
-
-    @Test
-    public void testGetAvailableLocations()
-    {
-        WebDriver driver = webDriverProvider.get();
-        driver.navigate().to("https://www.idealista.com/en/");
-        IdealistaStartPage startPage = new IdealistaStartPage(driver);
-        startPage.selectOperation("Buy");
-        startPage.selectTypology("Homes");
-        Set<String> availableLocations = startPage.getAvailableLocations();
-        LOGGER.info("Total available locations: {}. List: {}", availableLocations.size(),
-                availableLocations);
-    }
-
-    //@Test
-    public void testSelectLocationAndSearch()
-    {
-        WebDriver driver = webDriverProvider.get();
-        driver.navigate().to("https://www.idealista.com/en/");
-        IdealistaStartPage startPage = new IdealistaStartPage(driver);
-        startPage.selectOperation("Buy");
-        startPage.selectTypology("Homes");
-        startPage.selectLocation("Barcelona");
-        startPage.clickSearch();
-    }
-
 }

@@ -33,12 +33,12 @@ public class IdealistaAdvertisementPage extends BasePage
 
     public String getAge()
     {
-        return INFO_NOT_PRESENT;
+        return NA_FOR_THIS_SITE;
     }
 
     public String getAgentEmail()
     {
-        return INFO_NOT_PRESENT;
+        return NA_FOR_THIS_SITE;
     }
 
     public String getAgentPhone()
@@ -123,7 +123,7 @@ public class IdealistaAdvertisementPage extends BasePage
 
     public String getNumberOfViews()
     {
-        return INFO_NOT_PRESENT;
+        return NA_FOR_THIS_SITE;
     }
 
     public String getPostalCode()
@@ -131,11 +131,11 @@ public class IdealistaAdvertisementPage extends BasePage
         return RegexUtils.extractPostalCode(getAdvertizerText());
     }
 
-    public int getPrice()
+    public String getPrice()
     {
         String text = searchActions.getElementText(
                 searchActions.findElementsByXpath("//div[@class='info-data']//span[@class='txt-big txt-bold']"));
-        return RegexUtils.extractBigNumber(text);
+        return "" + RegexUtils.extractBigNumber(text);
     }
 
     public String getProfessional()

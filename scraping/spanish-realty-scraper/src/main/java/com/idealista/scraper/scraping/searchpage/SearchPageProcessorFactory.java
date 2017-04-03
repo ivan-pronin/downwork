@@ -27,22 +27,24 @@ public class SearchPageProcessorFactory implements ISearchPageProcessorFactory
     @Override
     public ISeachPageProcessor create(Category category)
     {
+        AbstractSearchPageProcessor processor = null;
         switch (appConfig.getScrapTarget())
         {
             case IDEALISTA:
-                IdealistaSearchPageProcessor idealistaProcessor = new IdealistaSearchPageProcessor(category);
-                idealistaProcessor.setNavigateActions(navigateActions);
-                idealistaProcessor.setProxyMonitor(proxyMonitor);
-                idealistaProcessor.setWebDriverProvider(webDriverProvider);
-                return idealistaProcessor;
+                processor = new IdealistaSearchPageProcessor(category);
+                break;
             case VIBBO:
-                VibboSearchPageProcessor vibboProcessor = new VibboSearchPageProcessor(category);
-                vibboProcessor.setNavigateActions(navigateActions);
-                vibboProcessor.setProxyMonitor(proxyMonitor);
-                vibboProcessor.setWebDriverProvider(webDriverProvider);
-                return vibboProcessor;
+                processor = new VibboSearchPageProcessor(category);
+                break;
+            case FOTOCASA:
+                processor = new FotocasaSearchPageProcessor(category);
+                break;
             default:
                 throw new IllegalArgumentException("Could not create necessary ISearchPageProcessor object");
         }
+        processor.setNavigateActions(navigateActions);
+        processor.setProxyMonitor(proxyMonitor);
+        processor.setWebDriverProvider(webDriverProvider);
+        return processor;
     }
 }

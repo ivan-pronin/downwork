@@ -12,7 +12,7 @@ public final class DateTimeUtils
 
     public static String getFilenameTimestamp()
     {
-        return getFormattedTimestamp(new SimpleDateFormat("(dd-MM-yyyy_HH-mm)"));
+        return getFormattedTimestamp(new SimpleDateFormat("(dd-MM-yyyy)"));
     }
     
     public static String getScrapTimestamp()
