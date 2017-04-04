@@ -1,34 +1,41 @@
 package com.crunchbase.scraper;
 
+import static org.junit.Assert.*;
+
 import com.crunchbase.scraper.model.Company;
 import com.crunchbase.scraper.model.HtmlData;
-import com.crunchbase.scraper.util.CsvUtils;
+import com.crunchbase.scraper.util.DateTimeUtils;
 
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 
-import java.net.URLEncoder;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class Tests
 {
-    
+
     @Test
-    public void testName2() throws Exception
+    public void testName3() throws Exception
     {
-        System.out.println(URLEncoder.encode("qOddENxeLxL+13drGKYUgA==\n", "UTF8"));
-        System.out.println(URLEncoder.encode("qOddENxeLxL%2B13drGKYUgA%3D%3D%0A", "UTF8"));
+        System.out.println(" OUT1 ");
+        System.err.println(" ERR1 ");
+        String fileName = "./" + DateTimeUtils.getFilenameTimestamp() + "console.log";
+        String command = "dir > %s 2>&1 | type %s";
+        Runtime.getRuntime().exec(String.format(command, fileName, fileName));
     }
-    //@Test
+    
+    
     public void testName() throws Exception
     {
-        Set<Company> companies = new LinkedHashSet<>();
-        Set<String> companyTitles = CsvUtils.readCsvToString("i2.csv");
-        companyTitles.forEach(e -> companies.add(createCompany(e)));
-
-        CsvUtils.updateInputFile(companies, "i2.csv", "new_i3.csv");
+        long heapsize = Runtime.getRuntime().totalMemory();
+        System.out.println("heapsize is :: " + heapsize);
+        System.out.println("maxmemory is :: " + Runtime.getRuntime().maxMemory());
     }
 
     private Company createCompany(String title)
@@ -42,7 +49,7 @@ public class Tests
     private Set<HtmlData> createData()
     {
         Set<HtmlData> result = new HashSet<>();
-        for (int i = 0; i < new Random().nextInt(5) ; i ++)
+        for (int i = 0; i < new Random().nextInt(5); i++)
         {
             HtmlData item = new HtmlData();
             item.setFileName("fileName_" + i);

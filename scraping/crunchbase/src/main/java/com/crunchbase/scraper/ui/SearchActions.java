@@ -134,7 +134,7 @@ public class SearchActions
         catch (TimeoutException e)
         {
             LOGGER.warn("Failed to wait for presence of elements: {}", locator);
-            return null;
+            return Collections.emptyList();
         }
     }
 }

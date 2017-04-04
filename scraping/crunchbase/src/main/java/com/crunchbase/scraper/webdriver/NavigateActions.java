@@ -78,4 +78,25 @@ public class NavigateActions implements INavigateActions
         webDriverProvider.end();
         return webDriverProvider.get();
     }
+
+    @Override
+    public WebDriver get(String page)
+    {
+        try
+        {
+            URL url = new URL(page);
+            return get(url);
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Failed to parse URL from page: {}", page);
+            return null;
+        }
+    }
+
+    @Override
+    public WebDriver refresh()
+    {
+        return get(getDriver().getCurrentUrl());
+    }
 }

@@ -1,7 +1,6 @@
 package com.crunchbase.scraper.ui;
 
 import com.crunchbase.scraper.model.HtmlData;
-import com.crunchbase.scraper.service.CrunchbaseScraperService;
 import com.crunchbase.scraper.util.WaitUtils;
 import com.crunchbase.scraper.util.WebDriverUtils;
 
@@ -16,6 +15,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,17 +31,15 @@ public class StartPage
     private ClickActions clickActions = new ClickActions();
     private SearchActions searchActions = new SearchActions();
     private WebDriver driver;
+    private PageLoader pageLoader;
 
     public Set<HtmlData> getFirstFiveAutocompleteResults(String title)
     {
-        printStartSearching(title);
-        driver.get(CrunchbaseScraperService.CRUNCHBASE_COM);
-        WebDriverUtils.waitForJSToLoad(driver);
-
-        if (searchActions.waitForElement(By.xpath("//h2[text()='Trending on Crunchbase']"), 10) == null)
+        printStartSearching("Autocomplete", title);
+        if (!pageLoader.tryToLoadStartPage())
         {
-            LOGGER.warn("Failed to wait for //h2[text()='Trending on Crunchbase'] >> RETURNING empty set");
-            return Collections.emptySet();
+            LOGGER.error("PageLoader couldn't load start page. Returning empty marked collection");
+            return createHtmldataError();
         }
 
         List<WebElement> fieldSearch = searchActions.findElementsById("q");
@@ -56,6 +54,10 @@ public class StartPage
         catch (StaleElementReferenceException e)
         {
             fieldSearch = searchActions.findElementsById("q");
+            if (fieldSearch.isEmpty())
+            {
+                fieldSearch = searchActions.findElementsById("input-0");
+            }
             clickActions.setElementTextSlowly(fieldSearch, title);
         }
 
@@ -67,14 +69,14 @@ public class StartPage
 
         List<WebElement> autocomplete = searchActions
                 .waitForElements(By.xpath("//ul[@class='md-autocomplete-suggestions topSearchMenu']//li"), 5);
-        if (autocomplete == null)
+        if (autocomplete.isEmpty())
         {
             autocomplete = searchActions.waitForElements(By.xpath("//ul[@id='ui-id-1']//li"), 5);
         }
 
         Set<HtmlData> results = new HashSet<>();
         int count = 0;
-        if (autocomplete == null)
+        if (autocomplete.isEmpty())
         {
             LOGGER.error("No results were found for: {}", title);
             return Collections.emptySet();
@@ -116,14 +118,20 @@ public class StartPage
             clickActions.setElementTextSlowly(fieldSearch, "");
             builder.sendKeys(Keys.ESCAPE).perform();
             searchActions.waitForElementDisappear(By.xpath("//ul[@id='ui-id-1']//li"), 5);
-            WaitUtils.sleep(this, 3000);
         }
         return results;
     }
 
+    private Set<HtmlData> createHtmldataError()
+    {
+        HtmlData data = new HtmlData();
+        data.setFileName("ERROR");
+        return new HashSet<>(Arrays.asList(data));
+    }
+
     public Set<HtmlData> getFirstFiveSearchResults(String title)
     {
-        printStartSearching(title);
+        printStartSearching("Main search", title);
         List<WebElement> fieldSearch = searchActions.findElementsById("q");
         if (fieldSearch.isEmpty())
         {
@@ -137,17 +145,30 @@ public class StartPage
             clickActions.setElementTextFast(fieldSearch, title);
             fieldSearch.get(0).submit();
         }
-        searchActions.waitForElementDisappear(By.xpath("//h2[text()='Companies']"), 5);
-        WebDriverUtils.waitForPageLoad(driver);
-        WebDriverUtils.waitForJSToLoad(driver);
-        searchActions.waitForElement(By.xpath("//grid//div[@cb-grid-header]"), 10);
 
-        searchActions.waitForElements(
-                By.xpath(
-                        "//span[@class='identifier layout-row flex']//a[contains(@ng-if,'fieldFormatter.identifiers[0].href.length > 0')]"),
-                10);
-        List<WebElement> links = searchActions.findElementsByXpath(
-                "//span[@class='identifier layout-row flex']//a[contains(@ng-if,'fieldFormatter.identifiers[0].href.length > 0')]");
+        if (!pageLoader.tryToLoadSearchResultsPage())
+        {
+            LOGGER.error("PageLoader couldn't load search results page. Returning empty marked collection");
+            return createHtmldataError();
+        }
+
+        List<WebElement> resultsInfo = searchActions.findElementsByXpath("//results-info/h3[contains(.,'result')]");
+        if (noResultsFound(resultsInfo))
+        {
+            LOGGER.warn("No Search results were found for company: {}", title);
+            return Collections.emptySet();
+        }
+        List<WebElement> links = new ArrayList<>();
+        if (searchActions.waitForElement(By.xpath("//grid//div[@cb-grid-header]"), 10) != null)
+        {
+            links = searchActions.waitForElements(By.xpath("//span[@class='identifier layout-row flex']"
+                    + "//a[contains(@ng-if,'fieldFormatter.identifiers[0].href.length > 0')]"), 10);
+        }
+        else
+        {
+            LOGGER.warn("No Search results were found for company: {}", title);
+            return Collections.emptySet();
+        }
         int size = links.size();
 
         if (size > 5)
@@ -181,6 +202,11 @@ public class StartPage
         return results;
     }
 
+    private boolean noResultsFound(List<WebElement> resultsInfo)
+    {
+        return resultsInfo != null && !resultsInfo.isEmpty() && resultsInfo.get(0).getText().indexOf("0 results") == 0;
+    }
+
     public void setWebDriver(WebDriver driver)
     {
         this.driver = driver;
@@ -190,12 +216,26 @@ public class StartPage
 
     public void waitToLoad()
     {
-        searchActions.waitForElement(By.xpath("//h2[text()='Trending on Crunchbase']"), 60);
+        searchActions.waitForElement(By.xpath("//h2[text()='Trending on Crunchbase']"), 30);
     }
 
-    private void printStartSearching(String title)
+    public void waitForSearchToLoad()
     {
-        LOGGER.info("    ");
-        LOGGER.info("Searching for company: {}", title);
+        searchActions.waitForElement(By.id("main-header"), 10);
+    }
+
+    private void printStartSearching(String prefix, String title)
+    {
+        LOGGER.info("{}: Searching for company: {}", prefix, title);
+    }
+
+    public void waitToLoadFast()
+    {
+        searchActions.waitForElement(By.xpath("//h2[text()='Trending on Crunchbase']"), 30);
+    }
+
+    public void setPageLoader(PageLoader pageLoader)
+    {
+        this.pageLoader = pageLoader;
     }
 }
