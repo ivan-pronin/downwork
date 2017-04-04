@@ -76,7 +76,6 @@ public class WebDriverProvider implements IWebDriverProvider
         {
             webDriver.quit();
         }
-        webDriverFactory.shutDown();
     }
 
     @Override

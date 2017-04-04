@@ -9,4 +9,8 @@ public interface INavigateActions
     void navigateWithoutValidations(String page);
 
     WebDriver get(URL page);
+    
+    WebDriver get(String page);
+    
+    WebDriver refresh();
 }

@@ -7,12 +7,18 @@ public class WaitUtils
 {
     private static final Logger LOGGER = LogManager.getLogger(WaitUtils.class);
 
+    public static void sleepSeconds(Object object, long seconds)
+    {
+        sleep(object, seconds * 1000);
+    }
+
     public static void sleep(Object object, long millis)
     {
         synchronized (object)
         {
             try
             {
+                LOGGER.debug("{} is sleeping for {} seconds", object, (double) millis / 1000);
                 object.wait(millis);
             }
             catch (InterruptedException e)

@@ -1,5 +1,9 @@
 package com.crunchbase.scraper.webdriver.proxy;
 
+import com.crunchbase.scraper.data.IDataSource;
+import com.crunchbase.scraper.service.CrunchbaseScraperService;
+import com.crunchbase.scraper.ui.SearchActions;
+import com.crunchbase.scraper.ui.StartPage;
 import com.crunchbase.scraper.util.FileUtils;
 import com.crunchbase.scraper.webdriver.WebDriverFactory;
 import com.crunchbase.scraper.webdriver.WebDriverFactory.DriverType;
@@ -30,9 +34,7 @@ import java.util.regex.Pattern;
 @Component
 public class ProxyProvider implements IProxyProvider
 {
-    private static final int PAGE_LOAD_TIMEOUT = 180;
     private static final Logger LOGGER = LogManager.getLogger(ProxyProvider.class);
-    private static final String MAIN_PAGE_URL = "https://www.crunchbase.com/";
 
     public static final Pattern VALID_PROXY_ADDRESS_PATTERN = Pattern
             .compile("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}"
@@ -41,14 +43,22 @@ public class ProxyProvider implements IProxyProvider
     private Set<String> proxiesInputData = new HashSet<>();
     private Set<String> fetchedProxies = new HashSet<>();
 
+    private DriverType driverType;
+
     @Autowired
     private WebDriverFactory webDriverFactory;
 
     @Autowired
     private ProxyFetcher proxyFetcher;
 
+    @Autowired
+    private IDataSource dataSource;
+
     @Value("${maxProxyResponseTime}")
     private long maxProxyResponseTime;
+
+    @Value("${driverType}")
+    private String driverTypeString;
 
     @Override
     public ProxyAdapter getNextWorkingProxy()
@@ -63,6 +73,7 @@ public class ProxyProvider implements IProxyProvider
             {
                 proxyFetcher.setDriver(getDriver());
                 fetchedProxies = proxyFetcher.fetchProxies();
+                dataSource.writeProxiesToFile(fetchedProxies);
             }
             workingProxy = getWorkingProxyFromSet(fetchedProxies);
             if (workingProxy == null)
@@ -85,15 +96,18 @@ public class ProxyProvider implements IProxyProvider
                 }
                 return getNextWorkingProxy();
             }
+            dataSource.writeProxiesToFile(fetchedProxies);
             return workingProxy;
         }
+        dataSource.writeProxiesToFile(proxiesInputData);
         return workingProxy;
     }
 
     @PostConstruct
     private void initProxiesList()
     {
-        proxiesInputData = FileUtils.readFileToLines("proxies.txt");
+        proxiesInputData = FileUtils.readFileToLines("./proxies.txt");
+        driverType = DriverType.fromString(driverTypeString);
     }
 
     public void setWebDriverFactory(WebDriverFactory webDriverFactory)
@@ -110,12 +124,12 @@ public class ProxyProvider implements IProxyProvider
 
     private WebDriver getDriver()
     {
-        return webDriverFactory.create(DriverType.CHROME);
+        return webDriverFactory.create(driverType);
     }
 
     private WebDriver getDriver(ProxyAdapter proxy)
     {
-        return webDriverFactory.create(proxy, DriverType.CHROME);
+        return webDriverFactory.create(proxy, driverType);
     }
 
     private ProxyAdapter getWorkingProxyFromSet(Set<String> inputData)
@@ -176,12 +190,15 @@ public class ProxyProvider implements IProxyProvider
             return false;
         }
         WebDriver driver = getDriver(proxy);
-        driver.manage().timeouts().pageLoadTimeout(PAGE_LOAD_TIMEOUT, TimeUnit.SECONDS);
-        driver.manage().timeouts().setScriptTimeout(PAGE_LOAD_TIMEOUT, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
         try
         {
             Instant start = Instant.now();
-            driver.navigate().to(MAIN_PAGE_URL);
+            StartPage page = new StartPage();
+            page.setWebDriver(driver);
+            driver.navigate().to(CrunchbaseScraperService.CRUNCHBASE_COM);
+            page.waitToLoadFast();
+            LOGGER.info("loaded");
             Duration pageLoadTime = Duration.between(start, Instant.now());
             WebElement navBar = driver.findElement(By.id("q"));
             boolean isWorkingAndFast = navBar != null && isProxyFastEnough(pageLoadTime);

@@ -115,6 +115,8 @@ public class WebDriverFactory implements IWebDriverFactory
         WebDriver driver = null;
 
         FirefoxProfile profile = new ProfilesIni().getProfile("default");
+        profile.setPreference("browser.tabs.remote.autostart", false);
+        profile.setPreference("browser.tabs.remote.autostart.2", false);
         //FirefoxProfile profile = new FirefoxProfile();
 //        profile.setPreference("general.useragent.override", "MyBrowser1");
 //        profile.setPreference("network.cookie.cookieBehavior", 2);
@@ -136,7 +138,7 @@ public class WebDriverFactory implements IWebDriverFactory
                 driver = new HtmlUnitDriver();
                 break;
             case FIREFOX:
-                driver = new FirefoxDriver(profile);
+                driver = new FirefoxDriver();
                 break;
             default:
                 driver = new HtmlUnitDriver();
@@ -151,13 +153,5 @@ public class WebDriverFactory implements IWebDriverFactory
             manage.window().maximize();
         }
         return driver;
-    }
-
-    @Override
-    public void shutDown()
-    {
-        LOGGER.debug("Shutting down all ChromeDriverServices");
-        service.stop();
-        LOGGER.debug("Services should be shut down.");
     }
 }

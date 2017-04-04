@@ -29,6 +29,7 @@ public class ClickActions
         WebElement webElement = elements.get(0);
         webElement.clear();
         webElement.sendKeys(text);
+        LOGGER.info("Text <{}> was entered fast to element <{}>", text, webElement);
     }
 
     private void errorNoElements()
