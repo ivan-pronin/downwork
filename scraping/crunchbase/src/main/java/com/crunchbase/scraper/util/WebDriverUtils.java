@@ -4,12 +4,30 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public final class WebDriverUtils
 {
     private static final Logger LOGGER = LogManager.getLogger(WebDriverUtils.class);
+    private static List<String> binaries;
+
+    public static FirefoxBinary getRandomBinary()
+    {
+        List<String> binaries = getBinaries();
+        int size = binaries.size();
+        Random r = new Random();
+        String dirName = binaries.get(r.nextInt(size));
+        LOGGER.info("Returning Random FF_BINARY: {}", dirName);
+        return new FirefoxBinary(
+                new File(String.format("C:\\Users\\Admin\\ProgramFiles\\FF_pool\\%s\\firefox.exe", dirName)));
+    }
 
     public static boolean waitForJSToLoad(WebDriver driver)
     {
@@ -71,5 +89,15 @@ public final class WebDriverUtils
             }
         }
         LOGGER.error("Failed to load the page");
+    }
+
+    private static List<String> getBinaries()
+    {
+        if (binaries == null)
+        {
+            binaries = new ArrayList<>();
+            binaries.addAll(FileUtils.readFileToLines("ffBinaries.txt"));
+        }
+        return binaries;
     }
 }

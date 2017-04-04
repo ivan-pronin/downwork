@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
 
 import java.util.HashSet;
@@ -23,11 +24,12 @@ public class Tests
     @Test
     public void testName3() throws Exception
     {
-        System.out.println(" OUT1 ");
-        System.err.println(" ERR1 ");
-        String fileName = "./" + DateTimeUtils.getFilenameTimestamp() + "console.log";
-        String command = "dir > %s 2>&1 | type %s";
-        Runtime.getRuntime().exec(String.format(command, fileName, fileName));
+        FirefoxProfile profile = new FirefoxProfile();
+        profile.setPreference("permissions.default.image", 2);
+        profile.setPreference("permissions.default.stylesheet", 2);
+        profile.setPreference("dom.ipc.plugins.enabled.libflashplayer.so", false);
+        WebDriver driver = new FirefoxDriver(profile);
+        driver.get("https://www.crunchbase.com/organization/perch#/entity");
     }
     
     
