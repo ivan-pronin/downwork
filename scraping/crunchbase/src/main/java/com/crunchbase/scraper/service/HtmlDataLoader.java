@@ -1,21 +1,17 @@
 package com.crunchbase.scraper.service;
 
-import com.crunchbase.scraper.executor.ExecutorServiceProvider;
 import com.crunchbase.scraper.model.Company;
 import com.crunchbase.scraper.model.HtmlData;
 import com.crunchbase.scraper.ui.SearchActions;
+import com.crunchbase.scraper.util.FileUtils;
 import com.crunchbase.scraper.webdriver.INavigateActions;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -71,21 +67,15 @@ public class HtmlDataLoader implements Callable<Company>
             LOGGER.warn("NULL url for company: {}, skipping HTML loading", title);
             return;
         }
+        if (data.getFileName() != null)
+        {
+            LOGGER.info("HTML data was already loaded, skipping for company: {}", title);
+            return;
+        }
         String doc = loadDocument(url);
-        String nameAppender = counter == 1 ? "" : "_" + counter;
-        String fileName = title + nameAppender + ".html";
-        try
-        {
-            String subFolder = targetFile.split("\\.")[0];
-            FileUtils.writeStringToFile(new File("./htmlFiles/" + subFolder + "/" + fileName), doc,
-                    Charset.defaultCharset());
-            data.setFileName(fileName);
-        }
-        catch (IOException e1)
-        {
-            LOGGER.error("Failed to write to file: {}", e1.getMessage());
-        }
+        FileUtils.saveHtmlToFile(data, counter, title, doc, targetFile);
     }
+
 
     public void setInputCompany(Company inputCompany)
     {

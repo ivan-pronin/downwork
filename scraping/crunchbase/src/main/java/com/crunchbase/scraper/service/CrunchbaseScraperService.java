@@ -41,7 +41,7 @@ public class CrunchbaseScraperService
 
     @Value("${readEndRow}")
     private int readEndRow;
-
+    
     @Autowired
     private WebDriverProvider webDriverProvider;
     
@@ -59,7 +59,7 @@ public class CrunchbaseScraperService
         Set<Company> companies = Collections.synchronizedSet(new LinkedHashSet<>());
         Set<String> companyTitles = CsvUtils.readCsvToString(srcFile, readStartRow, readEndRow);
 //        Set<String> companyTitles = new HashSet<>(Arrays.asList("1Apeiron"));
-//        Set<String> companyTitles = FileUtils.readFileToLines("firms.txt");
+//        Set<String> companyTitles = FileUtils.readFileToLines("firms2.txt");
         
         companyTitles.forEach(System.out::println);
         

@@ -1,6 +1,5 @@
 package com.crunchbase.scraper.service;
 
-import com.crunchbase.scraper.executor.ExecutorServiceProvider;
 import com.crunchbase.scraper.model.Company;
 import com.crunchbase.scraper.webdriver.INavigateActions;
 

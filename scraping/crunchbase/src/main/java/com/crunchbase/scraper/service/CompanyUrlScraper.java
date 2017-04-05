@@ -24,6 +24,7 @@ public class CompanyUrlScraper implements Callable<Company>
     private PageLoader pageLoader;
     private static ThreadLocal<Boolean> loadedMainPage = ThreadLocal.withInitial(() -> Boolean.FALSE);
     private static volatile int waitSeconds;
+    private String targetFile;
 
     @Override
     public Company call() throws Exception
@@ -32,6 +33,7 @@ public class CompanyUrlScraper implements Callable<Company>
         StartPage page = new StartPage();
         page.setWebDriver(driver);
         page.setPageLoader(pageLoader);
+        page.setTargetFile(targetFile);
         if (!loadedMainPage.get())
         {
             // trying to launch browsers one by one, not simultaneously
@@ -65,5 +67,10 @@ public class CompanyUrlScraper implements Callable<Company>
     public void setPageLoader(PageLoader pageLoader)
     {
         this.pageLoader = pageLoader;
+    }
+
+    public void setTargetFile(String targetFile)
+    {
+        this.targetFile = targetFile;
     }
 }

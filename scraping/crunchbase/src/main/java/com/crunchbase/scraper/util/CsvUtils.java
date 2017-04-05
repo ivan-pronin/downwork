@@ -25,8 +25,8 @@ import java.util.Set;
 public final class CsvUtils
 {
     private static final String FIRM_NAME = "firm_name";
-    private static final String[] FILE_HEADER_MAPPING = {FIRM_NAME, "firm_name_id", "firm_id_linkedin", "file1",
-            "file2", "file3", "file4", "file5"};
+    private static final String[] FILE_HEADER_MAPPING = {"OriginalOrder", FIRM_NAME, "firm_name_id", "firm_id_linkedin",
+            "file1", "file2", "file3", "file4", "file5"};
     private static final CSVFormat csvFileFormat = CSVFormat.RFC4180.withHeader(FILE_HEADER_MAPPING);
     private static final Logger LOGGER = LogManager.getLogger(CsvUtils.class);
 
@@ -53,7 +53,7 @@ public final class CsvUtils
             {
                 Map<String, String> row = new LinkedHashMap<>();
                 row.putAll(record.toMap());
-                int index = 3;
+                int index = 4;
                 for (HtmlData data : company.getHtmlData())
                 {
                     row.put("file" + index, data.getFileName());

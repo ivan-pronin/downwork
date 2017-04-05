@@ -26,6 +26,57 @@ public class PageLoader
     @Autowired
     private WebDriverProvider webDriverProvider;
 
+    public boolean tryToLoadEntityDetaledPage()
+    {
+        int counter = 0;
+        while (counter < PAGE_LOAD_ATTEMPTS)
+        {
+            counter++;
+            WebDriver driver = webDriverProvider.get();
+            SearchActions searchActions = new SearchActions();
+            searchActions.setWebDriver(driver);
+            searchActions.waitForElementDisappear(By.xpath("//h2[text()='Companies']"), 5);
+            WebDriverUtils.waitForPageLoad(driver);
+            WebDriverUtils.waitForJSToLoad(driver);
+            if (h2WithTextLoaded(searchActions, "Overview"))
+            {
+                LOGGER.info("EntityDetailed page loaded at counter: {}", counter);
+                return true;
+            }
+            navigateActions.refresh();
+        }
+        LOGGER.warn("Failed to load SearchResults page at counter: {}", counter);
+        return false;
+    }
+
+    public boolean tryToLoadSearchResultsPage()
+    {
+        int counter = 0;
+        while (counter < PAGE_LOAD_ATTEMPTS)
+        {
+            counter++;
+            WebDriver driver = webDriverProvider.get();
+            SearchActions searchActions = new SearchActions();
+            searchActions.setWebDriver(driver);
+            searchActions.waitForElementDisappear(By.xpath("//h2[text()='Companies']"), 5);
+            WebDriverUtils.waitForPageLoad(driver);
+            WebDriverUtils.waitForJSToLoad(driver);
+            WebElement resultsInfo = searchActions.waitForElement(By.xpath("//results-info/h3[contains(.,'result')]"),
+                    20);
+            if (resultsInfo == null)
+            {
+                navigateActions.refresh();
+            }
+            else
+            {
+                LOGGER.info("SearchResults page loaded at counter: {}", counter);
+                return true;
+            }
+        }
+        LOGGER.warn("Failed to load SearchResults page at counter: {}", counter);
+        return false;
+    }
+
     public boolean tryToLoadStartPage()
     {
         int counter = 0;
@@ -56,33 +107,5 @@ public class PageLoader
     {
         return searchActions.waitForElement(By.xpath(String.format("//h2[text()='%s']", h2Text)),
                 WAIT_FOR_ELEMENT_SECONDS) != null;
-    }
-
-    public boolean tryToLoadSearchResultsPage()
-    {
-        int counter = 0;
-        while (counter < PAGE_LOAD_ATTEMPTS)
-        {
-            counter++;
-            WebDriver driver = webDriverProvider.get();
-            SearchActions searchActions = new SearchActions();
-            searchActions.setWebDriver(driver);
-            searchActions.waitForElementDisappear(By.xpath("//h2[text()='Companies']"), 5);
-            WebDriverUtils.waitForPageLoad(driver);
-            WebDriverUtils.waitForJSToLoad(driver);
-            WebElement resultsInfo = searchActions.waitForElement(By.xpath("//results-info/h3[contains(.,'result')]"),
-                    20);
-            if (resultsInfo == null)
-            {
-                continue;
-            }
-            else
-            {
-                LOGGER.info("SearchResults page loaded at counter: {}", counter);
-                return true;
-            }
-        }
-        LOGGER.warn("Failed to load SearchResults page at counter: {}", counter);
-        return false;
     }
 }
