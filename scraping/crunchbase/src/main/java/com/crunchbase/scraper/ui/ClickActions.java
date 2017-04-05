@@ -26,6 +26,11 @@ public class ClickActions
             errorNoElements();
             return;
         }
+        setElementText(elements, text);
+    }
+
+    private void setElementText(List<WebElement> elements, String text)
+    {
         WebElement webElement = elements.get(0);
         webElement.clear();
         webElement.sendKeys(text);
@@ -37,6 +42,28 @@ public class ClickActions
         LOGGER.debug("No elements to enter text...");
     }
 
+    public void setLastElementTextSlowly(List<WebElement> elements, String text)
+    {
+        if (elements.isEmpty())
+        {
+            errorNoElements();
+            return;
+        }
+        WebElement webElement = elements.get(0);
+        webElement.clear();
+        char[] chars = text.toCharArray();
+        int length = text.length();
+        for (int i = 0; i < length; i++)
+        {
+            if (i +2 >= length)
+            {
+                WaitUtils.sleep(this, 3000);
+            }
+            webElement.sendKeys("" + chars[i]);
+        }
+        LOGGER.info("Text <{}> was entered to element <{}>", text, webElement);
+    }
+    
     public void setElementTextSlowly(List<WebElement> elements, String text)
     {
         if (elements.isEmpty())
@@ -54,6 +81,29 @@ public class ClickActions
         LOGGER.info("Text <{}> was entered to element <{}>", text, webElement);
     }
 
+    public void setElementTextFastAndWait(List<WebElement> elements, String text)
+    {
+        if (elements.isEmpty())
+        {
+            errorNoElements();
+            return;
+        }
+        setElementText(elements, text);
+        WaitUtils.sleepSeconds(this, 5);
+    }
+
+    public void clickViaJs(List<WebElement> elements)
+    {
+        if (elements.isEmpty())
+        {
+            LOGGER.debug("No elements to click...");
+            return;
+        }
+        WebElement element = elements.get(0);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click;", element);
+        LOGGER.debug("Element was clicked via JS: {}", element);
+    }
+    
     public void click(List<WebElement> elements)
     {
         if (elements.isEmpty())
@@ -61,7 +111,9 @@ public class ClickActions
             LOGGER.debug("No elements to click...");
             return;
         }
-        click(elements.get(0));
+        WebElement element = elements.get(0);
+        click(element);
+        LOGGER.debug("Element was clicked: {}", element);
     }
 
     public void click(WebElement element)

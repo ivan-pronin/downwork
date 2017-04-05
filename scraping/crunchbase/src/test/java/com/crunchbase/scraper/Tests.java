@@ -4,12 +4,15 @@ import static org.junit.Assert.*;
 
 import com.crunchbase.scraper.model.Company;
 import com.crunchbase.scraper.model.HtmlData;
+import com.crunchbase.scraper.util.CsvUtils;
 import com.crunchbase.scraper.util.DateTimeUtils;
+import com.crunchbase.scraper.util.FileUtils;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
 
 import java.util.HashSet;
@@ -23,11 +26,11 @@ public class Tests
     @Test
     public void testName3() throws Exception
     {
-        System.out.println(" OUT1 ");
-        System.err.println(" ERR1 ");
-        String fileName = "./" + DateTimeUtils.getFilenameTimestamp() + "console.log";
-        String command = "dir > %s 2>&1 | type %s";
-        Runtime.getRuntime().exec(String.format(command, fileName, fileName));
+        Set<String> names = FileUtils.readFileToLines("firms.txt");
+        Set<Company> companies = new HashSet<>();
+        names.forEach(e -> companies.add(createCompany(e)));
+        
+        CsvUtils.updateInputFile(companies, "empty.csv", "TMP1.csv");
     }
     
     

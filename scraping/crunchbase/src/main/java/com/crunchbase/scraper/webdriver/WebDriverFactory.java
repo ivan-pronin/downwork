@@ -1,5 +1,6 @@
 package com.crunchbase.scraper.webdriver;
 
+import com.crunchbase.scraper.util.WebDriverUtils;
 import com.crunchbase.scraper.webdriver.proxy.ProxyAdapter;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,9 +11,10 @@ import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -83,7 +85,7 @@ public class WebDriverFactory implements IWebDriverFactory
             images.put("images", 2);
             HashMap<String, Object> prefs = new HashMap<String, Object>();
             prefs.put("profile.default_content_setting_values", images);
-            prefs.put("profile.default_content_settings.cookies", 2);  
+            prefs.put("profile.default_content_settings.cookies", 2);
             options.setExperimentalOption("prefs", prefs);
 
             options.addArguments("incognito", "disable-extensions", "disable-plugins", "test-type", "no-sandbox",
@@ -114,16 +116,28 @@ public class WebDriverFactory implements IWebDriverFactory
 
         WebDriver driver = null;
 
-        FirefoxProfile profile = new ProfilesIni().getProfile("default");
-        profile.setPreference("browser.tabs.remote.autostart", false);
-        profile.setPreference("browser.tabs.remote.autostart.2", false);
-        //FirefoxProfile profile = new FirefoxProfile();
-//        profile.setPreference("general.useragent.override", "MyBrowser1");
-//        profile.setPreference("network.cookie.cookieBehavior", 2);
-//        profile.setPreference("browser.cache.disk.enable", false);
-//        profile.setPreference("browser.cache.memory.enable", false);
-//        profile.setPreference("browser.cache.offline.enable", false);
-//        profile.setPreference("network.http.use-cache", false);
+        FirefoxProfile profile = new FirefoxProfile();
+        FirefoxBinary binary = WebDriverUtils.getRandomBinary();
+
+        // disable auto updates
+        profile.setPreference("app.update.auto", false);
+        profile.setPreference("app.update.enabled", false);
+        profile.setPreference("app.update.silent", false);
+//        profile.setPreference("app.update.service.enabled", false);
+//        profile.setPreference("app.update.staging.enabled", false);
+
+        // disable images loading
+//        profile.setPreference("permissions.default.image", 2);
+        
+        FirefoxOptions ffOptions = new FirefoxOptions();
+        ffOptions.setBinary(binary);
+        ffOptions.setProfile(profile);
+        // profile.setPreference("general.useragent.override", "MyBrowser1");
+        // profile.setPreference("network.cookie.cookieBehavior", 2);
+        // profile.setPreference("browser.cache.disk.enable", false);
+        // profile.setPreference("browser.cache.memory.enable", false);
+        // profile.setPreference("browser.cache.offline.enable", false);
+        // profile.setPreference("network.http.use-cache", false);
         switch (type)
         {
             case CHROME:
@@ -138,7 +152,7 @@ public class WebDriverFactory implements IWebDriverFactory
                 driver = new HtmlUnitDriver();
                 break;
             case FIREFOX:
-                driver = new FirefoxDriver();
+                driver = new FirefoxDriver(ffOptions);
                 break;
             default:
                 driver = new HtmlUnitDriver();

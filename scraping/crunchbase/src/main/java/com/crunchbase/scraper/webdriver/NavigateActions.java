@@ -24,6 +24,21 @@ public class NavigateActions implements INavigateActions
     private ProxyMonitor proxyMonitor;
 
     @Override
+    public WebDriver get(String page)
+    {
+        try
+        {
+            URL url = new URL(page);
+            return get(url);
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Failed to parse URL from page: {}", page);
+            return null;
+        }
+    }
+
+    @Override
     public WebDriver get(URL page)
     {
         try
@@ -57,6 +72,12 @@ public class NavigateActions implements INavigateActions
         LOGGER.debug("Page {} loaded", page);
     }
 
+    @Override
+    public WebDriver refresh()
+    {
+        return get(getDriver().getCurrentUrl());
+    }
+
     public void setWebDriverProvider(WebDriverProvider webDriverProvider)
     {
         this.webDriverProvider = webDriverProvider;
@@ -77,26 +98,5 @@ public class NavigateActions implements INavigateActions
         LOGGER.info("Restarting driver ...");
         webDriverProvider.end();
         return webDriverProvider.get();
-    }
-
-    @Override
-    public WebDriver get(String page)
-    {
-        try
-        {
-            URL url = new URL(page);
-            return get(url);
-        }
-        catch (Exception e)
-        {
-            LOGGER.error("Failed to parse URL from page: {}", page);
-            return null;
-        }
-    }
-
-    @Override
-    public WebDriver refresh()
-    {
-        return get(getDriver().getCurrentUrl());
     }
 }

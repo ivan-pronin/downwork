@@ -1,6 +1,7 @@
 package com.crunchbase.scraper.ui;
 
 import com.crunchbase.scraper.model.HtmlData;
+import com.crunchbase.scraper.util.FileUtils;
 import com.crunchbase.scraper.util.WaitUtils;
 import com.crunchbase.scraper.util.WebDriverUtils;
 
@@ -32,6 +33,69 @@ public class StartPage
     private SearchActions searchActions = new SearchActions();
     private WebDriver driver;
     private PageLoader pageLoader;
+    private String targetFile;
+
+    public Set<HtmlData> getSingleAutocompleteResult(String title)
+    {
+        printStartSearching("Autocomplete - Single ", title);
+        List<WebElement> fieldSearch = searchActions.findElementsById("input-0");
+        if (fieldSearch.isEmpty())
+        {
+            LOGGER.error("Failed to find INPUT-0 field");
+            return createHtmldataError();
+        }
+        try
+        {
+            clickActions.setElementTextFast(fieldSearch, title);
+        }
+        catch (StaleElementReferenceException e)
+        {
+            fieldSearch = searchActions.findElementsById("input-0");
+            clickActions.setElementTextSlowly(fieldSearch, title);
+        }
+        searchActions
+                .findElementsByXpath(
+                        "//div[@class='cb-background-white layout-align-start-center layout-row flex-none']")
+                .get(0).click();
+        WebElement inputSearchField = fieldSearch.get(0);
+        inputSearchField.click();
+        WaitUtils.sleepSeconds(this, 3);
+        WebDriverUtils.waitForJSToLoad(driver);
+
+        List<WebElement> autocomplete = searchActions
+                .waitForElements(By.xpath("//ul[@class='md-autocomplete-suggestions topSearchMenu']//li"), 5);
+        if (autocomplete.isEmpty())
+        {
+            LOGGER.error("Failed to wait for autocomplete dropdownm returning empty results");
+            return Collections.emptySet();
+        }
+        clickFirstAutocompleteLink(inputSearchField);
+        if (pageLoader.tryToLoadEntityDetaledPage())
+        {
+            HtmlData data = new HtmlData();
+            try
+            {
+                data.setUrl(new URL(driver.getCurrentUrl()));
+                String doc = driver.getPageSource();
+                FileUtils.saveHtmlToFile(data, 1, title, doc, targetFile);
+            }
+            catch (MalformedURLException e)
+            {
+                e.printStackTrace();
+            }
+            return Collections.singleton(data);
+        }
+        LOGGER.error("Could not find Single Autocomplete results for: {}, returning error", title);
+        return Collections.emptySet();
+    }
+
+    private void clickFirstAutocompleteLink(WebElement inputSearchField)
+    {
+        LOGGER.info("Clicking by coordinates..." + inputSearchField.getLocation());
+        new Actions(driver).moveToElement(inputSearchField, 50, 20).perform();
+        new Actions(driver).click().perform();
+        LOGGER.info("Clicked by coordinates!");
+    }
 
     public Set<HtmlData> getFirstFiveAutocompleteResults(String title)
     {
@@ -49,7 +113,7 @@ public class StartPage
         }
         try
         {
-            clickActions.setElementTextSlowly(fieldSearch, title);
+            clickActions.setElementTextFastAndWait(fieldSearch, title);
         }
         catch (StaleElementReferenceException e)
         {
@@ -58,7 +122,7 @@ public class StartPage
             {
                 fieldSearch = searchActions.findElementsById("input-0");
             }
-            clickActions.setElementTextSlowly(fieldSearch, title);
+            clickActions.setElementTextFastAndWait(fieldSearch, title);
         }
 
         Actions builder = new Actions(driver);
@@ -174,7 +238,7 @@ public class StartPage
         if (size > 5)
         {
             LOGGER.warn("Too many search results found. Will use autocomplete");
-            return getFirstFiveAutocompleteResults(title);
+            return getSingleAutocompleteResult(title);
         }
 
         Set<HtmlData> results = new HashSet<>();
@@ -237,5 +301,10 @@ public class StartPage
     public void setPageLoader(PageLoader pageLoader)
     {
         this.pageLoader = pageLoader;
+    }
+
+    public void setTargetFile(String targetFile)
+    {
+        this.targetFile = targetFile;
     }
 }

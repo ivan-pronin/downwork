@@ -1,5 +1,7 @@
 package com.crunchbase.scraper.util;
 
+import com.crunchbase.scraper.model.HtmlData;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -91,6 +94,25 @@ public final class FileUtils
             }
             return null;
         }).collect(Collectors.toSet());
+    }
+
+    public static void saveHtmlToFile(HtmlData data, int counter, String title, String doc, String targetFile)
+    {
+        String nameAppender = counter == 1 ? "" : "_" + counter;
+        String fileName = title + nameAppender + ".html";
+        try
+        {
+            String subFolder = targetFile.split("\\.")[0];
+            String htmlFileName = "./htmlFiles/" + subFolder + "/" + fileName;
+            org.apache.commons.io.FileUtils.writeStringToFile(new File(htmlFileName),
+                    doc, Charset.defaultCharset());
+            data.setFileName(fileName);
+            LOGGER.info("Saved new HTML file: {}", htmlFileName);
+        }
+        catch (IOException e1)
+        {
+            LOGGER.error("Failed to write to file: {}", e1.getMessage());
+        }
     }
 
     private static Set<String> readLinesFromScanner(Scanner scanner)
