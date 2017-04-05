@@ -53,7 +53,7 @@ public final class CsvUtils
             {
                 Map<String, String> row = new LinkedHashMap<>();
                 row.putAll(record.toMap());
-                int index = 4;
+                int index = 1;
                 for (HtmlData data : company.getHtmlData())
                 {
                     row.put("file" + index, data.getFileName());
@@ -70,9 +70,9 @@ public final class CsvUtils
             for (Map<String, String> m : results)
             {
                 List<String> row = new LinkedList<>();
-                for (String value : m.values())
+                for (String key: FILE_HEADER_MAPPING)
                 {
-                    row.add(value);
+                    row.add(m.get(key));
                 }
                 data.add(row);
             }

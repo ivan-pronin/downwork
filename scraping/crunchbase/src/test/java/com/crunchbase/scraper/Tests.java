@@ -4,7 +4,9 @@ import static org.junit.Assert.*;
 
 import com.crunchbase.scraper.model.Company;
 import com.crunchbase.scraper.model.HtmlData;
+import com.crunchbase.scraper.util.CsvUtils;
 import com.crunchbase.scraper.util.DateTimeUtils;
+import com.crunchbase.scraper.util.FileUtils;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -24,12 +26,11 @@ public class Tests
     @Test
     public void testName3() throws Exception
     {
-        FirefoxProfile profile = new FirefoxProfile();
-        profile.setPreference("permissions.default.image", 2);
-        profile.setPreference("permissions.default.stylesheet", 2);
-        profile.setPreference("dom.ipc.plugins.enabled.libflashplayer.so", false);
-        WebDriver driver = new FirefoxDriver(profile);
-        driver.get("https://www.crunchbase.com/organization/perch#/entity");
+        Set<String> names = FileUtils.readFileToLines("firms.txt");
+        Set<Company> companies = new HashSet<>();
+        names.forEach(e -> companies.add(createCompany(e)));
+        
+        CsvUtils.updateInputFile(companies, "empty.csv", "TMP1.csv");
     }
     
     
