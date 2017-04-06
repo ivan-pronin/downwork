@@ -1,7 +1,6 @@
 package com.idealista.scraper.scraping.searchpage;
 
 import com.idealista.scraper.model.Category;
-import com.idealista.scraper.ui.ClickActions;
 import com.idealista.scraper.ui.SearchActions;
 import com.idealista.scraper.util.URLUtils;
 import com.idealista.scraper.util.WaitUtils;
@@ -93,8 +92,6 @@ public class FotocasaSearchPageProcessor extends AbstractSearchPageProcessor
             }
         }
         LOGGER.info("Page has been processed successfully: {}", page);
-        System.out.println("FOUND URLS: " + adUrls.size());
-        adUrls.forEach(System.out::println);
         return adUrls;
     }
 
