@@ -11,6 +11,12 @@ manifest{
 	   attributes 'Main-Class' : 'com.idealista.scraper.AppConfig'
 	}		
  }
+ 
+shadowJar {
+   baseName = 'script'
+   classifier = null
+   version = null
+}
 
 dependencies {
 	compile 'org.springframework:spring-context:4.3.7.RELEASE'

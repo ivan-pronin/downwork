@@ -1,7 +1,10 @@
 package com.idealista.scraper;
 
+<<<<<<< HEAD
 import static org.junit.Assert.*;
 
+=======
+>>>>>>> REALTY: add fotocasa + fixed breadcrumbs scrapping
 import com.idealista.scraper.data.IDataTypeService;
 import com.idealista.scraper.data.xls.XlsExporter;
 import com.idealista.scraper.model.Advertisement;
@@ -17,15 +20,24 @@ import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+<<<<<<< HEAD
+=======
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+>>>>>>> REALTY: add fotocasa + fixed breadcrumbs scrapping
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URL;
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+>>>>>>> REALTY: add fotocasa + fixed breadcrumbs scrapping
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -71,6 +83,11 @@ public class TestContextConfig
         Advertisement a = ads.call();
         System.out.println("");
         String jsonObj = "\"{\"abc\":\"efg\"}\"";
+<<<<<<< HEAD
+=======
+        WebDriver driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+>>>>>>> REALTY: add fotocasa + fixed breadcrumbs scrapping
     }
 
     // @Test
