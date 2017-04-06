@@ -65,6 +65,16 @@ public class SearchActions
         }
         return Collections.emptyList();
     }
+    
+    public String getAttribute(WebElement element, String attributeName)
+    {
+        if (element == null || attributeName == null)
+        {
+            LOGGER.warn("GetAttribute: element or attribute is null, returning null");
+            return null;
+        }
+        return element.getAttribute(attributeName);
+    }
 
     public String getElementText(List<WebElement> rootElement)
     {
@@ -115,6 +125,23 @@ public class SearchActions
         catch (TimeoutException e)
         {
             LOGGER.debug("Failed for an element to disappear: {}, {}", locator, e.getMessage());
+            return false;
+        }
+    }
+    
+    public boolean waitForElementsDisappear(List<WebElement> elements, int seconds)
+    {
+        try
+        {
+            LOGGER.debug("Waiting for ALL elements to disappear: {}", elements);
+            Boolean disappeared = (new WebDriverWait(driver, seconds))
+                    .until(ExpectedConditions.invisibilityOfAllElements(elements));
+            LOGGER.debug("Element disappeared!");
+            return disappeared;
+        }
+        catch (TimeoutException e)
+        {
+            LOGGER.debug("Failed for ALL elements to disappear: {}, {}", elements, e.getMessage());
             return false;
         }
     }

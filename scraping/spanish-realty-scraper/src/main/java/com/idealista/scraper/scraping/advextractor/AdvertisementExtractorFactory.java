@@ -19,22 +19,23 @@ public class AdvertisementExtractorFactory implements IAdvertisementExtractorFac
     @Override
     public IAdvertisementExtractor create(Category category)
     {
+        AbstractAdvertisementExtractor extractor = null;
         switch (appConfig.getScrapTarget())
         {
             case IDEALISTA:
-                IdealistaAdvertisementExtractor idealistaExtractor = new IdealistaAdvertisementExtractor();
-                idealistaExtractor.setCategory(category);
-                idealistaExtractor.setNavigateActions(navigateActions);
-                idealistaExtractor.setLanguage(appConfig.getLanguage());
-                return idealistaExtractor;
+                extractor = new IdealistaAdvertisementExtractor(category);
+                ((IdealistaAdvertisementExtractor) extractor).setLanguage(appConfig.getLanguage());
+                break;
             case VIBBO:
-                VibboAdvertisementExtractor vibboExtractor = new VibboAdvertisementExtractor();
-                vibboExtractor.setCategory(category);
-                vibboExtractor.setNavigateActions(navigateActions);
-                return vibboExtractor;
+                extractor = new VibboAdvertisementExtractor(category);
+                break;
+            case FOTOCASA:
+                extractor = new FotocasaAdvertisementExtractor(category);
+                break;
             default:
                 break;
         }
-        return null;
+        extractor.setNavigateActions(navigateActions);
+        return extractor;
     }
 }

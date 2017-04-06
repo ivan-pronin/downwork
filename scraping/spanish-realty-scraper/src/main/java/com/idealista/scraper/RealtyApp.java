@@ -15,6 +15,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -25,13 +27,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.annotation.PostConstruct;
-
 @Component
 public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
-    private static final String APP_VERSION = "rc-1.1.2.b";
+    private static final String APP_VERSION = "rc-1.1.3.0.c";
 
     private Instant startTime;
 

@@ -2,6 +2,7 @@ package com.idealista.scraper.webdriver.proxy;
 
 import com.idealista.scraper.data.IDataSource;
 import com.idealista.scraper.util.FileUtils;
+import com.idealista.scraper.util.WaitUtils;
 import com.idealista.scraper.webdriver.WebDriverFactory;
 import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
 
@@ -75,17 +76,7 @@ public class ProxyProvider implements IProxyProvider
                 while (Duration.between(start, Instant.now()).toMinutes() < 10)
                 {
                     LOGGER.info("Waiting for 10 minutes before fetching new proxies...");
-                    synchronized (this)
-                    {
-                        try
-                        {
-                            this.wait(10 * 60 * 1000);
-                        }
-                        catch (InterruptedException e)
-                        {
-                            LOGGER.error("Failed to wait: {}", e.getMessage());
-                        }
-                    }
+                    WaitUtils.sleepSeconds(this, 60 * 10);
                 }
                 return getNextWorkingProxy();
             }

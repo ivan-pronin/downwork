@@ -3,7 +3,6 @@ package com.idealista.scraper.scraping.advextractor;
 import com.idealista.scraper.model.Advertisement;
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.ui.page.advertisement.VibboAdvertisementPage;
-import com.idealista.scraper.webdriver.INavigateActions;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,19 +10,22 @@ import org.openqa.selenium.WebDriver;
 
 import java.net.URL;
 
-public class VibboAdvertisementExtractor implements IAdvertisementExtractor
+public class VibboAdvertisementExtractor extends AbstractAdvertisementExtractor
 {
+    protected VibboAdvertisementExtractor(Category category)
+    {
+        super(category);
+    }
+
     private static final Logger LOGGER = LogManager.getLogger(VibboAdvertisementExtractor.class);
 
-    private INavigateActions navigateActions;
-    private Category category;
-    
     @Override
     public Advertisement call() throws Exception
     {
+        Category category = getCategory();
         URL url = category.getUrl();
         LOGGER.info("Scrapping the page: {}", url);
-        WebDriver driver = navigateActions.get(url);
+        WebDriver driver = getNavigateActions().get(url);
         VibboAdvertisementPage page = new VibboAdvertisementPage();
         page.setWebDriver(driver);
         Advertisement ad = new Advertisement(url, page.getTitle());
@@ -50,15 +52,5 @@ public class VibboAdvertisementExtractor implements IAdvertisementExtractor
         ad.setHasImages(page.hasImages());
         ad.setTags(page.getTags());
         return ad;
-    }
-
-    public void setCategory(Category category)
-    {
-        this.category = category;
-    }
-
-    public void setNavigateActions(INavigateActions navigateActions)
-    {
-        this.navigateActions = navigateActions;
     }
 }

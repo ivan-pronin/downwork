@@ -4,30 +4,42 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
-import com.idealista.scraper.data.DataSource;
-import com.idealista.scraper.scraping.paginator.IdealistaPaginator;
-import com.idealista.scraper.ui.SearchActions;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 public class LoggerTests
 {
-    
+
     private static final Logger LOGGER = LogManager.getLogger(LoggerTests.class);
 
     @Test
     public void testName() throws Exception
     {
-        LOGGER.info("info 1");
-        LOGGER.warn("warn 1");
-        LOGGER.error("error 222");
-        LOGGER.debug("debug 222");
+        List<Double> series = new ArrayList<>();
+        series.add(1.1);// Populated with, e.g., time series data
+        series.add(2.4);
+        series.add(3.6);
+        series.add(0.2);
+
+        List<Double> seriesChanges = new ArrayList<>();
+        IntStream.range(1, series.size()).forEach(e -> seriesChanges.add(Math.abs(series.get(e - 1) - series.get(e))));
+        System.out.println(seriesChanges);
+        
+        List<Double> seriesChanges2 = new ArrayList<>();
+        for (int i = 1; i < series.size(); i++) {
+            seriesChanges2.add(Math.abs(series.get(i-1) - series.get(i)));
+        }
+        System.out.println(seriesChanges2);
+        System.out.println(Arrays.toString(IntStream.of(1, series.size()-1).toArray()));
     }
-    
+
     // @Test
     public void testJUL() throws Exception
     {
@@ -55,7 +67,7 @@ public class LoggerTests
         }
     }
 
-    //@Test
+    // @Test
     public void testLoggerFormatting() throws Exception
     {
         Instant start = Instant.now();
@@ -68,17 +80,18 @@ public class LoggerTests
             LOGGER2.info("THreaded logger infi");
             LOGGER2.error("THreaded logger error");
         }).start();
-        Duration d = Duration.between(start, start.plus(2, ChronoUnit.HOURS).plus(5, ChronoUnit.MINUTES).plusSeconds(45));
+        Duration d = Duration.between(start,
+                start.plus(2, ChronoUnit.HOURS).plus(5, ChronoUnit.MINUTES).plusSeconds(45));
         LOGGER.info("Total time taken: {} hrs {} mins {} sec", d.toHours(), d.toMinutes() % 60, d.getSeconds() % 60);
     }
-    
-    //@Test
+
+    // @Test
     public void testPrintEnvironmentInfo() throws Exception
     {
-        System.getenv().forEach( (k,v) -> System.out.println(k + " = " + v));
+        System.getenv().forEach((k, v) -> System.out.println(k + " = " + v));
         System.out.println(" ++++++++++++++++++++++");
         System.out.println(" ++++++++++++++++++++++");
-        System.getProperties().forEach( (k,v) -> System.out.println(k + " = " + v));
+        System.getProperties().forEach((k, v) -> System.out.println(k + " = " + v));
     }
 
 }

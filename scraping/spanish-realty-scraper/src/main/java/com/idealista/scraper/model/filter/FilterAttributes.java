@@ -2,8 +2,13 @@ package com.idealista.scraper.model.filter;
 
 public class FilterAttributes
 {
-    private PublicationDateFilter publicationDateFilter;
+    private PublicationDateFilter publicationDateFilter; // applicable on Idealista
+    private boolean newHomes;                            // applicable on Fotocasa: Obra nueva (New homes)
 
+    /**
+     * Applicable for Idealista
+     *
+     */
     public enum PublicationDateFilter
     {
         NO_FILTER("#"), LAST_48_HOURS("con-publicado_ultimas-48-horas"), LAST_WEEK(
@@ -32,9 +37,19 @@ public class FilterAttributes
         this.publicationDateFilter = publicationDate;
     }
 
+    public boolean isNewHomes()
+    {
+        return newHomes;
+    }
+
+    public void setNewHomes(boolean newHomes)
+    {
+        this.newHomes = newHomes;
+    }
+
     @Override
     public String toString()
     {
-        return "FilterAttributes [publicationDateFilter=" + publicationDateFilter + "]";
+        return "FilterAttributes [publicationDateFilter=" + publicationDateFilter + ", newHomes=" + newHomes + "]";
     }
 }
