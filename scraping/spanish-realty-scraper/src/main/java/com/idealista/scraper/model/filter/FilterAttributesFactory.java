@@ -20,6 +20,10 @@ public class FilterAttributesFactory implements IFilterAttributesFactory
         {
             filterAttributes.setPublicationDateFilter(PublicationDateFilter.LAST_48_HOURS);
         }
+        if (publicationDateFilter.contains("24Hours"))
+        {
+            filterAttributes.setPublicationDateFilter(PublicationDateFilter.LAST_24_HOURS);
+        }
         if (publicationDateFilter.contains("lastWeek"))
         {
             filterAttributes.setPublicationDateFilter(PublicationDateFilter.LAST_WEEK);
