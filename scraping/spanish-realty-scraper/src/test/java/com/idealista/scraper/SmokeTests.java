@@ -1,39 +1,36 @@
 package com.idealista.scraper;
 
-import com.idealista.scraper.scraping.paginator.IPaginator;
-import com.idealista.scraper.scraping.paginator.IdealistaPaginator;
-import com.idealista.scraper.webdriver.WebDriverProvider;
-
 import org.junit.Test;
-import org.openqa.selenium.WebDriver;
 
-import java.net.URL;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 
 public class SmokeTests
 {
     @Test
-    public void testGrabOneAdvertismentIdealista()
+    public void testName() throws Exception
     {
-        String baseUrl = "https://www.idealista.com/venta-viviendas/a-coruna-provincia/";
-        WebDriverProvider webDriverProvider = new WebDriverProvider();
-        WebDriver driver = webDriverProvider.get();
-        driver.navigate().to(baseUrl);
-        IPaginator paginator = new IdealistaPaginator();
-        Queue<URL> pagesToProcess = new ConcurrentLinkedQueue<>();
-//        pagesToProcess.addAll(paginator.getAllPageUrls(driver, baseUrl));
+        Charset utf8charset = Charset.forName("UTF-8");
+        Charset iso88591charset = Charset.forName("ISO-8859-1");
+        
+        String utf8="Chamartín";
+        byte[] utf8bytes = utf8.getBytes("UTF-8");
+        byte[] isobytes = utf8.getBytes("ISO-8859-1");
+        
+        System.out.println("UTF: " + Arrays.toString(utf8bytes));
+        System.out.println("ISO: " + Arrays.toString(isobytes));
+    }
+    
+    private void printArrayUnicode(char[] charArray)
+    {
+        for (char c : charArray)
+        {
+            printUnicode(c);
+        }
+    }
 
-        URL randomPage = pagesToProcess.iterator().next();
-        System.out.println("Random page is: " + randomPage);
-//        ISearchPageProcessor searchPageProcessor = new ISearchPageProcessor(webDriverProvider, randomPage);
-        Queue<URL> adUrls = new ConcurrentLinkedQueue<>();
-//        adUrls.addAll(searchPageProcessor.call());
-        System.out.println(adUrls);
-
-        URL randomAdvUrl = adUrls.iterator().next();
-        System.out.println("Random Adv url: " + randomAdvUrl);
-//        IdealistaAdvertisementExtractor advPage = new IdealistaAdvertisementExtractor(webDriverProvider, randomAdvUrl);
-//        System.out.println(advPage.call());
+    private void printUnicode(char c)
+    {
+        System.out.println(String.format("\\u%04x", (int)c));
     }
 }

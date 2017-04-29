@@ -103,7 +103,7 @@ public class AppConfig
             case IDEALISTA:
                 return new IdealistaScrappingService();
             case FOTOCASA:
-                return new FotocasaScrappingService();                
+                return new FotocasaScrappingService();
             default:
                 illegalException("IScrappingService");
         }

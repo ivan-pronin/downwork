@@ -47,6 +47,9 @@ public class FotocasaScrappingService implements IScrappingService
 
     @Value(value = "${maxAdsToProcess}")
     private int maxAdsToProcess;
+    
+    @Value("#{ T(org.springframework.util.StringUtils).commaDelimitedListToSet('${districts}') }")
+    private Set<String> userDistricts;
 
     @Autowired
     private INavigateActions navigateActions;
@@ -75,6 +78,7 @@ public class FotocasaScrappingService implements IScrappingService
         searchAttributes.setSearchString(userSearchString);
         FilterAttributes filterAttributes = new FilterAttributes();
         filterAttributes.setNewHomes(newHomes);
+        filterAttributes.setDisctricts(userDistricts);
         GenericSearchFilterContext context = new GenericSearchFilterContext();
         context.setSearchAttributes(searchAttributes);
         context.setFilterAttributes(filterAttributes);

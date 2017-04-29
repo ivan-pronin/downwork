@@ -3,6 +3,7 @@ package com.idealista.scraper.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -65,6 +66,7 @@ public class ClickActions
         }
         element.clear();
         element.sendKeys(text);
+        System.out.println("");
         LOGGER.info("Text <{}> was entered to element <{}>", text, element);
     }
 
@@ -89,6 +91,13 @@ public class ClickActions
     {
         JavascriptExecutor js = ((JavascriptExecutor) driver);
         js.executeScript("window.scrollBy(0, 1000)");
+    }
+    
+    public void scrollScreenDownByPixels(int pixels)
+    {
+        JavascriptExecutor js = ((JavascriptExecutor) driver);
+        String script = "window.scrollBy(0, %s)";
+        js.executeScript(String.format(script, pixels));
     }
     
     public void scrollToElement(WebElement element)

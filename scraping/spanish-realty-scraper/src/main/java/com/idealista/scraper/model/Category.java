@@ -3,13 +3,15 @@ package com.idealista.scraper.model;
 import java.net.URL;
 import java.util.Objects;
 
-public class Category 
+public class Category
 {
     private URL url;
     private String state;
     private String type;
     private String subType;
     private String province;
+    private String district;
+    private String subDistrict;
 
     /**
      * Default constructor is used when we don't know, what Categories are used: this may
@@ -29,6 +31,8 @@ public class Category
             this.type = templateCategory.getType();
             this.subType = templateCategory.getSubType();
             this.province = templateCategory.getProvince();
+            this.district = templateCategory.getDistrict();
+            this.subDistrict = templateCategory.getSubDistrict();
         }
     }
 
@@ -97,6 +101,27 @@ public class Category
     @Override
     public String toString()
     {
-        return "Category [url=" + url + "]";
+        return "Category [url=" + url + ", state=" + state + ", type=" + type + ", subType=" + subType + ", province="
+                + province + ", district=" + district + ", subDistrict=" + subDistrict + "]";
+    }
+
+    public void setDistrict(String district)
+    {
+        this.district = district;
+    }
+
+    public String getSubDistrict()
+    {
+        return subDistrict;
+    }
+
+    public void setSubDistrict(String subDistrict)
+    {
+        this.subDistrict = subDistrict;
+    }
+
+    public String getDistrict()
+    {
+        return district;
     }
 }

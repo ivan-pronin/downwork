@@ -73,7 +73,6 @@ public class FotocasaPaginator implements IPaginator
     private Set<Category> getPaginatorLinks(List<WebElement> links, Category baseCategory)
     {
         int size = links.size();
-        System.out.println("lastPageIndex" + links.get(size - 2).getText());
         if (size == 1)
         {
             LOGGER.info("Only one page for the category found...");

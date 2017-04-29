@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.idealista.scraper.model.search.CategoryChoosingAttribute;
+import com.idealista.scraper.model.search.FotocasaSearchAttributes;
+import com.idealista.scraper.model.search.IGenericSearchAttributes;
 import com.idealista.scraper.model.search.VibboSearchAttributes;
 
 import org.springframework.stereotype.Component;
@@ -23,7 +25,7 @@ public final class CollectionUtils
         return mergedCombinations;
     }
 
-    public Set<String> wrapWithIdentificationFlag(Set<String> inputData, VibboSearchAttributes attributeType)
+    public Set<String> wrapWithIdentificationFlag(Set<String> inputData, IGenericSearchAttributes attributeType)
     {
         return inputData.stream().map(e -> e + attributeType.getIdentificationFlag()).collect(Collectors.toSet());
     }
@@ -52,6 +54,11 @@ public final class CollectionUtils
             if (value.contains(advertiser))
             {
                 att.setAdvertiser(value.replace(advertiser, ""));
+            }
+            String district = FotocasaSearchAttributes.DISTRICT.getIdentificationFlag();
+            if (value.contains(district))
+            {
+                att.setDistrict(value.replace(district, ""));
             }
         }
         return att;
