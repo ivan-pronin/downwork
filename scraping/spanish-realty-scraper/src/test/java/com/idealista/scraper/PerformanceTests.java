@@ -1,9 +1,5 @@
 package com.idealista.scraper;
 
-import java.util.List;
-
-import com.machinepublishers.jbrowserdriver.JBrowserDriver;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -13,6 +9,8 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.util.List;
 
 public class PerformanceTests
 {
@@ -29,14 +27,6 @@ public class PerformanceTests
     public void testHtmlUnitPerformance()
     {
         testPerformance(new HtmlUnitDriver());
-    }
-
-    @Test
-    public void testJbrowserPerformanceNoJS()
-    {
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setJavascriptEnabled(false);
-        testPerformance(new JBrowserDriver(caps));
     }
 
     //@Test

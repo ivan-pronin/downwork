@@ -35,7 +35,11 @@ public class FotocasaAdvertisementExtractor extends AbstractAdvertisementExtract
         ad.setProvince(page.getProvince());
         ad.setDateOfListing(page.getListingDate());
         ad.setNumberOfViews(page.getNumberOfViews());
-        ad.setAddress(page.getAddress());
+        String district = category.getDistrict();
+        String districtValue = district == null ? "" : district;
+        String subDistrict = category.getSubDistrict();
+        String subDistrictValue = subDistrict == null ? "" : subDistrict;
+        ad.setAddress(districtValue + " subdistrict " + subDistrictValue + " | address: " + page.getAddress());
         ad.setState(page.getState());
         ad.setCity(page.getCity());
         ad.setPostalCode(page.getPostalCode());

@@ -24,6 +24,8 @@ public class SearchPage extends BasePage
         String xpath = "//label[@class='input-radio']//a[contains(@href,'%s')]";
         List<WebElement> publicationDateFilter = searchActions.findElementsByXpath(filterForm,
                 String.format(xpath, filterAttributes.getPublicationDateFilter().getRelativeUrl()));
+        clickActions.scrollToElement(publicationDateFilter.get(0));
+        clickActions.scrollScreenDownByPixels(-200);
         clickActions.click(publicationDateFilter);
         searchActions.waitForElement(By.xpath("//div[@class='listing-loading-content']"), 5);
         searchActions.waitForElementDisappear(By.xpath("//div[@class='listing-loading-content']"), 5);

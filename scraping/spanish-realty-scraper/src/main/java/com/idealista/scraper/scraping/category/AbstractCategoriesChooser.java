@@ -1,6 +1,7 @@
 package com.idealista.scraper.scraping.category;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class AbstractCategoriesChooser
 
     @Autowired
     private ExecutorServiceProvider executorServiceProvider;
-    
+
     protected Set<Category> executeAndGetResults(Queue<Callable<Category>> results)
     {
         List<Future<Category>> categories = new ArrayList<>();
@@ -49,5 +50,31 @@ public class AbstractCategoriesChooser
                 return null;
             }
         }).collect(Collectors.toSet());
+    }
+
+    protected Set<Category> executeAndGetResultsForSet(Queue<Callable<Set<Category>>> results)
+    {
+        List<Future<Set<Category>>> categories = new ArrayList<>();
+        try
+        {
+            categories = executorServiceProvider.getExecutor().invokeAll(results);
+        }
+        catch (InterruptedException e)
+        {
+            LOGGER.error("Error while executing tasks: {}", e.getMessage());
+        }
+
+        return categories.stream().map(t ->
+        {
+            try
+            {
+                return t.get();
+            }
+            catch (InterruptedException | ExecutionException e)
+            {
+                LOGGER.error("Error while retrieving category task result: {}", e);
+            }
+            return null;
+        }).flatMap(Collection::stream).collect(Collectors.toSet());
     }
 }

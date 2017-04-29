@@ -1,18 +1,24 @@
 package com.idealista.scraper.model.filter;
 
+import java.util.List;
+import java.util.Set;
+
 public class FilterAttributes
 {
     private PublicationDateFilter publicationDateFilter; // applicable on Idealista
     private boolean newHomes; // applicable on Fotocasa: Obra nueva (New homes)
+    private Set<String> disctricts; //applicable on Fotocasa on search page results
 
     /**
      * Applicable for Idealista
      */
     public enum PublicationDateFilter
-    {
-        NO_FILTER("#"), LAST_24_HOURS("con-publicado_ultimas-24-horas"), LAST_48_HOURS(
-                "con-publicado_ultimas-48-horas"), LAST_WEEK(
-                        "con-publicado_ultima-semana"), LAST_MONTH("con-publicado_ultimo-mes");
+    {                                  
+        NO_FILTER("#"),
+        LAST_24_HOURS("con-publicado_ultimas-24-horas"),
+        LAST_48_HOURS("con-publicado_ultimas-48-horas"),
+        LAST_WEEK("con-publicado_ultima-semana"),
+        LAST_MONTH("con-publicado_ultimo-mes");
 
         private String relativeUrl;
 
@@ -51,5 +57,15 @@ public class FilterAttributes
     public String toString()
     {
         return "FilterAttributes [publicationDateFilter=" + publicationDateFilter + ", newHomes=" + newHomes + "]";
+    }
+
+    public Set<String> getDisctricts()
+    {
+        return disctricts;
+    }
+
+    public void setDisctricts(Set<String> disctricts)
+    {
+        this.disctricts = disctricts;
     }
 }

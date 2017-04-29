@@ -6,10 +6,6 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
-import com.machinepublishers.jbrowserdriver.JBrowserDriver;
-import com.machinepublishers.jbrowserdriver.ProxyConfig;
-import com.machinepublishers.jbrowserdriver.ProxyConfig.Type;
-import com.machinepublishers.jbrowserdriver.Settings;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,7 +47,7 @@ public class WebDriverFactory implements IWebDriverFactory
 
     public enum DriverType
     {
-        HTMLUNIT, CHROME, JBROWSER, FIREFOX;
+        CHROME, FIREFOX;
 
         public static DriverType fromString(String str)
         {
@@ -112,8 +108,6 @@ public class WebDriverFactory implements IWebDriverFactory
                 return null;
             }
         }
-        ProxyConfig proxyConfig = new ProxyConfig(Type.HTTP, proxy.getHost(), proxy.getPort());
-        Settings settings = Settings.builder().proxy(proxyConfig).build();
 
         WebDriver driver = null;
 
@@ -128,18 +122,11 @@ public class WebDriverFactory implements IWebDriverFactory
                 }
                 driver = new ChromeDriver(cap);
                 break;
-            case JBROWSER:
-                driver = new JBrowserDriver(settings);
-                break;
-            case HTMLUNIT:
-                driver = new HtmlUnitDriver();
-                break;
             case FIREFOX:
                 driver = new FirefoxDriver(profile);
                 break;
             default:
-                driver = new HtmlUnitDriver();
-                break;
+                throw new IllegalArgumentException("Not supported browser type specified: " + type);
         }
         Options manage = driver.manage();
         Timeouts timeouts = manage.timeouts();

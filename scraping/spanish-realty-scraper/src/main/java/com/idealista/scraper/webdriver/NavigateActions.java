@@ -10,6 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 @Component
@@ -77,5 +78,19 @@ public class NavigateActions implements INavigateActions
         LOGGER.info("Restarting driver ...");
         webDriverProvider.end();
         return webDriverProvider.get();
+    }
+
+    @Override
+    public WebDriver get(String page)
+    {
+        try
+        {
+            return get(new URL(page));
+        }
+        catch (MalformedURLException e)
+        {
+            LOGGER.error("Failed to navigate to URL: {} with error: {}", page, e.getMessage());
+        }
+        return null;
     }
 }
