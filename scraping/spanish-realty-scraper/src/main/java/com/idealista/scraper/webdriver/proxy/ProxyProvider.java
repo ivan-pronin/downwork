@@ -1,6 +1,8 @@
 package com.idealista.scraper.webdriver.proxy;
 
+import com.idealista.scraper.AppConfig;
 import com.idealista.scraper.data.IDataSource;
+import com.idealista.scraper.service.ScrapTarget;
 import com.idealista.scraper.util.FileUtils;
 import com.idealista.scraper.util.WaitUtils;
 import com.idealista.scraper.webdriver.WebDriverFactory;
@@ -17,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.time.Duration;
@@ -26,8 +30,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
-import javax.annotation.PostConstruct;
 
 @Component
 public class ProxyProvider implements IProxyProvider
@@ -50,6 +52,9 @@ public class ProxyProvider implements IProxyProvider
     
     @Autowired
     private IDataSource dataSource;
+    
+    @Autowired
+    private AppConfig appConfig;
     
     @Value("${maxProxyResponseTime}")
     private long maxProxyResponseTime;
@@ -169,29 +174,35 @@ public class ProxyProvider implements IProxyProvider
         LOGGER.info("Checking if Proxy with address {} is working ...", proxy);
         if (!isProxyReachable(proxy))
         {
-            LOGGER.info("No, it's not.");
+            LOGGER.info("No, it's not: proxy not reachable");
             return false;
         }
         WebDriver driver = getDriver(proxy);
         driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
         try
         {
-            Instant start = Instant.now();
-            driver.navigate().to(IDEALISTA_COM);
-            Duration pageLoadTime = Duration.between(start, Instant.now());
-            WebElement navBar = driver.findElement(By.id("no-login-user-bar"));
-            boolean isWorkingAndFast = navBar != null && isProxyFastEnough(pageLoadTime);
-            LOGGER.info("Proxy is reachable and fast enough: {}", isWorkingAndFast);
-            return isWorkingAndFast;
+            return isProxyWorkingAndFast(driver);
         }
         catch (WebDriverException e)
         {
-            LOGGER.info("No, it's not.");
+            LOGGER.info("No, it's not: normal page was not loaded");
             return false;
         }
         finally
         {
             driver.quit();
         }
+    }
+
+    private boolean isProxyWorkingAndFast(WebDriver driver)
+    {
+        Instant start = Instant.now();
+        ScrapTarget scrapTarget = appConfig.getScrapTarget();
+        driver.navigate().to(scrapTarget.getMainPageUrl());
+        Duration pageLoadTime = Duration.between(start, Instant.now());
+        WebElement navBar = driver.findElement(By.xpath(scrapTarget.getNormalPageElementXpath()));
+        boolean isWorkingAndFast = navBar != null && isProxyFastEnough(pageLoadTime);
+        LOGGER.info("Proxy is reachable and fast enough: {}", isWorkingAndFast);
+        return isWorkingAndFast;
     }
 }

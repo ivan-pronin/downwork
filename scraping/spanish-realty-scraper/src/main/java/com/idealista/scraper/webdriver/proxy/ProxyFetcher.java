@@ -3,6 +3,7 @@ package com.idealista.scraper.webdriver.proxy;
 import com.idealista.scraper.ui.ClickActions;
 import com.idealista.scraper.ui.SearchActions;
 import com.idealista.scraper.util.FileUtils;
+import com.idealista.scraper.util.WebDriverUtils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +26,9 @@ public class ProxyFetcher
     private static final String US_PROXY_ORG = "https://www.us-proxy.org/";
     private static final String FREE_PROXY_CZ = "http://free-proxy.cz/en/proxylist/main/date/1";
     private static final Logger LOGGER = LogManager.getLogger(ProxyFetcher.class);
+    private static final List<String> PROXIES_URLS = Arrays.asList("http://free-proxy-list.net/",
+            "http://www.sslproxies.org/", "http://www.us-proxy.org/", "http://free-proxy-list.net/uk-proxy.html",
+            "http://www.socks-proxy.net/", "http://free-proxy-list.net/anonymous-proxy.html");
 
     private WebDriver driver;
 
@@ -49,6 +53,7 @@ public class ProxyFetcher
             proxies.addAll(fetchProxiesFromFreeProxyCz());
         }
         LOGGER.info("Printing all fetched proxies ... ");
+        LOGGER.info("Total found proxies count: {}", proxies.size());
         proxies.forEach(LOGGER::info);
         driver.quit();
         return proxies;
@@ -80,16 +85,27 @@ public class ProxyFetcher
         {
             proxies.addAll(getProxiesFromNextFreeProxyCzPage(driver));
         }
-        LOGGER.info("Fetched <{}> proxies", proxies.size());
+        LOGGER.info("Fetched <{}> proxies from FreeProxyCz", proxies.size());
         return proxies;
     }
 
     private Set<String> fetchProxiesFromUsProxyOrg()
     {
         LOGGER.info("Fetching new proxies from {}", US_PROXY_ORG);
-        driver.get(US_PROXY_ORG);
-        List<WebElement> select = searchActions.findElementsByXpath("//select[@name='proxylisttable_length']");
         Set<String> proxies = new HashSet<>();
+        for (String url : PROXIES_URLS)
+        {
+            proxies.addAll(getProxiesFromUrl(url));
+        }
+        LOGGER.info("Fetched <{}> proxies from UsProxyOrg", proxies.size());
+        return proxies;
+    }
+
+    private Set<String> getProxiesFromUrl(String url)
+    {
+        driver.get(url);
+        Set<String> proxies = new HashSet<>();
+        List<WebElement> select = searchActions.findElementsByXpath("//select[@name='proxylisttable_length']");
         if (!select.isEmpty())
         {
             List<WebElement> options = searchActions.findElementsByXpath(select, "//option");
@@ -98,16 +114,24 @@ public class ProxyFetcher
                 if (option.getAttribute("value").equalsIgnoreCase("80"))
                 {
                     option.click();
-                    List<WebElement> table = searchActions.findElementsById("proxylisttable");
-                    if (!table.isEmpty())
-                    {
-                        List<WebElement> rows = searchActions.findElementsByXpath(table, "//tbody//tr");
-                        proxies = rows.stream().map(this::extractProxyFromRow).collect(Collectors.toSet());
-                        LOGGER.info("Fetched <{}> proxies", proxies.size());
-                    }
                 }
             }
         }
+        List<WebElement> paginationLinks = searchActions
+                .findElementsByXpath("//*[@id='proxylisttable_paginate']/span//a");
+        for (int i = 0; i < paginationLinks.size(); i++)
+        {
+            WebElement link = searchActions.findElementsByXpath("//*[@id='proxylisttable_paginate']/span//a").get(i);
+            clickActions.click(link);
+            WebDriverUtils.waitForAllContentToLoad(driver);
+            List<WebElement> table = searchActions.findElementsById("proxylisttable");
+            if (!table.isEmpty())
+            {
+                List<WebElement> rows = searchActions.findElementsByXpath(table, "//tbody//tr");
+                proxies.addAll(rows.stream().map(this::extractProxyFromRow).collect(Collectors.toSet()));
+            }
+        }
+        LOGGER.info("Found <{}> proxies from URL: {}", proxies.size(), url);
         return proxies;
     }
 

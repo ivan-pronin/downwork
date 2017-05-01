@@ -69,7 +69,6 @@ public final class CollectionUtils
         if (n >= sets.length)
         {
             CategoryChoosingAttribute newAtt = createSearchAttribute(prefix);
-            System.out.println("Created new: " + newAtt);
             mergedCombinations.add(newAtt);
             return;
         }
