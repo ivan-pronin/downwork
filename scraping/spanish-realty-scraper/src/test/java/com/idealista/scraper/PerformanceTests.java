@@ -1,11 +1,9 @@
 package com.idealista.scraper;
 
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -21,12 +19,6 @@ public class PerformanceTests
     public void testChromePerformance()
     {
         testPerformance(new ChromeDriver());
-    }
-
-    @Test
-    public void testHtmlUnitPerformance()
-    {
-        testPerformance(new HtmlUnitDriver());
     }
 
     //@Test

@@ -65,8 +65,6 @@ public class FotocasaCategoriesChooser extends AbstractCategoriesChooser impleme
             e.setSearchString(searchAttributes.getSearchString());
         });
 
-        categoryAttributes.forEach(System.out::println);
-
         Queue<Callable<Set<Category>>> tasks = new ConcurrentLinkedQueue<>();
         for (CategoryChoosingAttribute attribute : categoryAttributes)
         {

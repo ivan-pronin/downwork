@@ -9,6 +9,12 @@ public enum ScrapTarget
         {
             throw new UnsupportedOperationException("Property <language> is not applicable to VIBBO");
         }
+
+        @Override
+        public String getNormalPageElementXpath()
+        {
+            return "//*[@id='generalContent']";
+        }
     },
     IDEALISTA("https://www.idealista.com/")
     {
@@ -22,13 +28,25 @@ public enum ScrapTarget
             }
             return getMainPageUrl() + localizationSuffix;
         }
-    }, 
+
+        @Override
+        public String getNormalPageElementXpath()
+        {
+            return "//*[@id='no-login-user-bar']";
+        }
+    },
     FOTOCASA("http://www.fotocasa.es/es/")
     {
         @Override
         public String getMainPageLocalizedUrl(String language)
         {
             throw new UnsupportedOperationException("Property <language> is not applicable to FOTOCASA");
+        }
+
+        @Override
+        public String getNormalPageElementXpath()
+        {
+            return "(//img)[4]";
         }
     };
 
@@ -45,4 +63,6 @@ public enum ScrapTarget
     }
 
     public abstract String getMainPageLocalizedUrl(String language);
+
+    public abstract String getNormalPageElementXpath();
 }
