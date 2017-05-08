@@ -71,7 +71,7 @@ public class VibboScrappingService implements IScrappingService
 
     @Autowired
     private IAdvertisementExtractorFactory advertismentExtractorFactory;
-    
+
     @Autowired
     private FoundUrlsManager foundUrlsManager;
 
@@ -101,7 +101,10 @@ public class VibboScrappingService implements IScrappingService
         Set<Category> adUrlsToProcess = adUrlsFinder.findNewAdUrlsAmount(maxAdsToProcess);
 
         adUrlsToProcess = foundUrlsManager.getNewestAdsById(adUrlsToProcess);
-        
+
+        LOGGER.debug("Printing all URLS that will be scrapped in this session. Total count: {}", adUrlsToProcess.size());
+        adUrlsToProcess.forEach(e -> LOGGER.debug(e.getUrl()));
+
         Iterator<Category> iterator = adUrlsToProcess.iterator();
         for (int i = 0; i < maxAdsToProcess; i++)
         {

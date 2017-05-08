@@ -91,6 +91,9 @@ public class FotocasaScrappingService implements IScrappingService
 
         adUrlsToProcess = foundUrlsManager.getNewestAdsById(adUrlsToProcess);
         
+        LOGGER.debug("Printing all URLS that will be scrapped in this session. Total count: {}", adUrlsToProcess.size());
+        adUrlsToProcess.forEach(e -> LOGGER.debug(e.getUrl()));
+        
         Iterator<Category> iterator = adUrlsToProcess.iterator();
         for (int i = 0; i < maxAdsToProcess; i++)
         {
