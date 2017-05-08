@@ -11,6 +11,7 @@ import java.util.List;
 
 public class IdealistaAdvertisementPage extends BasePage
 {
+    private static final String SECTION_H2_TEXT_LOCATOR = "//h2[contains(.,'%s')]/..//ul//li";
     private static final String M_2 = "m²";
     private static final String EN = "en";
     private static final String ES = "es";
@@ -49,15 +50,23 @@ public class IdealistaAdvertisementPage extends BasePage
     public int getBathrooms()
     {
         String bathroom = getLocalizedBathroom();
-        return extractSpecificCharacteristics(bathroom).isEmpty() ? 0
-                : Integer.parseInt(extractSpecificCharacteristics(bathroom).get(0));
+        if (extractSpecificCharacteristics(bathroom).isEmpty())
+        {
+            return 0;
+        }
+        int bathrooms = Integer.parseInt(extractSpecificCharacteristics(bathroom).get(0));
+        return bathrooms > 0 ? bathrooms : 0;
     }
 
     public int getBedrooms()
     {
         String bedroom = getLocalizedBedroom();
-        return extractSpecificCharacteristics(bedroom).isEmpty() ? 0
-                : Integer.parseInt(extractSpecificCharacteristics(bedroom).get(0));
+        if (extractSpecificCharacteristics(bedroom).isEmpty())
+        {
+            return 0;
+        }
+        int bedrooms = Integer.parseInt(extractSpecificCharacteristics(bedroom).get(0));
+        return bedrooms > 0 ? bedrooms : 0;
     }
 
     public String getCity()
@@ -81,7 +90,7 @@ public class IdealistaAdvertisementPage extends BasePage
 
     public String getEnergyCertification()
     {
-        String xpath = "//h2[contains(.,'%s')]/..//ul//li";
+        String xpath = SECTION_H2_TEXT_LOCATOR;
         List<WebElement> ulElements = searchActions
                 .findElementsByXpath(String.format(xpath, getLocalizedConstruction()));
         for (WebElement item : ulElements)
@@ -158,7 +167,8 @@ public class IdealistaAdvertisementPage extends BasePage
 
     public List<String> getTags()
     {
-        List<WebElement> ulElements = findSpecificCharactefisticsList();
+        List<WebElement> ulElements = findSpecificCharacteristicsList();
+        ulElements.addAll(findConstructionCharactefisticsList());
         List<String> results = new ArrayList<>();
         for (WebElement item : ulElements)
         {
@@ -197,7 +207,7 @@ public class IdealistaAdvertisementPage extends BasePage
 
     private List<String> extractSpecificCharacteristics(String type)
     {
-        List<WebElement> ulElements = findSpecificCharactefisticsList();
+        List<WebElement> ulElements = findSpecificCharacteristicsList();
         List<String> results = new ArrayList<>();
         for (WebElement item : ulElements)
         {
@@ -219,10 +229,15 @@ public class IdealistaAdvertisementPage extends BasePage
         return searchActions.findElementsByXpath("//div[@class='container']");
     }
 
-    private List<WebElement> findSpecificCharactefisticsList()
+    private List<WebElement> findConstructionCharactefisticsList()
     {
-        String xpath = "//h2[contains(.,'%s')]/..//ul//li";
-        return searchActions.findElementsByXpath(String.format(xpath, getLocalizedSpecificCharacteristics()));
+        return searchActions.findElementsByXpath(String.format(SECTION_H2_TEXT_LOCATOR, getLocalizedConstruction()));
+    }
+
+    private List<WebElement> findSpecificCharacteristicsList()
+    {
+        return searchActions
+                .findElementsByXpath(String.format(SECTION_H2_TEXT_LOCATOR, getLocalizedSpecificCharacteristics()));
     }
 
     private String getAdvertizerText()

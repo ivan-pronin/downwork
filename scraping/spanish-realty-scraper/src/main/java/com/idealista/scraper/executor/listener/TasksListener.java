@@ -44,7 +44,7 @@ public class TasksListener extends TimerTask
     {
         LOGGER.info("Polling the queue for newly scrapped advertisments ...");
         Iterator<Future<Advertisement>> iterator = advertismentExtractorResults.iterator();
-        Set<Advertisement> advertisments = new HashSet<>();
+        Set<Advertisement> advertisements = new HashSet<>();
         while (iterator.hasNext())
         {
             Future<Advertisement> task = iterator.next();
@@ -52,7 +52,7 @@ public class TasksListener extends TimerTask
             {
                 try
                 {
-                    advertisments.add(task.get());
+                    advertisements.add(task.get());
                 }
                 catch (InterruptedException | ExecutionException e)
                 {
@@ -63,11 +63,11 @@ public class TasksListener extends TimerTask
                 processedUrls++;
             }
         }
-        if (!advertisments.isEmpty())
+        if (!advertisements.isEmpty())
         {
-            LOGGER.info("Prepared <{}> results for exporting", advertisments.size());
-            xlsExporter.writeResultsToXls(advertisments);
-            Set<URL> urls = advertisments.stream().map(e -> e.getUrl()).collect(Collectors.toSet());
+            LOGGER.info("Prepared <{}> results for exporting", advertisements.size());
+            xlsExporter.writeResultsToXls(advertisements);
+            Set<URL> urls = advertisements.stream().map(e -> e.getUrl()).collect(Collectors.toSet());
             dataSource.writeUrlsToFile(dataTypeService.getProcessedAdsFileName(), urls);
             dataSource.removeUrlsFromFile(dataTypeService.getNewAdsFileName(), urls);
         }
