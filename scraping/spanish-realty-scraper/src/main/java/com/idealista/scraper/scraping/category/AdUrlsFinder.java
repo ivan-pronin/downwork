@@ -6,6 +6,7 @@ import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.scraping.paginator.IPaginator;
 import com.idealista.scraper.scraping.searchpage.ISearchPageProcessorFactory;
+import com.idealista.scraper.util.URLUtils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
@@ -33,6 +35,7 @@ public class AdUrlsFinder implements IAdUrlsFinder
     private static int totalNewUrlsCounter;
 
     private Queue<Category> searchPagesToProcess = new ConcurrentLinkedQueue<>();
+    private Set<Long> processedIds = new HashSet<>();
     private Set<Category> categoriesBaseUrls;
     private Set<URL> processedUrls;
 
@@ -63,6 +66,7 @@ public class AdUrlsFinder implements IAdUrlsFinder
         newUrls = dataSource.getUrlsFromFile(newUrlsFileName);
 
         processedUrls = dataSource.getUrlsFromFile(dataTypeService.getProcessedAdsFileName());
+        processedUrls.forEach(e -> processedIds.add(URLUtils.extractIdFromUrl(e)));
 
         int diff = newUrls.size() - neededAmount;
         Category templateCategory = categoriesBaseUrls.isEmpty() ? new Category()
@@ -156,8 +160,8 @@ public class AdUrlsFinder implements IAdUrlsFinder
                 LOGGER.error("Error while retrieving ad url from category task: {}", e2);
             }
         });
-        Set<Category> newUniqueUrls = foundUrls.stream().filter(e -> !processedUrls.contains(e.getUrl()))
-                .collect(Collectors.toSet());
+        Set<Category> newUniqueUrls = foundUrls.stream().filter(e -> !processedUrls.contains(e.getUrl())
+                && !processedIds.contains(URLUtils.extractIdFromUrl(e.getUrl()))).collect(Collectors.toSet());
         int newUrlsCount = newUniqueUrls.size();
         totalNewUrlsCounter += newUrlsCount;
         LOGGER.info("Added new advertisment urls: {}, total new ads count: {}", newUrlsCount, totalNewUrlsCounter);

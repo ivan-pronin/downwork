@@ -1,6 +1,6 @@
 package com.idealista.scraper.model;
 
-import com.idealista.scraper.util.RegexUtils;
+import com.idealista.scraper.util.URLUtils;
 
 import java.util.Comparator;
 
@@ -9,8 +9,8 @@ public class CategoryAscendingComparator implements Comparator<Category>
     @Override
     public int compare(Category o1, Category o2)
     {
-        int id = Integer.parseInt(RegexUtils.extractPostalCode(o1.getUrl().toString()));
-        int otherId = Integer.parseInt(RegexUtils.extractPostalCode(o2.getUrl().toString()));
-        return id - otherId;
+        long id = URLUtils.extractIdFromUrl(o1.getUrl());
+        long otherId = URLUtils.extractIdFromUrl(o2.getUrl());
+        return Long.compare(id, otherId);
     }
 }

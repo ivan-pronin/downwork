@@ -40,4 +40,9 @@ public final class URLUtils
         }
         return null;
     }
+    
+    public static long extractIdFromUrl(URL url)
+    {
+        return Long.parseLong(RegexUtils.extractPostalCode(url.toString()));
+    }
 }
