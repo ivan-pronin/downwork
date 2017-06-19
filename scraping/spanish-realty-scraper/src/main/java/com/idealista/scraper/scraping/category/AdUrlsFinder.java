@@ -160,8 +160,8 @@ public class AdUrlsFinder implements IAdUrlsFinder
                 LOGGER.error("Error while retrieving ad url from category task: {}", e2);
             }
         });
-        Set<Category> newUniqueUrls = foundUrls.stream().filter(e -> !processedUrls.contains(e.getUrl())
-                && !processedIds.contains(URLUtils.extractIdFromUrl(e.getUrl()))).collect(Collectors.toSet());
+        Set<Category> newUniqueUrls = foundUrls.stream()
+                .filter(e -> !processedIds.contains(URLUtils.extractIdFromUrl(e.getUrl()))).collect(Collectors.toSet());
         int newUrlsCount = newUniqueUrls.size();
         totalNewUrlsCounter += newUrlsCount;
         LOGGER.info("Added new advertisment urls: {}, total new ads count: {}", newUrlsCount, totalNewUrlsCounter);
