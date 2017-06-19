@@ -25,10 +25,12 @@ public class ProxyFetcher
 {
     private static final String US_PROXY_ORG = "https://www.us-proxy.org/";
     private static final String FREE_PROXY_CZ = "http://free-proxy.cz/en/proxylist/main/date/1";
-    private static final Logger LOGGER = LogManager.getLogger(ProxyFetcher.class);
     private static final List<String> PROXIES_URLS = Arrays.asList("http://free-proxy-list.net/",
             "http://www.sslproxies.org/", "http://www.us-proxy.org/", "http://free-proxy-list.net/uk-proxy.html",
             "http://www.socks-proxy.net/", "http://free-proxy-list.net/anonymous-proxy.html");
+    private static final String US_PROXY_PAGINATION_LINKS_LOCATOR = "//ul[@class='pagination']//li[not(@id)]//a";
+
+    private static final Logger LOGGER = LogManager.getLogger(ProxyFetcher.class);
 
     private WebDriver driver;
 
@@ -117,12 +119,14 @@ public class ProxyFetcher
                 }
             }
         }
-        List<WebElement> paginationLinks = searchActions
-                .findElementsByXpath("//*[@id='proxylisttable_paginate']/span//a");
+        List<WebElement> paginationLinks = searchActions.findElementsByXpath(US_PROXY_PAGINATION_LINKS_LOCATOR);
         for (int i = 0; i < paginationLinks.size(); i++)
         {
-            WebElement link = searchActions.findElementsByXpath("//*[@id='proxylisttable_paginate']/span//a").get(i);
-            clickActions.click(link);
+            if (i > 0)
+            {
+                WebElement link = searchActions.findElementsByXpath(US_PROXY_PAGINATION_LINKS_LOCATOR).get(i);
+                clickActions.click(link);
+            }
             WebDriverUtils.waitForAllContentToLoad(driver);
             List<WebElement> table = searchActions.findElementsById("proxylisttable");
             if (!table.isEmpty())
