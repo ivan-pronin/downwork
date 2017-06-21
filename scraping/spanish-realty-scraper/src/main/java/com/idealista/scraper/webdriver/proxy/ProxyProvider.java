@@ -35,7 +35,6 @@ import java.util.regex.Pattern;
 public class ProxyProvider implements IProxyProvider
 {
     private static final Logger LOGGER = LogManager.getLogger(ProxyProvider.class);
-    private static final String IDEALISTA_COM = "https://www.idealista.com";
 
     public static final Pattern VALID_PROXY_ADDRESS_PATTERN = Pattern
             .compile("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}"

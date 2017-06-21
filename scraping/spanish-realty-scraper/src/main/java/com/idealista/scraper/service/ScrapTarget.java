@@ -46,7 +46,7 @@ public enum ScrapTarget
         @Override
         public String getNormalPageElementXpath()
         {
-            return "(//img)[4]";
+            return "//div[@class='item-Background']";
         }
     };
 
