@@ -128,7 +128,9 @@ public class FotocasaPaginator implements IPaginator
         }
         try
         {
-            return new Category(new URL(inputString), baseCategory);
+            Category category = new Category(new URL(inputString), baseCategory);
+            category.setId(0);
+            return category;
         }
         catch (MalformedURLException e)
         {

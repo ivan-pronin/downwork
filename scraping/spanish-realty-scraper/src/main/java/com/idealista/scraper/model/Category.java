@@ -3,9 +3,12 @@ package com.idealista.scraper.model;
 import java.net.URL;
 import java.util.Objects;
 
+import com.idealista.scraper.util.URLUtils;
+
 public class Category
 {
     private URL url;
+    private long id;
     private String state;
     private String type;
     private String subType;
@@ -25,6 +28,7 @@ public class Category
     public Category(URL url, Category templateCategory)
     {
         this.url = url;
+        id = URLUtils.extractIdFromUrl(url);
         if (templateCategory != null)
         {
             this.state = templateCategory.getState();
@@ -42,6 +46,7 @@ public class Category
         this.state = state;
         this.type = type;
         this.subType = subType;
+        id = URLUtils.extractIdFromUrl(url);
     }
 
     @Override
@@ -54,7 +59,11 @@ public class Category
         if (getClass() != obj.getClass())
             return false;
         Category other = (Category) obj;
-        return Objects.equals(url, other.url);
+        if (id == 0 || other.id == 0)
+        {
+            return Objects.equals(url, other.url);
+        }
+        return id == other.id;
     }
 
     public String getProvince()
@@ -85,7 +94,11 @@ public class Category
     @Override
     public int hashCode()
     {
-        return Objects.hash(url);
+        if (id == 0)
+        {
+            return Objects.hash(url);
+        }
+        return 31 + (int) (id ^ (id >>> 32));
     }
 
     public void setProvince(String province)
@@ -101,7 +114,7 @@ public class Category
     @Override
     public String toString()
     {
-        return "Category [url=" + url + ", state=" + state + ", type=" + type + ", subType=" + subType + ", province="
+        return "Category [id= " + id + ", url=" + url + ", state=" + state + ", type=" + type + ", subType=" + subType + ", province="
                 + province + ", district=" + district + ", subDistrict=" + subDistrict + "]";
     }
 
@@ -123,5 +136,10 @@ public class Category
     public String getDistrict()
     {
         return district;
+    }
+
+    public void setId(long id)
+    {
+        this.id = id;
     }
 }

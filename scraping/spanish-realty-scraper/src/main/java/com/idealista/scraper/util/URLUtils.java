@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public final class URLUtils
 {
     private static final Logger LOGGER = LogManager.getLogger(URLUtils.class);
-    
+
     public static Set<URL> convertStringToUrls(Set<String> input)
     {
         return input.stream().map(t ->
@@ -27,7 +27,7 @@ public final class URLUtils
             return null;
         }).collect(Collectors.toSet());
     }
-    
+
     public static URL generateUrl(String text)
     {
         try
@@ -40,9 +40,16 @@ public final class URLUtils
         }
         return null;
     }
-    
+
     public static long extractIdFromUrl(URL url)
     {
-        return Long.parseLong(RegexUtils.extractPostalCode(url.toString()));
+        try
+        {
+            return Long.parseLong(RegexUtils.extractPostalCode(url.toString()));
+        }
+        catch (NumberFormatException e)
+        {
+            return 0;
+        }
     }
 }
