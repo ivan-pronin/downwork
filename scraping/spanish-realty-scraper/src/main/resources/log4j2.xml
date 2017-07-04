@@ -95,6 +95,7 @@
 			<AppenderRef ref="realtyAppender" level="info" />
  			<AppenderRef ref="debugAppender" level="debug" />
 			<AppenderRef ref="errorAppender" level="error" />
+			<AppenderRef ref="scrapingAppender" level="debug" />
 		</Root>
 
 		<Logger name="com.idealista.scraper.data" level="info">
@@ -103,8 +104,8 @@
 		<Logger name="com.idealista.scraper.executor" level="info">
 			<appender-ref ref="executorAppender" level="info"/>
 		</Logger>
-		<Logger name="com.idealista.scraper.scraping" level="info">
-			<appender-ref ref="scrapingAppender" level="info"/>
+		<Logger name="com.idealista.scraper.scraping" level="debug">
+			<appender-ref ref="scrapingAppender" level="debug"/>
 		</Logger>
 		<Logger name="com.idealista.scraper.ui" level="debug">
 			<appender-ref ref="uiAppender" level="debug"/>			

@@ -92,6 +92,8 @@ public class FotocasaSearchPageProcessor extends AbstractSearchPageProcessor
             }
         }
         LOGGER.info("Page has been processed successfully: {}", page);
+        LOGGER.debug("List all found categories");
+        adUrls.forEach(LOGGER::debug);
         return adUrls;
     }
 
@@ -124,6 +126,8 @@ public class FotocasaSearchPageProcessor extends AbstractSearchPageProcessor
             }
         }
         LOGGER.info("Page has been processed successfully: {}", page);
+        LOGGER.debug("List all found categories");
+        adUrls.forEach(LOGGER::debug);
         return adUrls;
     }
 }

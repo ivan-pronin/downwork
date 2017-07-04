@@ -1,18 +1,5 @@
 package com.idealista.scraper.scraping.category;
 
-import com.idealista.scraper.data.IDataSource;
-import com.idealista.scraper.data.IDataTypeService;
-import com.idealista.scraper.executor.ExecutorServiceProvider;
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.scraping.paginator.IPaginator;
-import com.idealista.scraper.scraping.searchpage.ISearchPageProcessorFactory;
-import com.idealista.scraper.util.URLUtils;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +14,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+
+import com.idealista.scraper.data.IDataSource;
+import com.idealista.scraper.data.IDataTypeService;
+import com.idealista.scraper.executor.ExecutorServiceProvider;
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.scraping.paginator.IPaginator;
+import com.idealista.scraper.scraping.searchpage.ISearchPageProcessorFactory;
+import com.idealista.scraper.util.URLUtils;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class AdUrlsFinder implements IAdUrlsFinder
@@ -85,12 +85,8 @@ public class AdUrlsFinder implements IAdUrlsFinder
         else
         {
             newUrls.forEach(e -> adUrlsToProcess.add(new Category(e, templateCategory)));
-            while (!searchPagesToProcess.isEmpty())
+            while (!searchPagesToProcess.isEmpty() && adUrlsToProcess.size() < neededAmount)
             {
-                if (adUrlsToProcess.size() >= neededAmount)
-                {
-                    break;
-                }
                 adUrlsToProcess.addAll(grabNextAdUrls());
             }
         }
