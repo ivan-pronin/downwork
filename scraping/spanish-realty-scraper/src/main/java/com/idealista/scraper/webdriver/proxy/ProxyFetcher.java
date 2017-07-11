@@ -1,7 +1,14 @@
 package com.idealista.scraper.webdriver.proxy;
 
-import com.idealista.scraper.ui.ClickActions;
-import com.idealista.scraper.ui.SearchActions;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.idealista.scraper.ui.actions.ClickActions;
+import com.idealista.scraper.ui.actions.SearchActions;
+import com.idealista.scraper.ui.actions.WaitActions;
 import com.idealista.scraper.util.FileUtils;
 import com.idealista.scraper.util.WebDriverUtils;
 
@@ -13,12 +20,6 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class ProxyFetcher
@@ -36,6 +37,9 @@ public class ProxyFetcher
 
     @Autowired
     private SearchActions searchActions;
+    
+    @Autowired
+    private WaitActions waitActions;
 
     @Autowired
     private ClickActions clickActions;
@@ -144,7 +148,7 @@ public class ProxyFetcher
         Set<String> proxies = new HashSet<>();
         List<WebElement> exportButton = searchActions.findElementsById("clickexport");
         clickActions.click(exportButton);
-        WebElement proxiesBlock = searchActions.waitForElement(By.id("zkzk"), 5);
+        WebElement proxiesBlock = waitActions.waitForElement(By.id("zkzk"), 5);
         if (proxiesBlock != null)
         {
             proxies.addAll(FileUtils.readStringToLines(proxiesBlock.getText()));

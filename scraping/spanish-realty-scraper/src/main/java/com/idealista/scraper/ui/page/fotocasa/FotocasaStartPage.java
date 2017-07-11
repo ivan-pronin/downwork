@@ -1,8 +1,10 @@
-package com.idealista.scraper.ui.page;
+package com.idealista.scraper.ui.page.fotocasa;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.idealista.scraper.ui.page.BasePage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +32,7 @@ public class FotocasaStartPage extends BasePage
 
     private void clickStartSearch()
     {
-        WebElement button = searchActions.waitForElement(SEARCH_BUTTON_LOCATOR, 5);
+        WebElement button = waitActions.waitForElement(SEARCH_BUTTON_LOCATOR, 5);
         clickActions.click(button);
     }
 
@@ -41,12 +43,12 @@ public class FotocasaStartPage extends BasePage
             LOGGER.info("SearchString is empty, skipping this field");
             return false;
         }
-        WebElement clearTextField = searchActions.waitForElement(By.xpath("//span[@class='sui-Autocompleted-clear']"), 2);
+        WebElement clearTextField = waitActions.waitForElement(By.xpath("//span[@class='sui-Autocompleted-clear']"), 2);
         clickActions.click(clearTextField);
         
-        WebElement searchField = searchActions.waitForElement(By.xpath("//input[@class='sui-Autocompleted-input']"), 5);
+        WebElement searchField = waitActions.waitForElement(By.xpath("//input[@class='sui-Autocompleted-input']"), 5);
         clickActions.setElementTextFast(searchField, searchString);
-        WebElement autocomplete = searchActions.waitForElement(By.xpath("//ul[@class='sui-Autocompleted-results']"), 5);
+        WebElement autocomplete = waitActions.waitForElement(By.xpath("//ul[@class='sui-Autocompleted-results']"), 5);
         if (autocomplete != null)
         {
             List<WebElement> items = searchActions.findElementsByXpath(autocomplete, "//li");
@@ -58,8 +60,8 @@ public class FotocasaStartPage extends BasePage
                     if (searchString.equalsIgnoreCase(text))
                     {
                         clickActions.click(item);
-                        searchActions.waitForElementsDisappear(items, 10);
-                        searchActions.waitForElementDisappear(SEARCH_BUTTON_LOCATOR, 10);
+                        waitActions.waitForElementsDisappear(items, 10);
+                        waitActions.waitForElementDisappear(SEARCH_BUTTON_LOCATOR, 10);
                         return true;
                     }
                 }
@@ -126,13 +128,13 @@ public class FotocasaStartPage extends BasePage
 
     private List<WebElement> getContainerApp()
     {
-        return searchActions.waitForElements(By.id("App"), 5);
+        return waitActions.waitForElements(By.id("App"), 5);
     }
 
     public void selectSubDistrict(String subDistrict)
     {
         LOGGER.info("Selecting subDistrict: {}", subDistrict);
-        List<WebElement> subDisctricts = searchActions
+        List<WebElement> subDisctricts = waitActions
                 .waitForElements(By.xpath("(//span[@class='re-GeographicSearch-listTriggerText'])[5]"), 10);
         clickActions.click(subDisctricts);
         List<WebElement> disctrictsDropDown = waitForSubDistrictList();
@@ -146,7 +148,7 @@ public class FotocasaStartPage extends BasePage
     public void selectDistrict(String district)
     {
         LOGGER.info("Selecting district: {}", district);
-        List<WebElement> disctricts = searchActions
+        List<WebElement> disctricts = waitActions
                 .waitForElements(By.xpath("(//span[@class='re-GeographicSearch-listTriggerText'])[4]"), 10);
         String text = searchActions.getElementText(disctricts);
         if (text != null && !text.equalsIgnoreCase(district))
@@ -174,7 +176,7 @@ public class FotocasaStartPage extends BasePage
 
     private void openSubDiscticts()
     {
-        List<WebElement> disctricts = searchActions
+        List<WebElement> disctricts = waitActions
                 .waitForElements(By.xpath("(//span[@class='re-GeographicSearch-listTriggerText'])[5]"), 10);
         clickActions.click(disctricts);
     }
@@ -182,13 +184,13 @@ public class FotocasaStartPage extends BasePage
     private List<WebElement> waitForSubDistrictList()
     {
         LOGGER.debug("Waiting for subDistricts dropDown appear...");
-        return searchActions.waitForElements(By.xpath("(//ol[@class='re-GeographicSearch-list'])[5]//li/a"), 5);
+        return waitActions.waitForElements(By.xpath("(//ol[@class='re-GeographicSearch-list'])[5]//li/a"), 5);
     }
 
     private List<WebElement> waitForDistrictList()
     {
         LOGGER.debug("Waiting for Districts dropDown appear...");
-        return searchActions.waitForElements(By.xpath("(//ol[@class='re-GeographicSearch-list'])[4]//li/a"), 5);
+        return waitActions.waitForElements(By.xpath("(//ol[@class='re-GeographicSearch-list'])[4]//li/a"), 5);
     }
 
     private void clickApplySubDistrics(List<WebElement> subDisctricts)
@@ -198,8 +200,8 @@ public class FotocasaStartPage extends BasePage
                 "(//li[@class='re-GeographicSearch-level'])[5]//div[@class='re-GeographicSearch-submit']//button");
         clickActions.click(searchButton);
         List<WebElement> dropDown = searchActions.findElementsByXpath("(//li[@class='re-GeographicSearch-level'])[5]");
-        searchActions.waitForElementsDisappear(searchButton, 5);
-        searchActions.waitForElementsDisappear(dropDown, 5);
+        waitActions.waitForElementsDisappear(searchButton, 5);
+        waitActions.waitForElementsDisappear(dropDown, 5);
         LOGGER.debug("SubDistricts Filter form has been submited...");
     }
 
@@ -210,8 +212,8 @@ public class FotocasaStartPage extends BasePage
                 "(//li[@class='re-GeographicSearch-level'])[4]//div[@class='re-GeographicSearch-submit']//button");
         clickActions.click(searchButton);
         List<WebElement> dropDown = searchActions.findElementsByXpath("(//li[@class='re-GeographicSearch-level'])[4]");
-        searchActions.waitForElementsDisappear(searchButton, 5);
-        searchActions.waitForElementsDisappear(dropDown, 5);
+        waitActions.waitForElementsDisappear(searchButton, 5);
+        waitActions.waitForElementsDisappear(dropDown, 5);
         LOGGER.debug("Districts Filter form has been submited...");
     }
 

@@ -1,17 +1,14 @@
-package com.idealista.scraper.ui;
+package com.idealista.scraper.ui.actions;
+
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-
-import com.idealista.scraper.util.WebDriverUtils;
 
 @Component
 public class ClickActions

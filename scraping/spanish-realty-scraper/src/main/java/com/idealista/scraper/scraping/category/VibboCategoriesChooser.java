@@ -1,22 +1,5 @@
 package com.idealista.scraper.scraping.category;
 
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.model.search.CategoryChoosingAttribute;
-import com.idealista.scraper.model.search.GenericSearchFilterContext;
-import com.idealista.scraper.model.search.SearchAttributes;
-import com.idealista.scraper.model.search.VibboSearchAttributes;
-import com.idealista.scraper.service.ScrapTarget;
-import com.idealista.scraper.ui.page.VibboStartPage;
-import com.idealista.scraper.util.CollectionUtils;
-import com.idealista.scraper.util.WebDriverUtils;
-import com.idealista.scraper.webdriver.WebDriverProvider;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.WebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,7 +8,22 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-@Component
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.model.search.CategoryChoosingAttribute;
+import com.idealista.scraper.model.search.GenericSearchFilterContext;
+import com.idealista.scraper.model.search.SearchAttributes;
+import com.idealista.scraper.model.search.VibboSearchAttributes;
+import com.idealista.scraper.service.ScrapTarget;
+import com.idealista.scraper.ui.page.vibbo.VibboStartPage;
+import com.idealista.scraper.util.CollectionUtils;
+import com.idealista.scraper.util.WebDriverUtils;
+import com.idealista.scraper.webdriver.WebDriverProvider;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class VibboCategoriesChooser extends AbstractCategoriesChooser implements ICategoriesChooser
 {
     private static final ScrapTarget SCRAP_TARGET = ScrapTarget.VIBBO;

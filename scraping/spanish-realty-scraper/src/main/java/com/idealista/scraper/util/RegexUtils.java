@@ -30,7 +30,7 @@ public final class RegexUtils
     {
         if (text == null)
         {
-            LOGGER.info("ExtractDigit: input string is null");
+            LOGGER.debug("ExtractDigit: input string is null");
             return -1;
         }
         Pattern pattern = Pattern.compile("(\\d{1})");
@@ -117,6 +117,21 @@ public final class RegexUtils
         if (parts.length > 1)
         {
             return parts[1].trim();
+        }
+        return null;
+    }
+
+    public static String extractTextBetweenParenthesis(String text)
+    {
+        if (text == null)
+        {
+            return null;
+        }
+        Pattern pattern = Pattern.compile("\\((.*?)\\)");
+        Matcher m = pattern.matcher(text);
+        if (m.find())
+        {
+            return m.group(1);
         }
         return null;
     }

@@ -1,9 +1,11 @@
-package com.idealista.scraper.ui.page;
+package com.idealista.scraper.ui.page.idealista;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.idealista.scraper.ui.page.BasePage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +45,7 @@ public class IdealistaStartPage extends BasePage
 
     public Set<String> getAvailableOperations()
     {
-        WebElement operationCombo = searchActions.waitForElement(By.id("operation-combo"), 10);
+        WebElement operationCombo = waitActions.waitForElement(By.id("operation-combo"), 10);
         if (operationCombo != null)
         {
             List<WebElement> options = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
@@ -54,7 +56,7 @@ public class IdealistaStartPage extends BasePage
 
     public Set<String> getAvailableTypologies()
     {
-        WebElement operationCombo = searchActions.waitForElement(By.id("typology-combo"), 10);
+        WebElement operationCombo = waitActions.waitForElement(By.id("typology-combo"), 10);
         if (operationCombo != null)
         {
             List<WebElement> options = operationCombo.findElements(By.xpath(".//li[@data-disabled='false']"));
@@ -87,7 +89,7 @@ public class IdealistaStartPage extends BasePage
             LOGGER.info("Specified <operation> is null, skipping...");
             return;
         }
-        WebElement operationCombo = searchActions.waitForElement(By.id("operation-combo"), 10);
+        WebElement operationCombo = waitActions.waitForElement(By.id("operation-combo"), 10);
         if (operationCombo != null)
         {
             List<WebElement> options = operationCombo.findElements(By.tagName("li"));

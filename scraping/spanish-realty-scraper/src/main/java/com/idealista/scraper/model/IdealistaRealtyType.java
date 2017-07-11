@@ -2,7 +2,7 @@ package com.idealista.scraper.model;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum RealtyType
+public enum IdealistaRealtyType
 {
     NEW_CONSTRUCTION("New construction", "Obra nueva"),
     HOME("Homes", "Viviendas"),
@@ -18,19 +18,19 @@ public enum RealtyType
     private String aliasEn;
     private String aliasEs;
     
-    private RealtyType(String aliasEn, String aliasEs)
+    private IdealistaRealtyType(String aliasEn, String aliasEs)
     {
         this.aliasEn = aliasEn;
         this.aliasEs = aliasEs;
     }
 
-    public static RealtyType fromString(String text)
+    public static IdealistaRealtyType fromString(String text)
     {
         if (StringUtils.isEmpty(text))
         {
             return null;
         }
-        for (RealtyType type : RealtyType.values())
+        for (IdealistaRealtyType type : IdealistaRealtyType.values())
         {
             if (text.equalsIgnoreCase(type.aliasEn) || text.equalsIgnoreCase(type.aliasEs))
             {

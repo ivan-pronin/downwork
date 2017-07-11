@@ -1,17 +1,21 @@
 package com.idealista.scraper.model.filter;
 
+import java.util.List;
+import java.util.Map;
+
 import com.idealista.scraper.model.filter.FilterAttributes.PublicationDateFilter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FilterAttributesFactory implements IFilterAttributesFactory
+public class IdealistaFilterAttributesFactory implements IFilterAttributesFactory
 {
     @Override
-    public FilterAttributes create(String publicationDateFilter)
+    public FilterAttributes create(List<Map<String, List<String>>> filterAttributesData)
     {
         FilterAttributes filterAttributes = new FilterAttributes();
+        String publicationDateFilter = filterAttributesData.get(0).get("publicationDateFilter").get(0);
         if (StringUtils.isEmpty(publicationDateFilter))
         {
             filterAttributes.setPublicationDateFilter(PublicationDateFilter.NO_FILTER);

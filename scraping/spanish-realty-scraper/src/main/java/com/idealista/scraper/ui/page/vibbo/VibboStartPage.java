@@ -1,6 +1,7 @@
-package com.idealista.scraper.ui.page;
+package com.idealista.scraper.ui.page.vibbo;
 
 import com.idealista.scraper.model.search.CategoryChoosingAttribute;
+import com.idealista.scraper.ui.page.BasePage;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -32,12 +33,12 @@ public class VibboStartPage extends BasePage
         // filter being applied and page results loaded
         clickActions.click(searchActions.findElementsById("sb_searchbutton_filter"));
         int waitSeconds = 5;
-        searchActions.waitForElement(By.id("parent_category"), waitSeconds);
-        searchActions.waitForElement(By.id("c"), waitSeconds);
-        searchActions.waitForElement(By.id("st"), waitSeconds);
-        searchActions.waitForElement(By.id("sb_f_input"), waitSeconds);
-        searchActions.waitForElement(By.id("sb_searchbutton_filter"), waitSeconds);
-        searchActions.waitForElement(By.id("clearFiltersDesktop"), waitSeconds);
+        waitActions.waitForElement(By.id("parent_category"), waitSeconds);
+        waitActions.waitForElement(By.id("c"), waitSeconds);
+        waitActions.waitForElement(By.id("st"), waitSeconds);
+        waitActions.waitForElement(By.id("sb_f_input"), waitSeconds);
+        waitActions.waitForElement(By.id("sb_searchbutton_filter"), waitSeconds);
+        waitActions.waitForElement(By.id("clearFiltersDesktop"), waitSeconds);
     }
 
     private void selectAdvertiser(String advertiser)
@@ -62,10 +63,10 @@ public class VibboStartPage extends BasePage
             LOGGER.warn("Specified <{}> is null, skipping...", optionName);
             return;
         }
-        WebElement operationCombo = searchActions.waitForElement(By.id(elementId), 5);
+        WebElement operationCombo = waitActions.waitForElement(By.id(elementId), 5);
         if (operationCombo != null)
         {
-            List<WebElement> options = searchActions
+            List<WebElement> options = waitActions
                     .waitForElements(By.xpath(String.format("//*[@id='%s']//option", elementId)), 5);
             for (WebElement option : options)
             {

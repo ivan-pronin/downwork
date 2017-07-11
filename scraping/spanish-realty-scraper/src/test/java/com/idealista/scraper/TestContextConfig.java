@@ -19,7 +19,7 @@ import com.idealista.scraper.scraping.searchpage.FotocasaSearchPageProcessor;
 import com.idealista.scraper.scraping.searchpage.ISearchPageProcessorFactory;
 import com.idealista.scraper.service.IScrappingService;
 import com.idealista.scraper.service.ScrapTarget;
-import com.idealista.scraper.ui.page.FotocasaStartPage;
+import com.idealista.scraper.ui.page.fotocasa.FotocasaStartPage;
 import com.idealista.scraper.webdriver.INavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
@@ -82,11 +82,30 @@ public class TestContextConfig
 
     @Value("#{ T(java.util.Arrays).asList(${proxySources}) }")
     private List<Integer> proxies;
+    
+    @Value("#{ T(org.springframework.util.StringUtils).delimitedListToStringArray('${distros}',';') }")
+    private List<String> distros;
+    
+    @Value("#{ T(org.springframework.util.StringUtils).delimitedListToStringArray('${distros2}',';') }")
+    private List<String> distros2;
+    
+    @Value("#{ T(org.springframework.util.StringUtils).delimitedListToStringArray('${distros3}',';') }")
+    private List<String> distros3;
+    
+    @Value("#{ T(java.util.Arrays).asList('${zone}') }")
+    private List<String> zone;
+
+    @Value("#{ T(java.util.Arrays).asList('${municipio}') }")
+    private List<String> municipio;
 
     @Test
-    public void testName() throws Exception
+    public void testName3() throws Exception
     {
-        System.out.println(appConfig.getLanguage());
+        System.out.println("Distros: " + distros.size() + " values: " + distros);
+        System.out.println("Distros2: " + distros2.size() + " values: " + distros2);
+        System.out.println("Distros3: " + distros3.size() + " values: " + distros3);
+        System.out.println("Zone: " + zone.size() + " values: " + zone);
+        System.out.println("Municipio: " + municipio.size() + " values: " + municipio);
     }
 
 }

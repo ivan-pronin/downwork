@@ -1,7 +1,8 @@
 package com.idealista.scraper.ui.page;
 
-import com.idealista.scraper.ui.ClickActions;
-import com.idealista.scraper.ui.SearchActions;
+import com.idealista.scraper.ui.actions.ClickActions;
+import com.idealista.scraper.ui.actions.SearchActions;
+import com.idealista.scraper.ui.actions.WaitActions;
 
 import org.openqa.selenium.WebDriver;
 
@@ -15,11 +16,13 @@ public abstract class BasePage
 
     protected SearchActions searchActions = new SearchActions();
     protected ClickActions clickActions = new ClickActions();
+    protected WaitActions waitActions = new WaitActions();
 
     public void setWebDriver(WebDriver driver)
     {
         searchActions.setWebDriver(driver);
         clickActions.setWebDriver(driver);
+        waitActions.setWebDriver(driver);
     }
 
     protected String isProfessional(String listingAgent)
