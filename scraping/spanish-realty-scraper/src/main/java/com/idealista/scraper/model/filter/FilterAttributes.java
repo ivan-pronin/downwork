@@ -1,6 +1,5 @@
 package com.idealista.scraper.model.filter;
 
-import java.util.List;
 import java.util.Set;
 
 public class FilterAttributes

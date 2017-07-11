@@ -1,7 +1,7 @@
 package com.idealista.scraper.scraping.searchpage;
 
 import com.idealista.scraper.model.Category;
-import com.idealista.scraper.ui.SearchActions;
+import com.idealista.scraper.ui.actions.SearchActions;
 import com.idealista.scraper.util.URLUtils;
 import com.idealista.scraper.util.WaitUtils;
 import com.idealista.scraper.util.WebDriverUtils;
@@ -61,7 +61,7 @@ public class FotocasaSearchPageProcessor extends AbstractSearchPageProcessor
         List<WebElement> switchView = searchActions.findElementsByXpath(FOTOS_LOCATOR);
         getClickActions().click(switchView);
         String itemsLocator = ITEM_CONTAINER_LOCATOR + CARD_PRIMARY_LOCATOR;
-        searchActions.waitForElements(By.xpath(itemsLocator), 10);
+        getWaitActions().waitForElements(By.xpath(itemsLocator), 10);
         List<WebElement> lazyies = searchActions
                 .findElementsByXpath(ITEM_CONTAINER_LOCATOR + "//div[@class='LazyLoad']");
         for (int i = 4; i < lazyies.size(); i += 4)

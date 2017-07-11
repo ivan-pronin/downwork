@@ -1,8 +1,9 @@
 package com.idealista.scraper.scraping.searchpage;
 
 import com.idealista.scraper.model.Category;
-import com.idealista.scraper.ui.ClickActions;
-import com.idealista.scraper.ui.SearchActions;
+import com.idealista.scraper.ui.actions.ClickActions;
+import com.idealista.scraper.ui.actions.SearchActions;
+import com.idealista.scraper.ui.actions.WaitActions;
 import com.idealista.scraper.webdriver.INavigateActions;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
@@ -17,6 +18,7 @@ public abstract class AbstractSearchPageProcessor implements ISeachPageProcessor
     private ProxyMonitor proxyMonitor;
     private SearchActions searchActions = new SearchActions();
     private ClickActions clickActions = new ClickActions();
+    private WaitActions waitActions = new WaitActions();
 
     public AbstractSearchPageProcessor(Category category)
     {
@@ -67,6 +69,7 @@ public abstract class AbstractSearchPageProcessor implements ISeachPageProcessor
     {
         searchActions.setWebDriver(driver);
         clickActions.setWebDriver(driver);
+        waitActions.setWebDriver(driver);
     }
 
     protected SearchActions getSearchActions()
@@ -77,5 +80,10 @@ public abstract class AbstractSearchPageProcessor implements ISeachPageProcessor
     protected ClickActions getClickActions()
     {
         return clickActions;
+    }
+    
+    protected WaitActions getWaitActions()
+    {
+        return waitActions;
     }
 }

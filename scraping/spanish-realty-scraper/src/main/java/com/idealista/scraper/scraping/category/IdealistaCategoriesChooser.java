@@ -1,14 +1,20 @@
 package com.idealista.scraper.scraping.category;
 
+import java.net.URL;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.idealista.scraper.AppConfig;
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.model.filter.FilterAttributes;
 import com.idealista.scraper.model.search.GenericSearchFilterContext;
 import com.idealista.scraper.model.search.SearchAttributes;
 import com.idealista.scraper.service.ScrapTarget;
-import com.idealista.scraper.ui.page.IdealistaStartPage;
-import com.idealista.scraper.ui.page.MapPage;
-import com.idealista.scraper.ui.page.SearchPage;
+import com.idealista.scraper.ui.page.idealista.IdealistaMapPage;
+import com.idealista.scraper.ui.page.idealista.IdealistaSearchPage;
+import com.idealista.scraper.ui.page.idealista.IdealistaStartPage;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
 
@@ -16,15 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import java.net.URL;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-@Component
 public class IdealistaCategoriesChooser extends AbstractCategoriesChooser implements ICategoriesChooser
 {
     private class CategoryBySearchAndFilterAttributes implements Callable<Category>
@@ -70,11 +68,11 @@ public class IdealistaCategoriesChooser extends AbstractCategoriesChooser implem
                 driver.navigate().to(getMainPageLocalizedUrl());
                 selectOptionsAndStartSearch(startPage, operation, typology, location);
             }
-            MapPage mapPage = new MapPage();
+            IdealistaMapPage mapPage = new IdealistaMapPage();
             mapPage.setWebDriver(driver);
             mapPage.clickShowAll();
 
-            SearchPage searchPage = new SearchPage();
+            IdealistaSearchPage searchPage = new IdealistaSearchPage();
             searchPage.setWebDriver(driver);
             searchPage.selectProvince(province);
             searchPage.applyPublicationDateFilter(filterAttributes);

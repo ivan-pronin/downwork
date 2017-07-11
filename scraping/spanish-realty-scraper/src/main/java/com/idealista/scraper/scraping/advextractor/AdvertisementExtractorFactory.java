@@ -32,6 +32,9 @@ public class AdvertisementExtractorFactory implements IAdvertisementExtractorFac
             case FOTOCASA:
                 extractor = new FotocasaAdvertisementExtractor(category);
                 break;
+            case PISOS:
+                extractor = new PisosAdvertisementExtractor(category);
+                break;
             default:
                 break;
         }

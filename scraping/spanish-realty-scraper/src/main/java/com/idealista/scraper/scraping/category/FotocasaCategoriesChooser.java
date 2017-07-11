@@ -14,9 +14,8 @@ import com.idealista.scraper.model.search.CategoryChoosingAttribute;
 import com.idealista.scraper.model.search.FotocasaSearchAttributes;
 import com.idealista.scraper.model.search.GenericSearchFilterContext;
 import com.idealista.scraper.model.search.SearchAttributes;
-import com.idealista.scraper.model.search.VibboSearchAttributes;
 import com.idealista.scraper.service.ScrapTarget;
-import com.idealista.scraper.ui.page.FotocasaStartPage;
+import com.idealista.scraper.ui.page.fotocasa.FotocasaStartPage;
 import com.idealista.scraper.util.CollectionUtils;
 import com.idealista.scraper.util.WebDriverUtils;
 import com.idealista.scraper.webdriver.INavigateActions;
@@ -27,9 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class FotocasaCategoriesChooser extends AbstractCategoriesChooser implements ICategoriesChooser
 {
     private static final ScrapTarget SCRAP_TARGET = ScrapTarget.FOTOCASA;

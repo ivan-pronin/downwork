@@ -35,6 +35,20 @@ public enum ScrapTarget
             return "//*[@id='no-login-user-bar']";
         }
     },
+    PISOS("https://www.pisos.com/")
+    {
+        @Override
+        public String getMainPageLocalizedUrl(String language)
+        {
+            throw new UnsupportedOperationException("Property <language> is not applicable to PISOS");
+        }
+
+        @Override
+        public String getNormalPageElementXpath()
+        {
+            return "//*[@id='headerUser']";
+        }
+    },
     FOTOCASA("http://www.fotocasa.es/es/")
     {
         @Override

@@ -1,6 +1,7 @@
-package com.idealista.scraper.ui.page;
+package com.idealista.scraper.ui.page.idealista;
 
 import com.idealista.scraper.model.filter.FilterAttributes;
+import com.idealista.scraper.ui.page.BasePage;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -13,9 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class SearchPage extends BasePage
+public class IdealistaSearchPage extends BasePage
 {
-    private static final Logger LOGGER = LogManager.getLogger(SearchPage.class);
+    private static final Logger LOGGER = LogManager.getLogger(IdealistaSearchPage.class);
 
     public void applyPublicationDateFilter(FilterAttributes filterAttributes)
     {
@@ -27,8 +28,8 @@ public class SearchPage extends BasePage
         clickActions.scrollToElement(publicationDateFilter.get(0));
         clickActions.scrollScreenDownByPixels(-200);
         clickActions.click(publicationDateFilter);
-        searchActions.waitForElement(By.xpath("//div[@class='listing-loading-content']"), 5);
-        searchActions.waitForElementDisappear(By.xpath("//div[@class='listing-loading-content']"), 5);
+        waitActions.waitForElement(By.xpath("//div[@class='listing-loading-content']"), 5);
+        waitActions.waitForElementDisappear(By.xpath("//div[@class='listing-loading-content']"), 5);
         LOGGER.info("Filter has been applied");
     }
 
@@ -43,7 +44,7 @@ public class SearchPage extends BasePage
         List<WebElement> provincesButton = searchActions
                 .findElementsByXpath("//span[@class='breadcrumb-title icon-arrow-dropdown-after']");
         clickActions.click(provincesButton);
-        WebElement dropDown = searchActions.waitForElement(By.xpath("//div[@class='breadcrumb-subitems']"), 5);
+        WebElement dropDown = waitActions.waitForElement(By.xpath("//div[@class='breadcrumb-subitems']"), 5);
         List<WebElement> provincesItems = searchActions.findElementsByXpath(Arrays.asList(dropDown), "//ul//li//a");
         for (WebElement provinceItem : provincesItems)
         {
@@ -63,7 +64,7 @@ public class SearchPage extends BasePage
     private boolean waitForProvinceToLoad(String province)
     {
         String xpath = "//li[@class='current-level']//span[contains(.,'%s')]";
-        WebElement currentProvince = searchActions.waitForElement(By.xpath(String.format(xpath, province)), 10);
+        WebElement currentProvince = waitActions.waitForElement(By.xpath(String.format(xpath, province)), 10);
         if (currentProvince == null)
         {
             LOGGER.error("Failed to load province: {}", province);

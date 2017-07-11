@@ -1,32 +1,30 @@
 package com.idealista.scraper.model.parser;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.idealista.scraper.model.search.IGenericSearchAttributes;
-import com.idealista.scraper.model.search.IdealistaSearchAttributes;
+import com.idealista.scraper.model.search.PisosSearchAttributes;
 import com.idealista.scraper.model.search.SearchAttributes;
-import com.idealista.scraper.ui.page.idealista.IdealistaStartPage;
+import com.idealista.scraper.ui.page.pisos.PisosStartPage;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.Set;
-
 @Component
-public class IdealistaSearchAttributesParser implements ISearchAttributesParser
+public class PisosSearchAttributesParser implements ISearchAttributesParser
 {
     @Autowired
     private WebDriverProvider webDriverProvider;
     
-    private IdealistaStartPage startPage;
-
     @Override
     public SearchAttributes parseSearchAttributes(Map<IGenericSearchAttributes, Set<String>> attributes)
     {
-        Set<String> operations = attributes.get(IdealistaSearchAttributes.OPERATION);
-        Set<String> typologies = attributes.get(IdealistaSearchAttributes.TYPOLOGY);
-        Set<String> locations = attributes.get(IdealistaSearchAttributes.LOCATION);
-        startPage = new IdealistaStartPage();
+        Set<String> operations = attributes.get(PisosSearchAttributes.OPERATION);
+        Set<String> typologies = attributes.get(PisosSearchAttributes.TYPOLOGY);
+        Set<String> locations = attributes.get(PisosSearchAttributes.LOCATION);
+        PisosStartPage startPage = new PisosStartPage();
         startPage.setWebDriver(webDriverProvider.get());
         if (operations.isEmpty())
         {

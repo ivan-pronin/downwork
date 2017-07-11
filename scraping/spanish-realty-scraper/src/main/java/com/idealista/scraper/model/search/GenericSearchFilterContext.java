@@ -1,5 +1,8 @@
 package com.idealista.scraper.model.search;
 
+import java.util.List;
+import java.util.Map;
+
 import com.idealista.scraper.model.filter.FilterAttributes;
 
 public class GenericSearchFilterContext
@@ -7,6 +10,8 @@ public class GenericSearchFilterContext
     private SearchAttributes searchAttributes;
 
     private FilterAttributes filterAttributes;
+    
+    private List<Map<String, List<String>>> genericFilterAttributes;
 
     private String province;
 
@@ -38,5 +43,15 @@ public class GenericSearchFilterContext
     public void setSearchAttributes(SearchAttributes searchAttributes)
     {
         this.searchAttributes = searchAttributes;
+    }
+
+    public List<Map<String, List<String>>> getGenericFilterAttributes()
+    {
+        return genericFilterAttributes;
+    }
+
+    public void setGenericFilterAttributes(List<Map<String, List<String>>> genericFilterAttributes)
+    {
+        this.genericFilterAttributes = genericFilterAttributes;
     }
 }

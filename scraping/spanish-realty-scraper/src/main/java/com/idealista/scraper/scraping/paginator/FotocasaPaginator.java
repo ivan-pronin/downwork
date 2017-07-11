@@ -9,8 +9,8 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 import com.idealista.scraper.model.Category;
-import com.idealista.scraper.ui.ClickActions;
-import com.idealista.scraper.ui.SearchActions;
+import com.idealista.scraper.ui.actions.ClickActions;
+import com.idealista.scraper.ui.actions.SearchActions;
 import com.idealista.scraper.util.RegexUtils;
 import com.idealista.scraper.util.WebDriverUtils;
 import com.idealista.scraper.webdriver.WebDriverProvider;

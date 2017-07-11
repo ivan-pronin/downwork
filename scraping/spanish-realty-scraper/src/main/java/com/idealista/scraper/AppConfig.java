@@ -4,18 +4,22 @@ import java.io.IOException;
 
 import com.idealista.scraper.model.parser.ISearchAttributesParser;
 import com.idealista.scraper.model.parser.IdealistaSearchAttributesParser;
+import com.idealista.scraper.model.parser.PisosSearchAttributesParser;
 import com.idealista.scraper.model.parser.VibboSearchAttributesParser;
 import com.idealista.scraper.scraping.category.FotocasaCategoriesChooser;
 import com.idealista.scraper.scraping.category.ICategoriesChooser;
 import com.idealista.scraper.scraping.category.IdealistaCategoriesChooser;
+import com.idealista.scraper.scraping.category.PisosCategoriesChooser;
 import com.idealista.scraper.scraping.category.VibboCategoriesChooser;
 import com.idealista.scraper.scraping.paginator.FotocasaPaginator;
 import com.idealista.scraper.scraping.paginator.IPaginator;
 import com.idealista.scraper.scraping.paginator.IdealistaPaginator;
+import com.idealista.scraper.scraping.paginator.PisosPaginator;
 import com.idealista.scraper.scraping.paginator.VibboPaginator;
 import com.idealista.scraper.service.FotocasaScrappingService;
 import com.idealista.scraper.service.IScrappingService;
 import com.idealista.scraper.service.IdealistaScrappingService;
+import com.idealista.scraper.service.PisosScrappingService;
 import com.idealista.scraper.service.ScrapTarget;
 import com.idealista.scraper.service.VibboScrappingService;
 import com.idealista.scraper.util.PropertiesLoader;
@@ -72,6 +76,8 @@ public class AppConfig
                 return new IdealistaCategoriesChooser();
             case FOTOCASA:
                 return new FotocasaCategoriesChooser();
+            case PISOS:
+                return new PisosCategoriesChooser();
             default:
                 throw illegalException("ICategoriesChooser");
         }
@@ -88,6 +94,8 @@ public class AppConfig
                 return new IdealistaPaginator();
             case FOTOCASA:
                 return new FotocasaPaginator();
+            case PISOS:
+                return new PisosPaginator();
             default:
                 throw illegalException("IPaginator");
         }
@@ -104,6 +112,8 @@ public class AppConfig
                 return new IdealistaScrappingService();
             case FOTOCASA:
                 return new FotocasaScrappingService();
+            case PISOS:
+                return new PisosScrappingService();
             default:
                 illegalException("IScrappingService");
         }
@@ -121,6 +131,8 @@ public class AppConfig
                 return new IdealistaSearchAttributesParser();
             case FOTOCASA:
                 return null;
+            case PISOS:
+                return new PisosSearchAttributesParser();
             default:
                 throw illegalException("ISearchAttributesParser");
         }

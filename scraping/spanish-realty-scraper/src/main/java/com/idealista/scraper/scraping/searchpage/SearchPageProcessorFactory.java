@@ -39,6 +39,9 @@ public class SearchPageProcessorFactory implements ISearchPageProcessorFactory
             case FOTOCASA:
                 processor = new FotocasaSearchPageProcessor(category);
                 break;
+            case PISOS:
+                processor = new PisosSearchPageProcessor(category);
+                break;
             default:
                 throw new IllegalArgumentException("Could not create necessary ISearchPageProcessor object");
         }

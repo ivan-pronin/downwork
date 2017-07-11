@@ -1,6 +1,7 @@
-package com.idealista.scraper.ui.page;
+package com.idealista.scraper.ui.page.idealista;
 
-import com.idealista.scraper.ui.ClickActions;
+import com.idealista.scraper.ui.actions.ClickActions;
+import com.idealista.scraper.ui.page.BasePage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,14 +10,14 @@ import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MapPage extends BasePage
+public class IdealistaMapPage extends BasePage
 {
     private static final int WAIT_FOR_ELEMENT_TIMEOUT_SECONDS = 5;
-    private static final Logger LOGGER = LogManager.getLogger(MapPage.class);
+    private static final Logger LOGGER = LogManager.getLogger(IdealistaMapPage.class);
 
     public void clickIdealistaLink()
     {
-        WebElement idealistaLink = searchActions
+        WebElement idealistaLink = waitActions
                 .waitForElement(By.xpath("//div[@class='breadcrumb-geo wrapper clearfix']//a[text()='idealista']"), 5);
         if (idealistaLink == null)
         {
@@ -28,7 +29,7 @@ public class MapPage extends BasePage
 
     public void clickShowAll()
     {
-        WebElement showAllLink = searchActions.waitForElement(By.id("showAllLink"), WAIT_FOR_ELEMENT_TIMEOUT_SECONDS);
+        WebElement showAllLink = waitActions.waitForElement(By.id("showAllLink"), WAIT_FOR_ELEMENT_TIMEOUT_SECONDS);
         if (showAllLink != null)
         {
             clickActions.click(showAllLink);
