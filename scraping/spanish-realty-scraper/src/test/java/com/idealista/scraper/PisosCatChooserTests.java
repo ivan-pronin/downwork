@@ -10,7 +10,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 import com.idealista.scraper.model.search.GenericSearchFilterContext;
 import com.idealista.scraper.model.search.SearchAttributes;
-import com.idealista.scraper.scraping.category.ICategoriesChooser;
+import com.idealista.scraper.scraping.category.chooser.ICategoriesChooser;
 import com.idealista.scraper.webdriver.WebDriverProvider;
 
 import org.junit.Test;

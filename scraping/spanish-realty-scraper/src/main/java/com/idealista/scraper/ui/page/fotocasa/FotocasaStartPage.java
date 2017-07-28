@@ -222,7 +222,6 @@ public class FotocasaStartPage extends BasePage
         LOGGER.debug("Selecting item <{}> from list", itemName);
         for (WebElement item : itemsList)
         {
-            System.out.println(item.getText());
             if (item.getText().contains(itemName))
             {
                 LOGGER.info("SubDisctrict item found: {} with text: {}", item, item.getText());

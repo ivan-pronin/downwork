@@ -20,7 +20,7 @@ import com.idealista.scraper.data.IDataTypeService;
 import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.scraping.paginator.IPaginator;
-import com.idealista.scraper.scraping.searchpage.ISearchPageProcessorFactory;
+import com.idealista.scraper.scraping.searchpage.factory.ISearchPageProcessorFactory;
 import com.idealista.scraper.util.URLUtils;
 
 import org.apache.logging.log4j.LogManager;

@@ -1,4 +1,4 @@
-package com.idealista.scraper.scraping.searchpage;
+package com.idealista.scraper.scraping.searchpage.processor;
 
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.ui.actions.SearchActions;
@@ -48,10 +48,12 @@ public class VibboSearchPageProcessor extends AbstractSearchPageProcessor
                 if (!infoLink.isEmpty())
                 {
                     String attribute = infoLink.get(0).getAttribute("href");
-                    adUrls.add(new Category(URLUtils.generateUrl(attribute), category));
+                    adUrls.add(new Category(URLUtils.createUrl(attribute), category));
                 }
             }
             LOGGER.info("Page has been processed successfully: {}", page);
+            LOGGER.debug("List all found <{}> categories", adUrls.size());
+            adUrls.forEach(LOGGER::debug);
             return adUrls;
         }
         LOGGER.error("Search page is empty.. Smth bad happened, returning empty collection from page: {}", page);

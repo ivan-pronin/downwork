@@ -6,11 +6,11 @@ import com.idealista.scraper.model.parser.ISearchAttributesParser;
 import com.idealista.scraper.model.parser.IdealistaSearchAttributesParser;
 import com.idealista.scraper.model.parser.PisosSearchAttributesParser;
 import com.idealista.scraper.model.parser.VibboSearchAttributesParser;
-import com.idealista.scraper.scraping.category.FotocasaCategoriesChooser;
-import com.idealista.scraper.scraping.category.ICategoriesChooser;
-import com.idealista.scraper.scraping.category.IdealistaCategoriesChooser;
-import com.idealista.scraper.scraping.category.PisosCategoriesChooser;
-import com.idealista.scraper.scraping.category.VibboCategoriesChooser;
+import com.idealista.scraper.scraping.category.chooser.FotocasaCategoriesChooser;
+import com.idealista.scraper.scraping.category.chooser.ICategoriesChooser;
+import com.idealista.scraper.scraping.category.chooser.IdealistaCategoriesChooser;
+import com.idealista.scraper.scraping.category.chooser.PisosCategoriesChooser;
+import com.idealista.scraper.scraping.category.chooser.VibboCategoriesChooser;
 import com.idealista.scraper.scraping.paginator.FotocasaPaginator;
 import com.idealista.scraper.scraping.paginator.IPaginator;
 import com.idealista.scraper.scraping.paginator.IdealistaPaginator;
@@ -46,6 +46,9 @@ public class AppConfig
 
     @Value("#{ '${scrapTarget}'.toUpperCase() }")
     private ScrapTarget scrapTarget;
+    
+    @Value("${privateAdsFiltering}")
+    private boolean privateAdsFiltering;
 
     public static void main(String[] args) throws InterruptedException, IOException
     {
@@ -156,5 +159,10 @@ public class AppConfig
     {
         return new IllegalArgumentException(
                 "Could not determine " + beanType + " based on scrapTarget value: " + scrapTarget);
+    }
+
+    public boolean isPrivateAdsFiltering()
+    {
+        return privateAdsFiltering;
     }
 }
