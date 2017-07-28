@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public final class RegexUtils
 {
     private static final Logger LOGGER = LogManager.getLogger(RegexUtils.class);
-    
+
     public static int extractBigNumber(String text)
     {
         if (text == null)
@@ -28,48 +28,34 @@ public final class RegexUtils
 
     public static int extractDigit(String text)
     {
+        return (int) executeExpression(text, "(\\d{1})");
+    }
+
+    public static long executeExpression(String text, String expression)
+    {
         if (text == null)
         {
             LOGGER.debug("ExtractDigit: input string is null");
             return -1;
         }
-        Pattern pattern = Pattern.compile("(\\d{1})");
+        Pattern pattern = Pattern.compile(expression);
         Matcher m = pattern.matcher(text);
         if (m.find())
         {
-            return Integer.parseInt(m.group(1));
+            return Long.parseLong(m.group());
         }
         return -1;
     }
 
     public static int extractNumber(String text)
     {
-        if (text == null)
-        {
-            return -1;
-        }
-        Pattern pattern = Pattern.compile("(\\d+)");
-        Matcher m = pattern.matcher(text);
-        if (m.find())
-        {
-            return Integer.parseInt(m.group(1));
-        }
-        return -1;
+        return (int) executeExpression(text, "(\\d+)");
     }
 
     public static String extractPostalCode(String text)
     {
-        if (text == null)
-        {
-            return null;
-        }
-        Pattern pattern = Pattern.compile("(\\d{5,})");
-        Matcher m = pattern.matcher(text);
-        if (m.find())
-        {
-            return m.group(1);
-        }
-        return null;
+        int result = (int) executeExpression(text, "(\\d{5,})");
+        return result == -1 ? null : "" + result;
     }
 
     public static String extractTextAfterAnchor(String text, String anchor)
@@ -111,7 +97,7 @@ public final class RegexUtils
     {
         return text.replaceAll("[^0-9]+", "");
     }
-    
+
     private static String getSecondArrayElement(String[] parts)
     {
         if (parts.length > 1)

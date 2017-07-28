@@ -1,4 +1,4 @@
-package com.idealista.scraper.scraping.category;
+package com.idealista.scraper.scraping.category.chooser;
 
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.model.search.GenericSearchFilterContext;

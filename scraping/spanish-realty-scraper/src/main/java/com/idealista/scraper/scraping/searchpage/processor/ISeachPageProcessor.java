@@ -1,4 +1,4 @@
-package com.idealista.scraper.scraping.searchpage;
+package com.idealista.scraper.scraping.searchpage.processor;
 
 import com.idealista.scraper.model.Category;
 

@@ -27,7 +27,7 @@ import com.idealista.scraper.scraping.advextractor.IAdvertisementExtractorFactor
 import com.idealista.scraper.scraping.category.AdUrlsFinder;
 import com.idealista.scraper.scraping.category.FoundUrlsManager;
 import com.idealista.scraper.scraping.category.IAdUrlsFinder;
-import com.idealista.scraper.scraping.category.ICategoriesChooser;
+import com.idealista.scraper.scraping.category.chooser.ICategoriesChooser;
 import com.idealista.scraper.webdriver.INavigateActions;
 
 import org.apache.logging.log4j.LogManager;

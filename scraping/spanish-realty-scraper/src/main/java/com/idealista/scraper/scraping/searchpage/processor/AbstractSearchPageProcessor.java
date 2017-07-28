@@ -1,6 +1,7 @@
-package com.idealista.scraper.scraping.searchpage;
+package com.idealista.scraper.scraping.searchpage.processor;
 
 import com.idealista.scraper.model.Category;
+import com.idealista.scraper.scraping.category.filter.IAdUrlsFilter;
 import com.idealista.scraper.ui.actions.ClickActions;
 import com.idealista.scraper.ui.actions.SearchActions;
 import com.idealista.scraper.ui.actions.WaitActions;
@@ -19,6 +20,9 @@ public abstract class AbstractSearchPageProcessor implements ISeachPageProcessor
     private SearchActions searchActions = new SearchActions();
     private ClickActions clickActions = new ClickActions();
     private WaitActions waitActions = new WaitActions();
+    private IAdUrlsFilter adUrlsFilter;
+    
+    protected boolean applyFilter;
 
     public AbstractSearchPageProcessor(Category category)
     {
@@ -40,7 +44,7 @@ public abstract class AbstractSearchPageProcessor implements ISeachPageProcessor
         return webDriverProvider;
     }
 
-    protected void setWebDriverProvider(WebDriverProvider webDriverProvider)
+    public void setWebDriverProvider(WebDriverProvider webDriverProvider)
     {
         this.webDriverProvider = webDriverProvider;
     }
@@ -50,7 +54,7 @@ public abstract class AbstractSearchPageProcessor implements ISeachPageProcessor
         return navigateActions;
     }
 
-    protected void setNavigateActions(INavigateActions navigateActions)
+    public void setNavigateActions(INavigateActions navigateActions)
     {
         this.navigateActions = navigateActions;
     }
@@ -60,7 +64,7 @@ public abstract class AbstractSearchPageProcessor implements ISeachPageProcessor
         return proxyMonitor;
     }
 
-    protected void setProxyMonitor(ProxyMonitor proxyMonitor)
+    public void setProxyMonitor(ProxyMonitor proxyMonitor)
     {
         this.proxyMonitor = proxyMonitor;
     }
@@ -70,6 +74,7 @@ public abstract class AbstractSearchPageProcessor implements ISeachPageProcessor
         searchActions.setWebDriver(driver);
         clickActions.setWebDriver(driver);
         waitActions.setWebDriver(driver);
+        adUrlsFilter.setSearchActions(searchActions);
     }
 
     protected SearchActions getSearchActions()
@@ -85,5 +90,20 @@ public abstract class AbstractSearchPageProcessor implements ISeachPageProcessor
     protected WaitActions getWaitActions()
     {
         return waitActions;
+    }
+
+    protected IAdUrlsFilter getAdUrlsFilter()
+    {
+        return adUrlsFilter;
+    }
+
+    public void setAdUrlsFilter(IAdUrlsFilter adUrlsFilter)
+    {
+        this.adUrlsFilter = adUrlsFilter;
+    }
+
+    public void setApplyFilter(boolean applyFilter)
+    {
+        this.applyFilter = applyFilter;
     }
 }

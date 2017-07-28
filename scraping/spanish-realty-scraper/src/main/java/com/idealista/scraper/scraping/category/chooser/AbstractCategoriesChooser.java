@@ -1,4 +1,4 @@
-package com.idealista.scraper.scraping.category;
+package com.idealista.scraper.scraping.category.chooser;
 
 import java.util.ArrayList;
 import java.util.Collection;

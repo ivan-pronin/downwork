@@ -28,7 +28,7 @@ public final class URLUtils
         }).collect(Collectors.toSet());
     }
 
-    public static URL generateUrl(String text)
+    public static URL createUrl(String text)
     {
         try
         {

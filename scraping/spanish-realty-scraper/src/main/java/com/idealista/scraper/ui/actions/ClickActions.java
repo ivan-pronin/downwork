@@ -2,6 +2,8 @@ package com.idealista.scraper.ui.actions;
 
 import java.util.List;
 
+import com.idealista.scraper.util.WaitUtils;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
@@ -101,5 +103,11 @@ public class ClickActions
     {
         JavascriptExecutor js = ((JavascriptExecutor) driver);
         js.executeScript("arguments[0].scrollIntoView(true);",element);
+    }
+    
+    public void scrollToElementAndWait(List<WebElement> elements, int elementIndex)
+    {
+        scrollToElement(elements.get(elementIndex));
+        WaitUtils.sleep(this, 500);
     }
 }

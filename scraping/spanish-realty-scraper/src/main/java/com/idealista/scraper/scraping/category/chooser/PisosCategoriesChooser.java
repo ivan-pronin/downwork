@@ -1,4 +1,4 @@
-package com.idealista.scraper.scraping.category;
+package com.idealista.scraper.scraping.category.chooser;
 
 import java.net.MalformedURLException;
 import java.net.URL;
