@@ -1,7 +1,6 @@
 package com.idealista.scraper.ui.page.vibbo;
 
-import com.idealista.scraper.model.search.CategoryChoosingAttribute;
-import com.idealista.scraper.ui.page.BasePage;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -10,10 +9,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import com.idealista.scraper.model.search.CategoryChoosingAttribute;
+import com.idealista.scraper.ui.page.BasePage;
+import com.idealista.scraper.ui.page.IStartPage;
 
 @Component
-public class VibboStartPage extends BasePage
+public class VibboStartPage extends BasePage implements IStartPage
 {
     private static final Logger LOGGER = LogManager.getLogger(VibboStartPage.class);
 

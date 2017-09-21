@@ -1,11 +1,11 @@
 package com.idealista.scraper.scraping.category.chooser;
 
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.model.search.GenericSearchFilterContext;
-
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-public interface ICategoriesChooser
+import com.idealista.scraper.model.Category;
+
+public interface ICategoriesChooser extends Callable<Set<Category>>
 {
-    Set<Category> getCategoriesUrls(GenericSearchFilterContext searchFilterContext);
+
 }

@@ -4,15 +4,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.idealista.scraper.ui.page.BasePage;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.util.StringUtils;
 
-public class FotocasaStartPage extends BasePage
+import com.idealista.scraper.ui.page.BasePage;
+import com.idealista.scraper.ui.page.IStartPage;
+
+public class FotocasaStartPage extends BasePage implements IStartPage
 {
     private static final By SEARCH_BUTTON_LOCATOR = By.xpath("//button[@class='re-Search-submit--button']");
     private static final String LABEL_FOR_LOCATOR_PATTERN = "//label[@for='%s']";
@@ -45,7 +46,7 @@ public class FotocasaStartPage extends BasePage
         }
         WebElement clearTextField = waitActions.waitForElement(By.xpath("//span[@class='sui-Autocompleted-clear']"), 2);
         clickActions.click(clearTextField);
-        
+
         WebElement searchField = waitActions.waitForElement(By.xpath("//input[@class='sui-Autocompleted-input']"), 5);
         clickActions.setElementTextFast(searchField, searchString);
         WebElement autocomplete = waitActions.waitForElement(By.xpath("//ul[@class='sui-Autocompleted-results']"), 5);

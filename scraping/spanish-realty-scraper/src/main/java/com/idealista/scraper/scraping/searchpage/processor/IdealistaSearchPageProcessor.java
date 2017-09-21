@@ -1,28 +1,25 @@
 package com.idealista.scraper.scraping.searchpage.processor;
 
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.util.URLUtils;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.util.URLUtils;
+
+@Component
 public class IdealistaSearchPageProcessor extends AbstractSearchPageProcessor
 {
     private static final Logger LOGGER = LogManager.getLogger(IdealistaSearchPageProcessor.class);
-
-    public IdealistaSearchPageProcessor(Category category)
-    {
-        super(category);
-    }
 
     @Override
     public Set<Category> call()
@@ -30,21 +27,19 @@ public class IdealistaSearchPageProcessor extends AbstractSearchPageProcessor
         Category category = getCategory();
         URL page = category.getUrl();
         LOGGER.info("Processing search page: {}", page);
-        WebDriver driver = getWebDriverProvider().get();
-        setWebDriver(driver);
-        driver = getNavigateActions().get(page);
+        WebDriver driver = getNavigateActions().get(page);
         driver = getProxyMonitor().checkForVerificationAndRestartDriver(driver);
         List<WebElement> divContainer = driver.findElements(By.xpath("//div[@class='items-container']"));
         if (!divContainer.isEmpty())
         {
             WebElement container = divContainer.get(0);
             List<WebElement> ads = container.findElements(By.xpath(".//article[not(@class)]"));
-            
+
             if (applyFilter)
             {
                 ads = getAdUrlsFilter().filterAdUrls(ads);
             }
-            
+
             Set<Category> adUrls = new HashSet<>();
             for (WebElement ad : ads)
             {

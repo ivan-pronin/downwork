@@ -1,23 +1,23 @@
 package com.idealista.scraper.scraping.advextractor;
 
-import com.idealista.scraper.model.Advertisement;
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.ui.page.advertisement.FotocasaAdvertisementPage;
+import java.net.URL;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.net.URL;
+import com.idealista.scraper.model.Advertisement;
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.ui.page.IAdvertisementPage;
+import com.idealista.scraper.ui.page.advertisement.FotocasaAdvertisementPage;
 
 public class FotocasaAdvertisementExtractor extends AbstractAdvertisementExtractor
 {
-    public FotocasaAdvertisementExtractor(Category category)
-    {
-        super(category);
-    }
-
     private static final Logger LOGGER = LogManager.getLogger(VibboAdvertisementExtractor.class);
+
+    @Autowired
+    private Supplier<IAdvertisementPage> advertisementPageSupplier;
 
     @Override
     public Advertisement call() throws Exception
@@ -25,9 +25,8 @@ public class FotocasaAdvertisementExtractor extends AbstractAdvertisementExtract
         Category category = getCategory();
         URL url = category.getUrl();
         LOGGER.info("Scrapping the page: {}", url);
-        WebDriver driver = getNavigateActions().get(url);
-        FotocasaAdvertisementPage page = new FotocasaAdvertisementPage();
-        page.setWebDriver(driver);
+        getNavigateActions().get(url);
+        FotocasaAdvertisementPage page = (FotocasaAdvertisementPage) advertisementPageSupplier.get();
         Advertisement ad = new Advertisement(url, page.getTitle());
         page.scrollToTheBottom();
         ad.setType(page.getType());

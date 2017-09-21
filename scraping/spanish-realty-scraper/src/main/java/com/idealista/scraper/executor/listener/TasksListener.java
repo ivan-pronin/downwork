@@ -1,15 +1,5 @@
 package com.idealista.scraper.executor.listener;
 
-import com.idealista.scraper.data.IDataSource;
-import com.idealista.scraper.data.IDataTypeService;
-import com.idealista.scraper.data.xls.XlsExporter;
-import com.idealista.scraper.model.Advertisement;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,6 +9,16 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.data.IDataSource;
+import com.idealista.scraper.data.IDataTypeService;
+import com.idealista.scraper.data.xls.XlsExporter;
+import com.idealista.scraper.model.Advertisement;
 
 @Component
 public class TasksListener extends TimerTask
@@ -32,7 +32,7 @@ public class TasksListener extends TimerTask
 
     @Autowired
     private XlsExporter xlsExporter;
-    
+
     @Autowired
     private IDataTypeService dataTypeService;
 

@@ -5,11 +5,11 @@ import java.net.URL;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 
+import org.apache.logging.log4j.Logger;
+
 import com.idealista.scraper.model.Advertisement;
 import com.idealista.scraper.model.filter.FilterAttributes;
 import com.idealista.scraper.model.search.SearchAttributes;
-
-import org.apache.logging.log4j.Logger;
 
 public interface IScrappingService
 {

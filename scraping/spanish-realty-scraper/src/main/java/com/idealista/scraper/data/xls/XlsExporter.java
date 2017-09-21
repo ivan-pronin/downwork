@@ -9,9 +9,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import com.idealista.scraper.model.Advertisement;
-import com.idealista.scraper.util.DateTimeUtils;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -21,6 +18,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.model.Advertisement;
+import com.idealista.scraper.util.DateTimeUtils;
 
 @Component
 public class XlsExporter

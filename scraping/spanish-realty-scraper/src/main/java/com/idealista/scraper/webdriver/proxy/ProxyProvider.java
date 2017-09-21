@@ -1,12 +1,16 @@
 package com.idealista.scraper.webdriver.proxy;
 
-import com.idealista.scraper.AppConfig;
-import com.idealista.scraper.data.IDataSource;
-import com.idealista.scraper.service.ScrapTarget;
-import com.idealista.scraper.util.FileUtils;
-import com.idealista.scraper.util.WaitUtils;
-import com.idealista.scraper.webdriver.WebDriverFactory;
-import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,17 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
+import com.idealista.scraper.AppConfig;
+import com.idealista.scraper.data.IDataSource;
+import com.idealista.scraper.service.ScrapTarget;
+import com.idealista.scraper.util.FileUtils;
+import com.idealista.scraper.util.WaitUtils;
+import com.idealista.scraper.webdriver.WebDriverFactory;
+import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
 
 @Component
 public class ProxyProvider implements IProxyProvider
@@ -45,19 +45,19 @@ public class ProxyProvider implements IProxyProvider
 
     @Autowired
     private WebDriverFactory webDriverFactory;
-    
+
     @Autowired
     private ProxyFetcher proxyFetcher;
-    
+
     @Autowired
     private IDataSource dataSource;
-    
+
     @Autowired
     private AppConfig appConfig;
-    
+
     @Value("${maxProxyResponseTime}")
     private long maxProxyResponseTime;
-    
+
     @Override
     public ProxyAdapter getNextWorkingProxy()
     {

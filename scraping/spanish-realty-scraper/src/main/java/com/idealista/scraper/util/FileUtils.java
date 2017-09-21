@@ -1,8 +1,5 @@
 package com.idealista.scraper.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,6 +10,9 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class FileUtils
 {

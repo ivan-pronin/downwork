@@ -1,14 +1,14 @@
 package com.idealista.scraper.scraping.category;
 
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.model.CategoryDescendingComparator;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.model.CategoryDescendingComparator;
 
 @Component
 public class FoundUrlsManager implements IFoundUrlsManager

@@ -1,13 +1,13 @@
 package com.idealista.scraper.model.parser;
 
-import com.idealista.scraper.model.search.IGenericSearchAttributes;
-import com.idealista.scraper.model.search.SearchAttributes;
-import com.idealista.scraper.model.search.VibboSearchAttributes;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.Set;
+import com.idealista.scraper.model.search.IGenericSearchAttributes;
+import com.idealista.scraper.model.search.SearchAttributes;
+import com.idealista.scraper.model.search.VibboSearchAttributes;
 
 @Component
 public class VibboSearchAttributesParser implements ISearchAttributesParser

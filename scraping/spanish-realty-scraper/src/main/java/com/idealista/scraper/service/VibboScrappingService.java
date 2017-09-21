@@ -1,27 +1,5 @@
 package com.idealista.scraper.service;
 
-import com.idealista.scraper.executor.ExecutorServiceProvider;
-import com.idealista.scraper.model.Advertisement;
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.model.parser.ISearchAttributesParser;
-import com.idealista.scraper.model.search.GenericSearchFilterContext;
-import com.idealista.scraper.model.search.IGenericSearchAttributes;
-import com.idealista.scraper.model.search.SearchAttributes;
-import com.idealista.scraper.model.search.VibboSearchAttributes;
-import com.idealista.scraper.scraping.advextractor.IAdvertisementExtractorFactory;
-import com.idealista.scraper.scraping.category.AdUrlsFinder;
-import com.idealista.scraper.scraping.category.FoundUrlsManager;
-import com.idealista.scraper.scraping.category.IAdUrlsFinder;
-import com.idealista.scraper.scraping.category.chooser.ICategoriesChooser;
-import com.idealista.scraper.webdriver.INavigateActions;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -31,6 +9,30 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Supplier;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.executor.ExecutorServiceProvider;
+import com.idealista.scraper.model.Advertisement;
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.model.parser.ISearchAttributesParser;
+import com.idealista.scraper.model.search.GenericSearchFilterContext;
+import com.idealista.scraper.model.search.IGenericSearchAttributes;
+import com.idealista.scraper.model.search.SearchAttributes;
+import com.idealista.scraper.model.search.VibboSearchAttributes;
+import com.idealista.scraper.scraping.advextractor.AbstractAdvertisementExtractor;
+import com.idealista.scraper.scraping.advextractor.IAdvertisementExtractor;
+import com.idealista.scraper.scraping.category.AdUrlsFinder;
+import com.idealista.scraper.scraping.category.FoundUrlsManager;
+import com.idealista.scraper.scraping.category.IAdUrlsFinder;
+import com.idealista.scraper.scraping.category.provider.ICategoriesProvider;
+import com.idealista.scraper.webdriver.INavigateActions;
 
 @Profile("vibbo")
 @Component
@@ -61,7 +63,7 @@ public class VibboScrappingService implements IScrappingService
     private ISearchAttributesParser searchAttributesParser;
 
     @Autowired
-    private ICategoriesChooser categoriesChooser;
+    private ICategoriesProvider categoriesChooser;
 
     @Autowired
     private IAdUrlsFinder adUrlsFinder;
@@ -70,7 +72,7 @@ public class VibboScrappingService implements IScrappingService
     private ExecutorServiceProvider executor;
 
     @Autowired
-    private IAdvertisementExtractorFactory advertismentExtractorFactory;
+    private Supplier<IAdvertisementExtractor> advertismentExtractorSupplier;
 
     @Autowired
     private FoundUrlsManager foundUrlsManager;
@@ -102,7 +104,8 @@ public class VibboScrappingService implements IScrappingService
 
         adUrlsToProcess = foundUrlsManager.getNewestAdsById(adUrlsToProcess);
 
-        LOGGER.debug("Printing all URLS that will be scrapped in this session. Total count: {}", adUrlsToProcess.size());
+        LOGGER.debug("Printing all URLS that will be scrapped in this session. Total count: {}",
+                adUrlsToProcess.size());
         adUrlsToProcess.forEach(e -> LOGGER.debug(e.getUrl()));
 
         Iterator<Category> iterator = adUrlsToProcess.iterator();
@@ -111,8 +114,9 @@ public class VibboScrappingService implements IScrappingService
             if (iterator.hasNext())
             {
                 Category page = iterator.next();
-                advertismentExtractorResults
-                        .put(executor.getExecutor().submit(advertismentExtractorFactory.create(page)));
+                IAdvertisementExtractor iAdvertisementExtractor = advertismentExtractorSupplier.get();
+                ((AbstractAdvertisementExtractor) iAdvertisementExtractor).setCategory(page);
+                advertismentExtractorResults.put(executor.getExecutor().submit(iAdvertisementExtractor));
                 advertismentUrlsInProgress.put(page.getUrl());
             }
         }

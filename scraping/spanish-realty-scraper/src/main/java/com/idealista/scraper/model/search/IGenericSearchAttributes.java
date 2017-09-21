@@ -5,6 +5,6 @@ import com.idealista.scraper.service.ScrapTarget;
 public interface IGenericSearchAttributes
 {
     ScrapTarget getScrapTarget();
-    
+
     String getIdentificationFlag();
 }

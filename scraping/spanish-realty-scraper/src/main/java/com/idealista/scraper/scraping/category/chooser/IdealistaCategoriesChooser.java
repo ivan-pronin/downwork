@@ -1,159 +1,108 @@
 package com.idealista.scraper.scraping.category.chooser;
 
 import java.net.URL;
-import java.util.Queue;
+import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.idealista.scraper.AppConfig;
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.model.filter.FilterAttributes;
-import com.idealista.scraper.model.search.GenericSearchFilterContext;
-import com.idealista.scraper.model.search.SearchAttributes;
-import com.idealista.scraper.service.ScrapTarget;
-import com.idealista.scraper.ui.page.idealista.IdealistaMapPage;
-import com.idealista.scraper.ui.page.idealista.IdealistaSearchPage;
-import com.idealista.scraper.ui.page.idealista.IdealistaStartPage;
-import com.idealista.scraper.webdriver.WebDriverProvider;
-import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class IdealistaCategoriesChooser extends AbstractCategoriesChooser implements ICategoriesChooser
+import com.idealista.scraper.AppConfig;
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.model.filter.FilterAttributes;
+import com.idealista.scraper.scraping.category.provider.IdealistaCategoriesProvider;
+import com.idealista.scraper.service.ScrapTarget;
+import com.idealista.scraper.ui.page.IMapPage;
+import com.idealista.scraper.ui.page.ISearchPage;
+import com.idealista.scraper.ui.page.IStartPage;
+import com.idealista.scraper.ui.page.idealista.IdealistaMapPage;
+import com.idealista.scraper.ui.page.idealista.IdealistaSearchPage;
+import com.idealista.scraper.ui.page.idealista.IdealistaStartPage;
+import com.idealista.scraper.webdriver.WebDriverProvider;
+import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
+
+public class IdealistaCategoriesChooser implements ICategoriesChooser
 {
-    private class CategoryBySearchAndFilterAttributes implements Callable<Category>
-    {
-        private String operation;
-        private String typology;
-        private String location;
-        private String province;
-        private FilterAttributes filterAttributes;
-
-        private CategoryBySearchAndFilterAttributes(String operation, String typology, String location,
-                FilterAttributes filterAttributes, String province)
-        {
-            this.operation = operation;
-            this.typology = typology;
-            this.location = location;
-            this.province = province;
-            this.filterAttributes = filterAttributes;
-        }
-
-        @Override
-        public Category call() throws Exception
-        {
-            if ("International".equalsIgnoreCase(location))
-            {
-                LOGGER.info("Skipping International site by now...");
-                return null;
-            }
-            WebDriver driver = webDriverProvider.get();
-            driver.navigate().to(getMainPageLocalizedUrl());
-            IdealistaStartPage startPage = new IdealistaStartPage();
-            startPage.setWebDriver(driver);
-            startPage.selectOperation(operation);
-            if (!startPage.getAvailableTypologies().contains(typology))
-            {
-                LOGGER.error("Specified Operation + Type combo is not available: {} + {}", operation, typology);
-                return null;
-            }
-            selectOptionsAndStartSearch(startPage, operation, typology, location);
-            if (proxyMonitor.ifVerificationAppered(driver))
-            {
-                driver = proxyMonitor.restartDriver();
-                driver.navigate().to(getMainPageLocalizedUrl());
-                selectOptionsAndStartSearch(startPage, operation, typology, location);
-            }
-            IdealistaMapPage mapPage = new IdealistaMapPage();
-            mapPage.setWebDriver(driver);
-            mapPage.clickShowAll();
-
-            IdealistaSearchPage searchPage = new IdealistaSearchPage();
-            searchPage.setWebDriver(driver);
-            searchPage.selectProvince(province);
-            searchPage.applyPublicationDateFilter(filterAttributes);
-
-            String categoryUrl = driver.getCurrentUrl();
-            LOGGER.info("Found new category url: {}", categoryUrl);
-            mapPage.clickIdealistaLink();
-            if (proxyMonitor.ifVerificationAppered(driver))
-            {
-                driver = proxyMonitor.restartDriver();
-                driver.navigate().to(getMainPageLocalizedUrl());
-            }
-            Category category = new Category(new URL(categoryUrl), location, operation, typology);
-            category.setProvince(province);
-            return category;
-        }
-    }
-    private static final Logger LOGGER = LogManager.getLogger(IdealistaCategoriesChooser.class);
-
-    private static final ScrapTarget SCRAP_TARGET = ScrapTarget.IDEALISTA;
+    private static final Logger LOGGER = LogManager.getLogger(IdealistaCategoriesProvider.class);
 
     @Autowired
     private WebDriverProvider webDriverProvider;
 
     @Autowired
+    private AppConfig appConfig;
+
+    @Autowired
     private ProxyMonitor proxyMonitor;
 
     @Autowired
-    private AppConfig appConfig;
+    private Supplier<IStartPage> startPageSupplier;
+
+    @Autowired
+    private Supplier<ISearchPage> searchPageSupplier;
+
+    @Autowired
+    private Supplier<IMapPage> mapPageSupplier;
+
+    private String operation;
+    private String typology;
+    private String location;
+    private String province;
+    private FilterAttributes filterAttributes;
+
+    public IdealistaCategoriesChooser()
+    {
+    }
 
     @Override
-    public Set<Category> getCategoriesUrls(GenericSearchFilterContext searchFilterContext)
+    public Set<Category> call() throws Exception
     {
-        SearchAttributes searchAttributes = searchFilterContext.getSearchAttributes();
-        Set<String> userOperations = searchAttributes.getOperations();
-        Set<String> userTypologies = searchAttributes.getTypologies();
-        Set<String> userLocations = searchAttributes.getLocations();
-        IdealistaStartPage startPage = new IdealistaStartPage();
-        startPage.setWebDriver(webDriverProvider.get());
-
-        Queue<Callable<Category>> results = new ConcurrentLinkedQueue<>();
-
-        for (String operation : userOperations)
+        if ("International".equalsIgnoreCase(location))
         {
-            startPage.selectOperation(operation);
-            Set<String> availableTypologies = startPage.getAvailableTypologies();
-
-            for (String typology : availableTypologies)
-            {
-                if (userTypologies.contains(typology))
-                {
-                    startPage.selectTypology(typology);
-                    Set<String> availableLocations = startPage.getAvailableLocations();
-                    for (String location : availableLocations)
-                    {
-                        if (userLocations.contains(location))
-                        {
-                            startPage.selectLocation(location);
-                            results.add(new CategoryBySearchAndFilterAttributes(operation, typology, location,
-                                    searchFilterContext.getFilterAttributes(), searchFilterContext.getProvince()));
-                        }
-                    }
-                }
-            }
+            LOGGER.info("Skipping International site by now...");
+            return null;
         }
-        return executeAndGetResults(results);
-    }
+        WebDriver driver = webDriverProvider.get();
+        driver.navigate().to(getMainPageLocalizedUrl());
+        IdealistaStartPage startPage = (IdealistaStartPage) startPageSupplier.get();
+        startPage.selectOperation(operation);
+        if (!startPage.getAvailableTypologies().contains(typology))
+        {
+            LOGGER.error("Specified Operation + Type combo is not available: {} + {}", operation, typology);
+            return null;
+        }
+        selectOptionsAndStartSearch(startPage, operation, typology, location);
+        if (proxyMonitor.ifVerificationAppered(driver))
+        {
+            driver = proxyMonitor.restartDriver();
+            driver.navigate().to(getMainPageLocalizedUrl());
+            selectOptionsAndStartSearch(startPage, operation, typology, location);
+        }
+        IdealistaMapPage mapPage = (IdealistaMapPage) mapPageSupplier.get();
+        mapPage.clickShowAll();
 
-    public void setProxyMonitor(ProxyMonitor proxyMonitor)
-    {
-        this.proxyMonitor = proxyMonitor;
-    }
+        IdealistaSearchPage searchPage = (IdealistaSearchPage) searchPageSupplier.get();
+        searchPage.selectProvince(province);
+        searchPage.applyPublicationDateFilter(filterAttributes);
 
-    public void setWebDriverProvider(WebDriverProvider webDriverProvider)
-    {
-        this.webDriverProvider = webDriverProvider;
+        String categoryUrl = driver.getCurrentUrl();
+        LOGGER.info("Found new category url: {}", categoryUrl);
+        mapPage.clickIdealistaLink();
+        if (proxyMonitor.ifVerificationAppered(driver))
+        {
+            driver = proxyMonitor.restartDriver();
+            driver.navigate().to(getMainPageLocalizedUrl());
+        }
+        Category category = new Category(new URL(categoryUrl), location, operation, typology);
+        category.setProvince(province);
+        return Collections.singleton(category);
     }
 
     private String getMainPageLocalizedUrl()
     {
-        return SCRAP_TARGET.getMainPageLocalizedUrl(appConfig.getLanguage());
+        return ScrapTarget.IDEALISTA.getMainPageLocalizedUrl(appConfig.getLanguage());
     }
 
     private void selectOptionsAndStartSearch(IdealistaStartPage startPage, String operationName, String typologyName,
@@ -164,4 +113,30 @@ public class IdealistaCategoriesChooser extends AbstractCategoriesChooser implem
         startPage.selectLocation(location);
         startPage.clickSearch();
     }
+
+    public void setOperation(String operation)
+    {
+        this.operation = operation;
+    }
+
+    public void setTypology(String typology)
+    {
+        this.typology = typology;
+    }
+
+    public void setLocation(String location)
+    {
+        this.location = location;
+    }
+
+    public void setProvince(String province)
+    {
+        this.province = province;
+    }
+
+    public void setFilterAttributes(FilterAttributes filterAttributes)
+    {
+        this.filterAttributes = filterAttributes;
+    }
+
 }

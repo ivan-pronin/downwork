@@ -19,15 +19,15 @@ public class RealtyAppTests
 
     @Value("${vibboProperty}")
     private String vibboProperty;
-    
+
     @Value("#{ '${testEnum1}'.toUpperCase() }")
     private TestEnum tEnum1;
-    
+
     @Value("#{ '${testEnum2}'.toUpperCase()}")
     private TestEnum tEnum2;
-    
-//    @Value("${testEnum3}")
-//    private TestEnum tEnum3;
+
+    // @Value("${testEnum3}")
+    // private TestEnum tEnum3;
 
     @Test
     public void testProperties() throws Exception
@@ -37,11 +37,11 @@ public class RealtyAppTests
         System.out.println(vibboProperty);
         System.out.println(tEnum1);
         System.out.println(tEnum2);
-//        System.out.println(tEnum3);
+        // System.out.println(tEnum3);
     }
-    
+
     public enum TestEnum
     {
-        VIBBO,IDEALISTA;
+        VIBBO, IDEALISTA;
     }
 }

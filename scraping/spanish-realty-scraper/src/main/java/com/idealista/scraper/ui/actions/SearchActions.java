@@ -8,14 +8,18 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.webdriver.WebDriverProvider;
 
 @Component
 public class SearchActions
 {
     private static final Logger LOGGER = LogManager.getLogger(SearchActions.class);
 
-    private WebDriver driver;
+    @Autowired
+    private WebDriverProvider webDriverProvider;
 
     public List<WebElement> findElementsById(List<WebElement> rootElement, String id)
     {
@@ -23,7 +27,7 @@ public class SearchActions
         {
             return rootElement.get(0).findElements(By.id(id));
         }
-        return driver.findElements(By.id(id));
+        return getWebDriver().findElements(By.id(id));
     }
 
     public List<WebElement> findElementsById(String id)
@@ -51,7 +55,7 @@ public class SearchActions
 
     public List<WebElement> findElementsByXpath(String xpath)
     {
-        return driver.findElements(By.xpath(xpath));
+        return getWebDriver().findElements(By.xpath(xpath));
     }
 
     public List<WebElement> findElementsByXpath(WebElement rootElement, String xpath)
@@ -62,7 +66,7 @@ public class SearchActions
         }
         return Collections.emptyList();
     }
-    
+
     public String getAttribute(WebElement element, String attributeName)
     {
         if (element == null || attributeName == null)
@@ -87,8 +91,8 @@ public class SearchActions
         return getElementText(findElementsByXpath(xpath));
     }
 
-    public void setWebDriver(WebDriver driver)
+    private WebDriver getWebDriver()
     {
-        this.driver = driver;
+        return webDriverProvider.get();
     }
 }

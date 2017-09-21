@@ -1,12 +1,12 @@
 package com.idealista.scraper.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class URLUtils
 {

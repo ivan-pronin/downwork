@@ -1,10 +1,10 @@
 package com.idealista.scraper.ui.page;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.idealista.scraper.ui.actions.ClickActions;
 import com.idealista.scraper.ui.actions.SearchActions;
 import com.idealista.scraper.ui.actions.WaitActions;
-
-import org.openqa.selenium.WebDriver;
 
 public abstract class BasePage
 {
@@ -14,16 +14,14 @@ public abstract class BasePage
     protected static final String PRIVATE = "Private";
     protected static final String PROFESSIONAL = "Professional";
 
-    protected SearchActions searchActions = new SearchActions();
-    protected ClickActions clickActions = new ClickActions();
-    protected WaitActions waitActions = new WaitActions();
+    @Autowired
+    protected SearchActions searchActions;
 
-    public void setWebDriver(WebDriver driver)
-    {
-        searchActions.setWebDriver(driver);
-        clickActions.setWebDriver(driver);
-        waitActions.setWebDriver(driver);
-    }
+    @Autowired
+    protected ClickActions clickActions;
+
+    @Autowired
+    protected WaitActions waitActions;
 
     protected String isProfessional(String listingAgent)
     {

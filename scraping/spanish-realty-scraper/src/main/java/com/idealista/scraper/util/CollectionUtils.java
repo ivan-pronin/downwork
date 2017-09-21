@@ -5,12 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import com.idealista.scraper.model.search.CategoryChoosingAttribute;
 import com.idealista.scraper.model.search.FotocasaSearchAttributes;
 import com.idealista.scraper.model.search.IGenericSearchAttributes;
 import com.idealista.scraper.model.search.VibboSearchAttributes;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public final class CollectionUtils

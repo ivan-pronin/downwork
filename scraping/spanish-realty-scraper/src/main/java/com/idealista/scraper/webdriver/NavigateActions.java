@@ -1,6 +1,7 @@
 package com.idealista.scraper.webdriver;
 
-import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,8 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.idealista.scraper.webdriver.proxy.ProxyMonitor;
 
 @Component
 public class NavigateActions implements INavigateActions

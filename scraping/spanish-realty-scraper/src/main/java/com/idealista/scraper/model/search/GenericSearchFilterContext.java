@@ -10,7 +10,7 @@ public class GenericSearchFilterContext
     private SearchAttributes searchAttributes;
 
     private FilterAttributes filterAttributes;
-    
+
     private List<Map<String, List<String>>> genericFilterAttributes;
 
     private String province;

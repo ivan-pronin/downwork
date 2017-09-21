@@ -1,25 +1,28 @@
 package com.idealista.scraper.ui.page.advertisement;
 
-import com.idealista.scraper.ui.page.BasePage;
-import com.idealista.scraper.util.RegexUtils;
-
-import org.openqa.selenium.WebElement;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FotocasaAdvertisementPage extends BasePage
+import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.ui.page.BasePage;
+import com.idealista.scraper.ui.page.IAdvertisementPage;
+import com.idealista.scraper.util.RegexUtils;
+
+@Component
+public class FotocasaAdvertisementPage extends BasePage implements IAdvertisementPage
 {
     private static final String[] BREADCRUMB_KEYS = {"Province", "State", "City1", "City2"};
     private Map<String, String> breadCrumbsData;
-    
+
     public String getAddress()
     {
         List<WebElement> address = searchActions.findElementsByXpath(
                 "//section[@class='section section--noBorder' and contains(.,'Ubicación del inmueble')]"
-                + "//div[@class='detail-section-content']");
+                        + "//div[@class='detail-section-content']");
         return getTextOrNotFound(address);
     }
 
@@ -203,7 +206,7 @@ public class FotocasaAdvertisementPage extends BasePage
             {
                 for (int i = 4; i < size; i++)
                 {
-                    breadCrumbsData.put(BREADCRUMB_KEYS[i-4], breadCrumbs.get(i).getText());
+                    breadCrumbsData.put(BREADCRUMB_KEYS[i - 4], breadCrumbs.get(i).getText());
                 }
             }
         }

@@ -1,7 +1,6 @@
 package com.idealista.scraper;
 
-import com.idealista.scraper.webdriver.WebDriverProvider;
-import com.idealista.scraper.webdriver.proxy.ProxyFetcher;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Set;
+import com.idealista.scraper.webdriver.WebDriverProvider;
+import com.idealista.scraper.webdriver.proxy.ProxyFetcher;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {AppConfig.class})
@@ -18,7 +18,7 @@ public class ProxyFetcherTests
 {
     @Autowired
     private ProxyFetcher proxyFetcher;
-    
+
     @Autowired
     private WebDriverProvider webDriverProvider;
 

@@ -1,25 +1,25 @@
 package com.idealista.scraper.scraping.advextractor;
 
-import com.idealista.scraper.model.Advertisement;
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.model.IdealistaRealtyType;
-import com.idealista.scraper.ui.page.advertisement.IdealistaAdvertisementPage;
+import java.net.URL;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.net.URL;
+import com.idealista.scraper.model.Advertisement;
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.model.IdealistaRealtyType;
+import com.idealista.scraper.ui.page.IAdvertisementPage;
+import com.idealista.scraper.ui.page.advertisement.IdealistaAdvertisementPage;
 
-public final class IdealistaAdvertisementExtractor extends AbstractAdvertisementExtractor 
+public final class IdealistaAdvertisementExtractor extends AbstractAdvertisementExtractor
 {
     private static final Logger LOGGER = LogManager.getLogger(IdealistaAdvertisementExtractor.class);
     private String language;
-    
-    protected IdealistaAdvertisementExtractor(Category category)
-    {
-        super(category);
-    }
+
+    @Autowired
+    private Supplier<IAdvertisementPage> advertisementPageSupplier;
 
     @Override
     public Advertisement call()
@@ -27,9 +27,8 @@ public final class IdealistaAdvertisementExtractor extends AbstractAdvertisement
         Category category = getCategory();
         URL url = category.getUrl();
         LOGGER.info("Scrapping the page: {}", url);
-        WebDriver driver = getNavigateActions().get(url);
-        IdealistaAdvertisementPage page = new IdealistaAdvertisementPage();
-        page.setWebDriver(driver);
+        getNavigateActions().get(url);
+        IdealistaAdvertisementPage page = (IdealistaAdvertisementPage) advertisementPageSupplier.get();
         page.setLanguage(language);
         Advertisement ad = new Advertisement(url, page.getTitle(), category.getType());
         ad.setSubType(IdealistaRealtyType.fromString(category.getSubType()).name());
