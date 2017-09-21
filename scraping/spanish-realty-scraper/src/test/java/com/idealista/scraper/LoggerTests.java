@@ -1,18 +1,16 @@
 package com.idealista.scraper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.Test;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Test;
 
 public class LoggerTests
 {
@@ -31,13 +29,14 @@ public class LoggerTests
         List<Double> seriesChanges = new ArrayList<>();
         IntStream.range(1, series.size()).forEach(e -> seriesChanges.add(Math.abs(series.get(e - 1) - series.get(e))));
         System.out.println(seriesChanges);
-        
+
         List<Double> seriesChanges2 = new ArrayList<>();
-        for (int i = 1; i < series.size(); i++) {
-            seriesChanges2.add(Math.abs(series.get(i-1) - series.get(i)));
+        for (int i = 1; i < series.size(); i++)
+        {
+            seriesChanges2.add(Math.abs(series.get(i - 1) - series.get(i)));
         }
         System.out.println(seriesChanges2);
-        System.out.println(Arrays.toString(IntStream.of(1, series.size()-1).toArray()));
+        System.out.println(Arrays.toString(IntStream.of(1, series.size() - 1).toArray()));
     }
 
     // @Test

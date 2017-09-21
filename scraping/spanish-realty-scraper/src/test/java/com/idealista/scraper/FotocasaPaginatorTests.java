@@ -2,14 +2,14 @@ package com.idealista.scraper;
 
 import java.net.URL;
 
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.scraping.paginator.IPaginator;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.scraping.paginator.IPaginator;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {AppConfig.class})

@@ -7,17 +7,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
+
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.ui.actions.SearchActions;
 import com.idealista.scraper.util.URLUtils;
 import com.idealista.scraper.util.WebDriverUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
+@Component
 public class FotocasaSearchPageProcessor extends AbstractSearchPageProcessor
 {
     private static final String CARD_PRIMARY_LOCATOR = "//div[@class='re-Card-primary']";
@@ -26,20 +27,13 @@ public class FotocasaSearchPageProcessor extends AbstractSearchPageProcessor
 
     private static final Logger LOGGER = LogManager.getLogger(FotocasaSearchPageProcessor.class);
 
-    public FotocasaSearchPageProcessor(Category category)
-    {
-        super(category);
-    }
-
     @Override
     public Set<Category> call() throws Exception
     {
         Category category = getCategory();
         URL page = category.getUrl();
         LOGGER.info("Processing search page: {}", page);
-        WebDriver driver = getWebDriverProvider().get();
-        driver = getNavigateActions().get(page);
-        setWebDriver(driver);
+        getNavigateActions().get(page);
         SearchActions searchActions = getSearchActions();
         List<WebElement> divContainer = searchActions.findElementsById("results");
         if (!divContainer.isEmpty())
@@ -118,7 +112,7 @@ public class FotocasaSearchPageProcessor extends AbstractSearchPageProcessor
         {
             ads = getAdUrlsFilter().filterAdUrls(ads);
         }
-        
+
         Set<Category> adUrls = new HashSet<>();
         for (WebElement ad : ads)
         {

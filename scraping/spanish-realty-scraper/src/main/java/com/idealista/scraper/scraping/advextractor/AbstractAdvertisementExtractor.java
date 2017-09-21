@@ -1,26 +1,20 @@
 package com.idealista.scraper.scraping.advextractor;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.webdriver.INavigateActions;
 
 public abstract class AbstractAdvertisementExtractor implements IAdvertisementExtractor
 {
+    @Autowired
     private INavigateActions navigateActions;
-    private Category category;
 
-    protected AbstractAdvertisementExtractor(Category category)
-    {
-        this.category = category;
-    }
+    private Category category;
 
     protected INavigateActions getNavigateActions()
     {
         return navigateActions;
-    }
-
-    protected void setNavigateActions(INavigateActions navigateActions)
-    {
-        this.navigateActions = navigateActions;
     }
 
     protected Category getCategory()
@@ -28,7 +22,7 @@ public abstract class AbstractAdvertisementExtractor implements IAdvertisementEx
         return category;
     }
 
-    protected void setCategory(Category category)
+    public void setCategory(Category category)
     {
         this.category = category;
     }

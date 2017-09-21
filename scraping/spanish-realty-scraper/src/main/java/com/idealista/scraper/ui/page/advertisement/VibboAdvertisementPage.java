@@ -1,14 +1,17 @@
 package com.idealista.scraper.ui.page.advertisement;
 
-import com.idealista.scraper.ui.page.BasePage;
-import com.idealista.scraper.util.RegexUtils;
-
-import org.openqa.selenium.WebElement;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class VibboAdvertisementPage extends BasePage
+import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.ui.page.BasePage;
+import com.idealista.scraper.ui.page.IAdvertisementPage;
+import com.idealista.scraper.util.RegexUtils;
+
+@Component
+public class VibboAdvertisementPage extends BasePage implements IAdvertisementPage
 {
     public String getAddress()
     {

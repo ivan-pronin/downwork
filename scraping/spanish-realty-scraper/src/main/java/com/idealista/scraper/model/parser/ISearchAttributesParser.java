@@ -1,10 +1,10 @@
 package com.idealista.scraper.model.parser;
 
-import com.idealista.scraper.model.search.IGenericSearchAttributes;
-import com.idealista.scraper.model.search.SearchAttributes;
-
 import java.util.Map;
 import java.util.Set;
+
+import com.idealista.scraper.model.search.IGenericSearchAttributes;
+import com.idealista.scraper.model.search.SearchAttributes;
 
 public interface ISearchAttributesParser
 {

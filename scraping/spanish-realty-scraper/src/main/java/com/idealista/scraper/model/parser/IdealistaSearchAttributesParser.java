@@ -1,23 +1,18 @@
 package com.idealista.scraper.model.parser;
 
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.stereotype.Component;
+
 import com.idealista.scraper.model.search.IGenericSearchAttributes;
 import com.idealista.scraper.model.search.IdealistaSearchAttributes;
 import com.idealista.scraper.model.search.SearchAttributes;
 import com.idealista.scraper.ui.page.idealista.IdealistaStartPage;
-import com.idealista.scraper.webdriver.WebDriverProvider;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.Map;
-import java.util.Set;
 
 @Component
 public class IdealistaSearchAttributesParser implements ISearchAttributesParser
 {
-    @Autowired
-    private WebDriverProvider webDriverProvider;
-    
     private IdealistaStartPage startPage;
 
     @Override
@@ -27,7 +22,6 @@ public class IdealistaSearchAttributesParser implements ISearchAttributesParser
         Set<String> typologies = attributes.get(IdealistaSearchAttributes.TYPOLOGY);
         Set<String> locations = attributes.get(IdealistaSearchAttributes.LOCATION);
         startPage = new IdealistaStartPage();
-        startPage.setWebDriver(webDriverProvider.get());
         if (operations.isEmpty())
         {
             operations = startPage.getAvailableOperations();

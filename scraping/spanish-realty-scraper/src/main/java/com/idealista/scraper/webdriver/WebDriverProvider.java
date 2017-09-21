@@ -1,8 +1,8 @@
 package com.idealista.scraper.webdriver;
 
-import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
-import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
-import com.idealista.scraper.webdriver.proxy.ProxyProvider;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import javax.annotation.PostConstruct;
+import com.idealista.scraper.webdriver.WebDriverFactory.DriverType;
+import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
+import com.idealista.scraper.webdriver.proxy.ProxyProvider;
 
 @Component
 public class WebDriverProvider implements IWebDriverProvider

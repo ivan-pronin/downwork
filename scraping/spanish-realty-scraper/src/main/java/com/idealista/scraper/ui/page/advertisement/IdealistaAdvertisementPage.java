@@ -1,15 +1,18 @@
 package com.idealista.scraper.ui.page.advertisement;
 
-import com.idealista.scraper.ui.page.BasePage;
-import com.idealista.scraper.util.RegexUtils;
-
-import org.openqa.selenium.WebElement;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class IdealistaAdvertisementPage extends BasePage
+import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.ui.page.BasePage;
+import com.idealista.scraper.ui.page.IAdvertisementPage;
+import com.idealista.scraper.util.RegexUtils;
+
+@Component
+public class IdealistaAdvertisementPage extends BasePage implements IAdvertisementPage
 {
     private static final String SECTION_H2_TEXT_LOCATOR = "//h2[contains(.,'%s')]/..//ul//li";
     private static final String M_2 = "m²";

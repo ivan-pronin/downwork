@@ -1,14 +1,14 @@
 package com.idealista.scraper.ui.page.pisos;
 
-import com.idealista.scraper.ui.actions.ClickActions;
-import com.idealista.scraper.ui.page.BasePage;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
+import com.idealista.scraper.ui.page.BasePage;
+import com.idealista.scraper.ui.page.IMapPage;
+
 @Component
-public class PisosMapPage extends BasePage
+public class PisosMapPage extends BasePage implements IMapPage
 {
     private static final int WAIT_FOR_ELEMENT_TIMEOUT_SECONDS = 5;
 
@@ -19,10 +19,5 @@ public class PisosMapPage extends BasePage
         {
             clickActions.click(showAllLink);
         }
-    }
-
-    public void setClickActions(ClickActions clickActions)
-    {
-        this.clickActions = clickActions;
     }
 }

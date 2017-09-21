@@ -1,16 +1,16 @@
 package com.idealista.scraper.ui.page.idealista;
 
-import com.idealista.scraper.ui.actions.ClickActions;
-import com.idealista.scraper.ui.page.BasePage;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
+import com.idealista.scraper.ui.page.BasePage;
+import com.idealista.scraper.ui.page.IMapPage;
+
 @Component
-public class IdealistaMapPage extends BasePage
+public class IdealistaMapPage extends BasePage implements IMapPage
 {
     private static final int WAIT_FOR_ELEMENT_TIMEOUT_SECONDS = 5;
     private static final Logger LOGGER = LogManager.getLogger(IdealistaMapPage.class);
@@ -34,10 +34,5 @@ public class IdealistaMapPage extends BasePage
         {
             clickActions.click(showAllLink);
         }
-    }
-
-    public void setClickActions(ClickActions clickActions)
-    {
-        this.clickActions = clickActions;
     }
 }

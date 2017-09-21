@@ -1,8 +1,8 @@
 package com.idealista.scraper.model;
 
-import com.idealista.scraper.util.URLUtils;
-
 import java.util.Comparator;
+
+import com.idealista.scraper.util.URLUtils;
 
 public class CategoryAscendingComparator implements Comparator<Category>
 {

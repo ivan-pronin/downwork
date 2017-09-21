@@ -2,22 +2,25 @@ package com.idealista.scraper.ui.actions;
 
 import java.util.List;
 
-import com.idealista.scraper.util.WaitUtils;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.util.WaitUtils;
+import com.idealista.scraper.webdriver.WebDriverProvider;
 
 @Component
 public class ClickActions
 {
     private static final Logger LOGGER = LogManager.getLogger(ClickActions.class);
 
-    private WebDriver driver;
+    @Autowired
+    private WebDriverProvider webDriverProvider;
 
     public void click(List<WebElement> elements)
     {
@@ -48,12 +51,49 @@ public class ClickActions
             // scrolling for element into view
             LOGGER.debug("Could not click the element: {}", e.getMessage());
             // WebDriverUtils.takeScreenShot("Right after error", driver);
-            JavascriptExecutor js = ((JavascriptExecutor) driver);
+            JavascriptExecutor js = ((JavascriptExecutor) getWebDriver());
             js.executeScript("arguments[0].scrollIntoView();", element);
             // WebDriverUtils.takeScreenShot("After scrollIntoView() attempt", driver);
             element.click();
         }
         LOGGER.debug("Element was clicked: {}", element);
+    }
+
+    public void scrollScreenDown()
+    {
+        JavascriptExecutor js = ((JavascriptExecutor) getWebDriver());
+        js.executeScript("window.scrollBy(0, 1000)");
+    }
+
+    public void scrollScreenDownByPixels(int pixels)
+    {
+        JavascriptExecutor js = ((JavascriptExecutor) getWebDriver());
+        String script = "window.scrollBy(0, %s)";
+        js.executeScript(String.format(script, pixels));
+    }
+
+    public void scrollToElement(WebElement element)
+    {
+        JavascriptExecutor js = ((JavascriptExecutor) getWebDriver());
+        js.executeScript("arguments[0].scrollIntoView(true);", element);
+    }
+
+    public void scrollToElementAndWait(List<WebElement> elements, int elementIndex)
+    {
+        scrollToElement(elements.get(elementIndex));
+        WaitUtils.sleep(this, 500);
+    }
+
+    public void scrollToTheBottom()
+    {
+        JavascriptExecutor js = ((JavascriptExecutor) getWebDriver());
+        js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+    }
+
+    public void scrollToTheTop()
+    {
+        JavascriptExecutor js = ((JavascriptExecutor) getWebDriver());
+        js.executeScript("window.scrollTo(0, 0)");
     }
 
     public void setElementTextFast(WebElement element, String text)
@@ -69,45 +109,8 @@ public class ClickActions
         LOGGER.info("Text <{}> was entered to element <{}>", text, element);
     }
 
-    public void setWebDriver(WebDriver driver)
+    private WebDriver getWebDriver()
     {
-        this.driver = driver;
-    }
-
-    public void scrollToTheBottom()
-    {
-        JavascriptExecutor js = ((JavascriptExecutor) driver);
-        js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
-    }
-    
-    public void scrollToTheTop()
-    {
-        JavascriptExecutor js = ((JavascriptExecutor) driver);
-        js.executeScript("window.scrollTo(0, 0)");
-    }
-
-    public void scrollScreenDown()
-    {
-        JavascriptExecutor js = ((JavascriptExecutor) driver);
-        js.executeScript("window.scrollBy(0, 1000)");
-    }
-    
-    public void scrollScreenDownByPixels(int pixels)
-    {
-        JavascriptExecutor js = ((JavascriptExecutor) driver);
-        String script = "window.scrollBy(0, %s)";
-        js.executeScript(String.format(script, pixels));
-    }
-    
-    public void scrollToElement(WebElement element)
-    {
-        JavascriptExecutor js = ((JavascriptExecutor) driver);
-        js.executeScript("arguments[0].scrollIntoView(true);",element);
-    }
-    
-    public void scrollToElementAndWait(List<WebElement> elements, int elementIndex)
-    {
-        scrollToElement(elements.get(elementIndex));
-        WaitUtils.sleep(this, 500);
+        return webDriverProvider.get();
     }
 }

@@ -114,8 +114,8 @@ public class Category
     @Override
     public String toString()
     {
-        return "Category [id= " + id + ", url=" + url + ", state=" + state + ", type=" + type + ", subType=" + subType + ", province="
-                + province + ", district=" + district + ", subDistrict=" + subDistrict + "]";
+        return "Category [id= " + id + ", url=" + url + ", state=" + state + ", type=" + type + ", subType=" + subType
+                + ", province=" + province + ", district=" + district + ", subDistrict=" + subDistrict + "]";
     }
 
     public void setDistrict(String district)

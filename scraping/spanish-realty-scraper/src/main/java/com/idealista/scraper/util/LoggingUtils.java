@@ -1,8 +1,8 @@
 package com.idealista.scraper.util;
 
-import org.apache.commons.logging.LogFactory;
-
 import java.util.logging.Level;
+
+import org.apache.commons.logging.LogFactory;
 
 public final class LoggingUtils
 {

@@ -6,32 +6,6 @@ import java.util.Objects;
 
 public class Advertisement
 {
-    // ok Title +++               
-    // ok Type +++
-    // ok Subtype - equals to <operation>
-    // new Province
-    // ok Date of listing +++111
-    // ok Number of views - requires email registration, will add
-    // ok Address +++
-    // ok State = location? +++
-    // ok City 
-    // ok Postal Code +++
-    // ok Age - not clear where to take info?
-    // ok  Description +++
-    // ok  Bedrooms +++
-    // ok Bathrooms +++
-    // ok Size +++
-    // ok Price +++
-    // ok Certificacion energetica - not clear
-    // ok Profesional or Particular +++
-    // ok Listing Agent +++
-    // ok Phone Listing Agent +++
-    // ok Email Listing Agent -
-    // ok  Link +++
-    // ok  Images (yes /no) +++
-    // ok all Tags
-    // ok more tags
-
     private URL url;
     private String title;
     private String type;
@@ -56,7 +30,7 @@ public class Advertisement
     private String agentEmail;
     private boolean hasImages;
     private List<String> tags;
-    
+
     public Advertisement(URL url, String title)
     {
         this.url = url;

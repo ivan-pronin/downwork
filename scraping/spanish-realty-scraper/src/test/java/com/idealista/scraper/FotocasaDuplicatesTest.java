@@ -1,10 +1,10 @@
 package com.idealista.scraper;
 
-import com.idealista.scraper.util.URLUtils;
+import java.net.URL;
 
 import org.junit.Test;
 
-import java.net.URL;
+import com.idealista.scraper.util.URLUtils;
 
 public class FotocasaDuplicatesTest
 {

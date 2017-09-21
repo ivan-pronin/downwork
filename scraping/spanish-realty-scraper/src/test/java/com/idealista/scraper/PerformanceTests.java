@@ -1,5 +1,7 @@
 package com.idealista.scraper;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -7,8 +9,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import java.util.List;
 
 public class PerformanceTests
 {
@@ -21,7 +21,7 @@ public class PerformanceTests
         testPerformance(new ChromeDriver());
     }
 
-    //@Test
+    // @Test
     public void testPhantomJSDriverPerformance()
     {
         DesiredCapabilities caps = DesiredCapabilities.phantomjs();

@@ -1,4 +1,4 @@
-package com.idealista.scraper.scraping.category.chooser;
+package com.idealista.scraper.scraping.category.provider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,16 +10,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import com.idealista.scraper.executor.ExecutorServiceProvider;
-import com.idealista.scraper.model.Category;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class AbstractCategoriesChooser
+import com.idealista.scraper.executor.ExecutorServiceProvider;
+import com.idealista.scraper.model.Category;
+
+public class AbstractCategoriesProvider
 {
-    private static final Logger LOGGER = LogManager.getLogger(AbstractCategoriesChooser.class);
+    private static final Logger LOGGER = LogManager.getLogger(AbstractCategoriesProvider.class);
 
     @Autowired
     private ExecutorServiceProvider executorServiceProvider;

@@ -6,11 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.idealista.scraper.AppConfig;
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.scraping.searchpage.factory.ISearchPageProcessorFactory;
-import com.idealista.scraper.scraping.searchpage.processor.ISeachPageProcessor;
+import java.util.function.Supplier;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,12 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.idealista.scraper.AppConfig;
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.scraping.searchpage.processor.ISeachPageProcessor;
+
 @ContextConfiguration(classes = AppConfig.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class PisosAdUrlsFilterTests
 {
     @Autowired
-    private ISearchPageProcessorFactory factory;
+    private Supplier<ISeachPageProcessor> seachPageProcessorSupplier;
 
     @Test
     public void testName() throws Exception
@@ -33,7 +33,7 @@ public class PisosAdUrlsFilterTests
         Set<Category> foundCategories = new HashSet<>();
         for (Category cat : categories)
         {
-            ISeachPageProcessor processor = factory.create(cat);
+            ISeachPageProcessor processor = seachPageProcessorSupplier.get();
             foundCategories.addAll(processor.call());
         }
         Assert.assertEquals(3, foundCategories.size());

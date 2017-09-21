@@ -3,10 +3,10 @@ package com.idealista.scraper.model.filter;
 import java.util.List;
 import java.util.Map;
 
-import com.idealista.scraper.model.filter.FilterAttributes.PublicationDateFilter;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.model.filter.FilterAttributes.PublicationDateFilter;
 
 @Component
 public class IdealistaFilterAttributesFactory implements IFilterAttributesFactory

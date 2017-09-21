@@ -5,12 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
+
 import com.idealista.scraper.ui.page.BasePage;
+import com.idealista.scraper.ui.page.IAdvertisementPage;
 import com.idealista.scraper.util.RegexUtils;
 
-import org.openqa.selenium.WebElement;
-
-public class PisosAdvertisementPage extends BasePage
+@Component
+public class PisosAdvertisementPage extends BasePage implements IAdvertisementPage
 {
     public String getAddress()
     {
@@ -80,7 +83,8 @@ public class PisosAdvertisementPage extends BasePage
 
     public String getEnergyCertification()
     {
-        String text = searchActions.getElementText(searchActions.findElementsByXpath("//div[@class='block precioCertificado']//div[contains(.,'Clasificación: ')]"));
+        String text = searchActions.getElementText(searchActions
+                .findElementsByXpath("//div[@class='block precioCertificado']//div[contains(.,'Clasificación: ')]"));
         return text == null ? INFO_NOT_FOUND : text.replace("Clasificación: ", "");
     }
 

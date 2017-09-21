@@ -14,7 +14,7 @@ public final class DateTimeUtils
     {
         return getFormattedTimestamp(new SimpleDateFormat("(dd-MM-yyyy)"));
     }
-    
+
     public static String getScrapTimestamp()
     {
         return getFormattedTimestamp(new SimpleDateFormat("HH:mm dd/MM/yy"));

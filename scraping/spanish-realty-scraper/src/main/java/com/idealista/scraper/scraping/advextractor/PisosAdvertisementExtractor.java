@@ -1,24 +1,26 @@
 package com.idealista.scraper.scraping.advextractor;
 
 import java.net.URL;
+import java.util.function.Supplier;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.idealista.scraper.model.Advertisement;
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.model.PisosRealtyType;
+import com.idealista.scraper.ui.page.IAdvertisementPage;
 import com.idealista.scraper.ui.page.advertisement.PisosAdvertisementPage;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.WebDriver;
-
+@Component
 public class PisosAdvertisementExtractor extends AbstractAdvertisementExtractor
 {
     private static final Logger LOGGER = LogManager.getLogger(VibboAdvertisementExtractor.class);
 
-    public PisosAdvertisementExtractor(Category category)
-    {
-        super(category);
-    }
+    @Autowired
+    private Supplier<IAdvertisementPage> advertisementPageSupplier;
 
     @Override
     public Advertisement call() throws Exception
@@ -26,9 +28,8 @@ public class PisosAdvertisementExtractor extends AbstractAdvertisementExtractor
         Category category = getCategory();
         URL url = category.getUrl();
         LOGGER.info("Scrapping the page: {}", url);
-        WebDriver driver = getNavigateActions().get(url);
-        PisosAdvertisementPage page = new PisosAdvertisementPage();
-        page.setWebDriver(driver);
+        getNavigateActions().get(url);
+        PisosAdvertisementPage page = (PisosAdvertisementPage) advertisementPageSupplier.get();
         Advertisement ad = new Advertisement(url, page.getTitle(), category.getType());
         ad.setSubType(PisosRealtyType.fromString(category.getSubType()).name());
         ad.setProvince(page.getProvince());

@@ -8,10 +8,10 @@ public class DataTypeService implements IDataTypeService
 {
     @Value("./data/${scrapTarget}/newAds.txt")
     private String newAdsFileName;
-    
+
     @Value("./data/${scrapTarget}/processedAds.txt")
     private String processedAdsFileName;
-    
+
     @Override
     public String getNewAdsFileName()
     {

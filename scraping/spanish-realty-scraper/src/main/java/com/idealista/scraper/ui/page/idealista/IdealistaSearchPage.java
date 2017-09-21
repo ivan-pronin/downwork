@@ -1,7 +1,7 @@
 package com.idealista.scraper.ui.page.idealista;
 
-import com.idealista.scraper.model.filter.FilterAttributes;
-import com.idealista.scraper.ui.page.BasePage;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -10,11 +10,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
+import com.idealista.scraper.model.filter.FilterAttributes;
+import com.idealista.scraper.ui.page.BasePage;
+import com.idealista.scraper.ui.page.ISearchPage;
 
 @Component
-public class IdealistaSearchPage extends BasePage
+public class IdealistaSearchPage extends BasePage implements ISearchPage
 {
     private static final Logger LOGGER = LogManager.getLogger(IdealistaSearchPage.class);
 

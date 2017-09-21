@@ -13,20 +13,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.idealista.scraper.data.IDataSource;
 import com.idealista.scraper.data.IDataTypeService;
 import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.model.Category;
 import com.idealista.scraper.scraping.paginator.IPaginator;
-import com.idealista.scraper.scraping.searchpage.factory.ISearchPageProcessorFactory;
+import com.idealista.scraper.scraping.searchpage.processor.ISeachPageProcessor;
 import com.idealista.scraper.util.URLUtils;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
 public class AdUrlsFinder implements IAdUrlsFinder
@@ -51,7 +52,7 @@ public class AdUrlsFinder implements IAdUrlsFinder
     private IPaginator paginator;
 
     @Autowired
-    private ISearchPageProcessorFactory searchPageProcessorFactory;
+    private Supplier<ISeachPageProcessor> searchPageProcessorSupplier;
 
     @Autowired
     private IDataTypeService dataTypeService;
@@ -116,11 +117,6 @@ public class AdUrlsFinder implements IAdUrlsFinder
         this.paginator = paginator;
     }
 
-    public void setSearchPageProcessorFactory(ISearchPageProcessorFactory searchPageProcessorFactory)
-    {
-        this.searchPageProcessorFactory = searchPageProcessorFactory;
-    }
-
     private static <T> Set<T> newConcurrentHashSet()
     {
         return Collections.newSetFromMap(new ConcurrentHashMap<T, Boolean>());
@@ -132,8 +128,9 @@ public class AdUrlsFinder implements IAdUrlsFinder
         Queue<Callable<Set<Category>>> tasks = new ConcurrentLinkedQueue<>();
         if (!searchPagesToProcess.isEmpty())
         {
-            Category page = searchPagesToProcess.poll();
-            tasks.add(searchPageProcessorFactory.create(page));
+            ISeachPageProcessor seachPageProcessor = searchPageProcessorSupplier.get();
+            seachPageProcessor.setPage(searchPagesToProcess.poll());
+            tasks.add(seachPageProcessor);
         }
         List<Future<Set<Category>>> taskResults = new ArrayList<>();
         try

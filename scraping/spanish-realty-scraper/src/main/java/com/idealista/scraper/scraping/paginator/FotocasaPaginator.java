@@ -8,19 +8,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.ui.actions.ClickActions;
-import com.idealista.scraper.ui.actions.SearchActions;
-import com.idealista.scraper.util.RegexUtils;
-import com.idealista.scraper.util.WebDriverUtils;
-import com.idealista.scraper.webdriver.WebDriverProvider;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.ui.actions.SearchActions;
+import com.idealista.scraper.util.RegexUtils;
+import com.idealista.scraper.util.WebDriverUtils;
+import com.idealista.scraper.webdriver.WebDriverProvider;
 
 @Component
 public class FotocasaPaginator implements IPaginator
@@ -30,8 +29,8 @@ public class FotocasaPaginator implements IPaginator
     @Autowired
     private WebDriverProvider webDriverProvider;
 
-    private SearchActions searchActions = new SearchActions();
-    private ClickActions clickActions = new ClickActions();
+    @Autowired
+    private SearchActions searchActions;
 
     @Override
     public Set<Category> getAllPageUrls(Category baseCategory)
@@ -40,9 +39,6 @@ public class FotocasaPaginator implements IPaginator
         WebDriver driver = webDriverProvider.get();
         driver.navigate().to(url);
         WebDriverUtils.waitForJSToLoad(driver);
-
-        searchActions.setWebDriver(driver);
-        clickActions.setWebDriver(driver);
 
         List<WebElement> paginatorLinks = searchActions.findElementsByXpath("//div[@class='sui-Pagination']");
         if (!paginatorLinks.isEmpty())

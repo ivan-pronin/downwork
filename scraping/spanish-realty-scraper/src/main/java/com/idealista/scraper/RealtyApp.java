@@ -1,22 +1,5 @@
 package com.idealista.scraper;
 
-import com.idealista.scraper.executor.ExecutorServiceProvider;
-import com.idealista.scraper.executor.listener.TasksListener;
-import com.idealista.scraper.model.Advertisement;
-import com.idealista.scraper.service.IScrappingService;
-import com.idealista.scraper.util.DateTimeUtils;
-import com.idealista.scraper.webdriver.WebDriverProvider;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -26,6 +9,23 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import javax.annotation.PostConstruct;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.executor.ExecutorServiceProvider;
+import com.idealista.scraper.executor.listener.TasksListener;
+import com.idealista.scraper.model.Advertisement;
+import com.idealista.scraper.service.IScrappingService;
+import com.idealista.scraper.util.DateTimeUtils;
+import com.idealista.scraper.webdriver.WebDriverProvider;
 
 @Component
 public class RealtyApp

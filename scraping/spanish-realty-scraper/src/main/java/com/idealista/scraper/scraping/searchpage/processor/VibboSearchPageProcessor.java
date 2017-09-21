@@ -1,28 +1,25 @@
 package com.idealista.scraper.scraping.searchpage.processor;
 
-import com.idealista.scraper.model.Category;
-import com.idealista.scraper.ui.actions.SearchActions;
-import com.idealista.scraper.util.URLUtils;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.model.Category;
+import com.idealista.scraper.ui.actions.SearchActions;
+import com.idealista.scraper.util.URLUtils;
+
+@Component
 public class VibboSearchPageProcessor extends AbstractSearchPageProcessor
 {
     private static final Logger LOGGER = LogManager.getLogger(VibboSearchPageProcessor.class);
-
-    public VibboSearchPageProcessor(Category category)
-    {
-        super(category);
-    }
 
     @Override
     public Set<Category> call() throws Exception
@@ -30,11 +27,9 @@ public class VibboSearchPageProcessor extends AbstractSearchPageProcessor
         Category category = getCategory();
         URL page = category.getUrl();
         LOGGER.info("Processing search page: {}", page);
-        WebDriver driver = getWebDriverProvider().get();
-        driver = getNavigateActions().get(page);
+        WebDriver driver = getNavigateActions().get(page);
         driver = getProxyMonitor().checkForVerificationAndRestartDriver(driver);
         SearchActions searchActions = getSearchActions();
-        searchActions.setWebDriver(driver);
         List<WebElement> divContainer = searchActions.findElementsById("hl");
         if (!divContainer.isEmpty())
         {
