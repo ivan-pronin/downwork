@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+	<Properties>
+		<Property name="mainPatternLayout">%d{HH:mm:ss.SSS} [%-15t] %-5level %-26C{1} - %msg%n
+		</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console">
+			<PatternLayout pattern="${mainPatternLayout}" />
+		</Console>
+		<RollingFile name="realtyAppender" fileName="logs/realty_app.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/realty_app_%d{yyyy-MM-dd}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+
+		<RollingFile name="dataAppender" fileName="logs/debug/data.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/data_%d{yyyy-MM-dd}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+
+		<RollingFile name="executorAppender" fileName="logs/debug/executor.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/executor_%d{yyyy-MM-dd}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+
+		<RollingFile name="scrapingAppender" fileName="logs/debug/scraping.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/scraping_%d{yyyy-MM-dd}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+		
+		<RollingFile name="uiAppender" fileName="logs/debug/ui.log" 
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/ui_%d{yyyy-MM-dd}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>		
+
+		<RollingFile name="errorAppender" fileName="logs/debug/error.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/error_%d{yyyy-MM-dd}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+		
+		<RollingFile name="debugAppender" fileName="logs/debug/debug.log"
+			filePattern="logs/$${date:yyyy-MM-dd}/debug/debug_%d{yyyy-MM-dd}-%i.log"
+			append="true">
+			<PatternLayout pattern="${mainPatternLayout}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="32 MB" />
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>		
+
+	</Appenders>
+	<Loggers>
+	
+		<Root level="DEBUG">
+			<AppenderRef ref="Console" level="info"/>
+			<AppenderRef ref="realtyAppender" level="info" />
+ 			<AppenderRef ref="debugAppender" level="debug" />
+			<AppenderRef ref="errorAppender" level="error" />
+			<AppenderRef ref="scrapingAppender" level="debug" />
+		</Root>
+
+		<Logger name="com.idealista.scraper.data" level="info">
+			<appender-ref ref="dataAppender" level="info"/>
+		</Logger>
+		<Logger name="com.idealista.scraper.executor" level="info">
+			<appender-ref ref="executorAppender" level="info"/>
+		</Logger>
+		<Logger name="com.idealista.scraper.scraping" level="debug">
+			<appender-ref ref="scrapingAppender" level="debug"/>
+		</Logger>
+		<Logger name="com.idealista.scraper.ui" level="debug">
+			<appender-ref ref="uiAppender" level="debug"/>			
+		</Logger>
+  
+		<Logger name="com.idealista.scraper" level="debug">
+			<appender-ref ref="debugAppender" level="debug"/>			
+		</Logger>	
+		<Logger name="com.idealista.scraper" >
+			<appender-ref ref="errorAppender" level="error"/>
+		</Logger>			
+
+	</Loggers>
+</Configuration>
