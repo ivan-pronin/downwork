@@ -6,12 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.idealista.scraper.ui.actions.ClickActions;
-import com.idealista.scraper.ui.actions.SearchActions;
-import com.idealista.scraper.ui.actions.WaitActions;
-import com.idealista.scraper.util.FileUtils;
-import com.idealista.scraper.util.WebDriverUtils;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -20,6 +14,12 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.idealista.scraper.ui.actions.ClickActions;
+import com.idealista.scraper.ui.actions.SearchActions;
+import com.idealista.scraper.ui.actions.WaitActions;
+import com.idealista.scraper.util.FileUtils;
+import com.idealista.scraper.util.WebDriverUtils;
 
 @Component
 public class ProxyFetcher
@@ -37,7 +37,7 @@ public class ProxyFetcher
 
     @Autowired
     private SearchActions searchActions;
-    
+
     @Autowired
     private WaitActions waitActions;
 
@@ -70,6 +70,7 @@ public class ProxyFetcher
         this.driver = driver;
         searchActions.setWebDriver(driver);
         clickActions.setWebDriver(driver);
+        waitActions.setWebDriver(driver);
     }
 
     private String extractProxyFromRow(WebElement row)

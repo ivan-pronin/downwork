@@ -1,6 +1,9 @@
 package com.idealista.scraper.webdriver;
 
-import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,10 +21,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
+import com.idealista.scraper.webdriver.proxy.ProxyAdapter;
 
 @Component
 public class WebDriverFactory implements IWebDriverFactory
@@ -84,7 +84,7 @@ public class WebDriverFactory implements IWebDriverFactory
             options.setExperimentalOption("prefs", prefs);
 
             options.addArguments("incognito", "disable-extensions", "disable-plugins", "test-type", "no-sandbox",
-                    "enable-strict-powerful-feature-restrictions");
+                    "enable-strict-powerful-feature-restrictions", "disable-infobars");
             cap.setCapability(ChromeOptions.CAPABILITY, options);
         }
 
