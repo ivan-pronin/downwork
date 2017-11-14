@@ -334,7 +334,7 @@ public class IdealistaAdvertisementPage extends BasePage implements IAdvertiseme
         String language = getLanguage();
         if (language.equalsIgnoreCase(EN))
         {
-            return "Specific characteristics";
+            return "Basic features";
         }
         if (language.equalsIgnoreCase(ES))
         {
