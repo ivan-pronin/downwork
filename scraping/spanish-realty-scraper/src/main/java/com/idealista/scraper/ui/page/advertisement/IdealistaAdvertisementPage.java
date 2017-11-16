@@ -172,6 +172,8 @@ public class IdealistaAdvertisementPage extends BasePage implements IAdvertiseme
     {
         List<WebElement> ulElements = findSpecificCharacteristicsList();
         ulElements.addAll(findConstructionCharactefisticsList());
+        ulElements.addAll(findBuildingList());
+        ulElements.addAll(findEquipmentList());
         List<String> results = new ArrayList<>();
         for (WebElement item : ulElements)
         {
@@ -182,6 +184,44 @@ public class IdealistaAdvertisementPage extends BasePage implements IAdvertiseme
             }
         }
         return results;
+    }
+
+    private List<WebElement> findEquipmentList()
+    {
+        return searchActions.findElementsByXpath(String.format(SECTION_H2_TEXT_LOCATOR, getLocalizedEquipment()));
+    }
+
+    private String getLocalizedEquipment()
+    {
+        String language = getLanguage();
+        if (language.equalsIgnoreCase(EN))
+        {
+            return "Equipment";
+        }
+        if (language.equalsIgnoreCase(ES))
+        {
+            return "Equipamiento";
+        }
+        return null;
+    }
+
+    private List<WebElement> findBuildingList()
+    {
+        return searchActions.findElementsByXpath(String.format(SECTION_H2_TEXT_LOCATOR, getLocalizedBuilding()));
+    }
+
+    private String getLocalizedBuilding()
+    {
+        String language = getLanguage();
+        if (language.equalsIgnoreCase(EN))
+        {
+            return "Building";
+        }
+        if (language.equalsIgnoreCase(ES))
+        {
+            return "Edificio";
+        }
+        return null;
     }
 
     public String getTitle()
