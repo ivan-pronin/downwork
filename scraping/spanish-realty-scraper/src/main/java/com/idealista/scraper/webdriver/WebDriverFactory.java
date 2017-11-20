@@ -84,7 +84,7 @@ public class WebDriverFactory implements IWebDriverFactory
             options.setExperimentalOption("prefs", prefs);
 
             options.addArguments("incognito", "disable-extensions", "disable-plugins", "test-type", "no-sandbox",
-                    "enable-strict-powerful-feature-restrictions");
+                    "enable-strict-powerful-feature-restrictions", "disable-infobars");
             cap.setCapability(ChromeOptions.CAPABILITY, options);
         }
 

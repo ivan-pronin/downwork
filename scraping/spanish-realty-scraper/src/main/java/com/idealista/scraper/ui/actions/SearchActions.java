@@ -21,6 +21,8 @@ public class SearchActions
     @Autowired
     private WebDriverProvider webDriverProvider;
 
+    private WebDriver webDriver;
+
     public List<WebElement> findElementsById(List<WebElement> rootElement, String id)
     {
         if (!rootElement.isEmpty())
@@ -93,6 +95,15 @@ public class SearchActions
 
     private WebDriver getWebDriver()
     {
-        return webDriverProvider.get();
+        if (webDriverProvider.isWebDriverInitialized())
+        {
+            return webDriverProvider.get();
+        }
+        return webDriver;
+    }
+
+    public void setWebDriver(WebDriver webDriver)
+    {
+        this.webDriver = webDriver;
     }
 }
