@@ -22,6 +22,8 @@ public class ClickActions
     @Autowired
     private WebDriverProvider webDriverProvider;
 
+    private WebDriver webDriver;
+
     public void click(List<WebElement> elements)
     {
         if (elements.isEmpty())
@@ -53,8 +55,17 @@ public class ClickActions
             // WebDriverUtils.takeScreenShot("Right after error", driver);
             JavascriptExecutor js = ((JavascriptExecutor) getWebDriver());
             js.executeScript("arguments[0].scrollIntoView();", element);
+            try
+            {
+                element.click();
+            }
+            catch (WebDriverException e2)
+            {
+                LOGGER.debug("Could not click the element: {}", e2.getMessage());
+                scrollScreenDownByPixels(-200);
+                element.click();
+            }
             // WebDriverUtils.takeScreenShot("After scrollIntoView() attempt", driver);
-            element.click();
         }
         LOGGER.debug("Element was clicked: {}", element);
     }
@@ -111,6 +122,15 @@ public class ClickActions
 
     private WebDriver getWebDriver()
     {
-        return webDriverProvider.get();
+        if (webDriverProvider.isWebDriverInitialized())
+        {
+            return webDriverProvider.get();
+        }
+        return webDriver;
+    }
+
+    public void setWebDriver(WebDriver webDriver)
+    {
+        this.webDriver = webDriver;
     }
 }

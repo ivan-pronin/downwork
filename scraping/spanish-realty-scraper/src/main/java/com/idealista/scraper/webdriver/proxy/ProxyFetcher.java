@@ -68,6 +68,9 @@ public class ProxyFetcher
     public void setDriver(WebDriver driver)
     {
         this.driver = driver;
+        searchActions.setWebDriver(driver);
+        clickActions.setWebDriver(driver);
+        waitActions.setWebDriver(driver);
     }
 
     private String extractProxyFromRow(WebElement row)

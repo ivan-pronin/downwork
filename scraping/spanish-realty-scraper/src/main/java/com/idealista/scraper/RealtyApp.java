@@ -31,7 +31,7 @@ import com.idealista.scraper.webdriver.WebDriverProvider;
 public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
-    private static final String APP_VERSION = "1.5.2";
+    private static final String APP_VERSION = "1.5.3";
 
     private Instant startTime;
 

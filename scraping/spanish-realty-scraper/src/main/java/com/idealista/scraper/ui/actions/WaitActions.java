@@ -23,6 +23,8 @@ public class WaitActions
     @Autowired
     private WebDriverProvider webDriverProvider;
 
+    private WebDriver webDriver;
+
     public WebElement waitForElement(By locator, int seconds)
     {
         try
@@ -126,6 +128,15 @@ public class WaitActions
 
     private WebDriver getWebDriver()
     {
-        return webDriverProvider.get();
+        if (webDriverProvider.isWebDriverInitialized())
+        {
+            return webDriverProvider.get();
+        }
+        return webDriver;
+    }
+
+    public void setWebDriver(WebDriver webDriver)
+    {
+        this.webDriver = webDriver;
     }
 }
