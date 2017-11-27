@@ -36,7 +36,7 @@ import com.idealista.web.config.BaseSourceConfiguration;
 public class RealtyApp
 {
     private static final Logger LOGGER = LogManager.getLogger(RealtyApp.class);
-    private static final String APP_VERSION = "1.4.1";
+    private static final String APP_VERSION = "1.5.4";
 
     @Autowired
     private ApplicationContext appContext;
