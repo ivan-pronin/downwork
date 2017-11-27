@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+	
+	ext['selenium.version']='3.4.0'
+	
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE")
+    }
+}
+
+plugins { id 'com.github.johnrengelman.shadow' version '2.0.1' }
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.springframework.boot'
+
+ext {
+    springVersion = '4.3.10.RELEASE'
+	springBootVersion = '1.5.7.RELEASE'
+    seleniumVersion = '3.4.0'
+    log4jVersion = '2.8.2'
+    apachePoiVersion = '3.16'
+}
+
+repositories  { mavenCentral() }
+
+jar {
+    baseName = 'realty-scraper-web'
+    version =  '0.3.0'
+}
+
+shadowJar {
+    baseName = 'script'
+    classifier = null
+    version = null
+}
+
+dependencies {
+	compile "org.springframework.boot:spring-boot-starter-freemarker:$springBootVersion"
+    compile "org.springframework:spring-context:$springVersion"
+    compile "org.apache.logging.log4j:log4j-api:$log4jVersion"
+    compile "org.apache.logging.log4j:log4j-core:$log4jVersion"
+    compile "org.apache.poi:poi:$apachePoiVersion"
+    compile "org.apache.poi:poi-ooxml:$apachePoiVersion"
+    compile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
+    testCompile "org.springframework:spring-test:$springVersion"
+    testCompile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
+    testCompile 'junit:junit:4.12'
+}
