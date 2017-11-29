@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.idealista.scraper.data.IDataSource;
+import com.idealista.scraper.data.ILocalFilesDataSource;
 import com.idealista.scraper.data.IDataTypeService;
 import com.idealista.scraper.data.xls.XlsExporter;
 import com.idealista.scraper.model.Advertisement;
@@ -30,7 +30,7 @@ public class TasksListener extends TimerTask
     private BlockingQueue<URL> adUrlsInProgress;
 
     @Autowired
-    private IDataSource dataSource;
+    private ILocalFilesDataSource dataSource;
 
     @Autowired
     private XlsExporter xlsExporter;

@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 import com.idealista.scraper.util.FileUtils;
 
 @Component
-public class DataSource implements IDataSource
+public class LocalFilesDataSource implements ILocalFilesDataSource
 {
-    private static final Logger LOGGER = LogManager.getLogger(DataSource.class);
+    private static final Logger LOGGER = LogManager.getLogger(LocalFilesDataSource.class);
 
     private static Set<URL> cachedProcessedURLs;
     private static Set<URL> cachedNewURLs;
