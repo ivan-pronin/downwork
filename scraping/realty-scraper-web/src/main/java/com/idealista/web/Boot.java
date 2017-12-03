@@ -2,16 +2,19 @@ package com.idealista.web;
 
 import java.io.IOException;
 
+import javax.sql.DataSource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import com.idealista.scraper.AppConfig;
 import com.idealista.scraper.RealtyApp;
@@ -35,6 +38,8 @@ public class Boot
     public static void main(String[] args) throws IOException, InterruptedException
     {
         webContext = SpringApplication.run(Boot.class);
+        TestBean ttt = webContext.getBean(TestBean.class);
+        ttt.testDb();
         // ctx = SpringApplication.run(AppConfig.class, args);
         // ctx.getEnvironment().setActiveProfiles(PropertiesLoader.getActiveProfile());
         // RealtyApp app = ctx.getBean(RealtyApp.class);
@@ -81,42 +86,27 @@ public class Boot
         return new IdealistaSourceConfiguration();
     }
 
+    @Value("${db.url}")
+    private String dbUrl;
+
+    @Value("${db.driverClassName}")
+    private String driverClassName;
+
+    @Value("${db.username}")
+    private String userName;
+
+    @Value("${db.password}")
+    private String password;
+
     @Bean
-    public CommandLineRunner demo(CustomerRepository repository)
+    public DataSource dataSource()
     {
-        return (args) ->
-        {
-            // save a couple of customers
-            repository.save(new Customer("Jack", "Bauer"));
-            repository.save(new Customer("Chloe", "O'Brian"));
-            repository.save(new Customer("Kim", "Bauer"));
-            repository.save(new Customer("David", "Palmer"));
-            repository.save(new Customer("Michelle", "Dessler"));
-
-            // fetch all customers
-            LOGGER.info("Customers found with findAll():");
-            LOGGER.info("-------------------------------");
-            for (Customer customer : repository.findAll())
-            {
-                LOGGER.info(customer.toString());
-            }
-            LOGGER.info("");
-
-            // fetch an individual customer by ID
-            Customer customer = repository.findOne(1L);
-            LOGGER.info("Customer found with findOne(1L):");
-            LOGGER.info("--------------------------------");
-            LOGGER.info(customer.toString());
-            LOGGER.info("");
-
-            // fetch customers by last name
-            LOGGER.info("Customer found with findByLastName('Bauer'):");
-            LOGGER.info("--------------------------------------------");
-            for (Customer bauer : repository.findByLastName("Bauer"))
-            {
-                LOGGER.info(bauer.toString());
-            }
-            LOGGER.info("");
-        };
+        DriverManagerDataSource dataSource = new DriverManagerDataSource(dbUrl, userName, password);
+        dataSource.setDriverClassName(driverClassName);
+        System.out.println("URL: " + dbUrl);
+        System.out.println("username: " + userName);
+        System.out.println("password: " + password);
+        System.out.println("driver: " + driverClassName);
+        return dataSource;
     }
 }
