@@ -47,7 +47,7 @@ public class DBTest
     }
 
     @Test
-    public void testNamedParameterJdbcTemplate()
+    public void testSelectNamedParameterJdbcTemplate()
     {
         String query = "select id from advertisement where title= :t1 AND address= :a1";
         NamedParameterJdbcTemplate named = new NamedParameterJdbcTemplate(dataSource);
@@ -59,7 +59,7 @@ public class DBTest
     }
 
     @Test
-    public void testSqlParameterSource()
+    public void testSelectSqlParameterSource()
     {
         String query = "select id from advertisement where title= :t1 AND address= :a1";
         NamedParameterJdbcTemplate named = new NamedParameterJdbcTemplate(dataSource);
@@ -68,7 +68,13 @@ public class DBTest
         Assert.assertEquals(6, result);
     }
 
-    // @Test
+    @Test
+    public void testRealAdvertisement()
+    {
+
+    }
+
+    @Test
     public void testSaveAdvertisement()
     {
         int rowsAffected = dao.save(null);
