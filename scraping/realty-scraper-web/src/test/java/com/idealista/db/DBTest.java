@@ -1,5 +1,8 @@
 package com.idealista.db;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,14 +14,18 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.FileCopyUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idealista.scraper.model.Advertisement;
 import com.idealista.web.Boot;
 
@@ -36,6 +43,9 @@ public class DBTest
 
     @Autowired
     private DataSource dataSource;
+
+    @Value("classpath:json/advertisement.json")
+    private Resource jsonFile;
 
     @Test
     public void testConnection() throws SQLException
@@ -69,15 +79,11 @@ public class DBTest
     }
 
     @Test
-    public void testRealAdvertisement()
+    public void testSaveAdvertisement() throws FileNotFoundException, IOException
     {
-
-    }
-
-    @Test
-    public void testSaveAdvertisement()
-    {
-        int rowsAffected = dao.save(null);
+        String copyToString = FileCopyUtils.copyToString(new FileReader(jsonFile.getFile()));
+        Advertisement ad = new ObjectMapper().readValue(copyToString, Advertisement.class);
+        int rowsAffected = dao.save(ad);
         Assert.assertEquals(1, rowsAffected);
     }
 }

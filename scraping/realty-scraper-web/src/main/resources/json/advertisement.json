@@ -1,0 +1,23 @@
+{
+	"title": "My TITLE!",
+	"operationTypeId": 2,
+	"realtyTypeId": 2,
+	"province": "My province",
+	"dateOfListing": "2017-01-01",
+	"numberOfViews": 25,
+	"address": "My address",
+	"stateId": 1,
+	"cityId": 1,
+	"postalCode": "My PostalCode",
+	"description": "My very best Description",
+	"bedRooms": 3,
+	"bathRooms": 2,
+	"size": 37,
+	"price": 180,
+	"energyCertificationId": 1,
+	"publicityId": 1,
+	"sellerId": 1,
+	"url": "http://some.url",
+	"hasImages": 1,
+	"scrapSourceId": 1
+}

@@ -4,6 +4,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Advertisement
 {
     private URL url;
@@ -30,6 +33,10 @@ public class Advertisement
     private String agentEmail;
     private boolean hasImages;
     private List<String> tags;
+
+    public Advertisement()
+    {
+    }
 
     public Advertisement(URL url, String title)
     {
