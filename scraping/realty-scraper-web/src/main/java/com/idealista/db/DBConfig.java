@@ -10,7 +10,8 @@ import org.springframework.context.annotation.PropertySources;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
-@PropertySources({@PropertySource("classpath:sql/insertQueries.properties")})
+@PropertySources({@PropertySource("classpath:sql/insertQueries.properties"),
+        @PropertySource("classpath:sql/selectQueries.properties")})
 public class DBConfig
 {
     @Value("${db.url}")

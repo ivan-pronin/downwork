@@ -47,7 +47,7 @@ public class DBTest
     @Value("classpath:json/advertisement.json")
     private Resource jsonFile;
 
-    @Test
+    // @Test
     public void testConnection() throws SQLException
     {
         System.out.println("Metadata: " + jdbcTemplate.getDataSource().getConnection().getMetaData());
@@ -56,7 +56,7 @@ public class DBTest
         Assert.assertThat(rowCount, Matchers.is(Matchers.greaterThanOrEqualTo(1)));
     }
 
-    @Test
+    // @Test
     public void testSelectNamedParameterJdbcTemplate()
     {
         String query = "select id from advertisement where title= :t1 AND address= :a1";
@@ -68,7 +68,7 @@ public class DBTest
         Assert.assertEquals(6, result);
     }
 
-    @Test
+    // @Test
     public void testSelectSqlParameterSource()
     {
         String query = "select id from advertisement where title= :t1 AND address= :a1";
