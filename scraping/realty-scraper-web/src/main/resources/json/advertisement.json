@@ -3,7 +3,7 @@
 	"type": "Arenda",
 	"subType": "Building",
 	"province": "My province",
-	"dateOfListing": "2017-01-01",
+	"dateOfListing": "7 of December",
 	"numberOfViews": 25,
 	"address": "My address",
 	"state": "Minsk",
@@ -16,7 +16,10 @@
 	"price": 180,
 	"energyCertification": "Energy A",
 	"professional": "Professional",
-	"agent": "Ivan",
+	"agent": "Ivan Pronin",
+	"agentEmail": "tesNew@test.com",
+	"agentPhone": "+375295001222",
 	"url": "http://some.url",
-	"hasImages": 1
+	"hasImages": 1,
+	"tags": ["Wi-fi", "TV", "Quite area"]
 }

@@ -68,7 +68,7 @@ public class DBTest
         Assert.assertEquals(6, result);
     }
 
-    // @Test
+    @Test
     public void testSelectSqlParameterSource()
     {
         String query = "select id from advertisement where title= :t1 AND address= :a1";
@@ -83,7 +83,7 @@ public class DBTest
     {
         String copyToString = FileCopyUtils.copyToString(new FileReader(jsonFile.getFile()));
         Advertisement ad = new ObjectMapper().readValue(copyToString, Advertisement.class);
-        int rowsAffected = dao.save(ad);
+        long rowsAffected = dao.save(ad);
         Assert.assertEquals(1, rowsAffected);
     }
 }

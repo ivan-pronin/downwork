@@ -1,4 +1,4 @@
-package com.idealista.db;
+package com.idealista.db.model;
 
 public enum DbTable
 {
@@ -14,5 +14,6 @@ public enum DbTable
     SELLER,
     STATE,
     SUBDISTRICT,
-    TAG
+    TAG,
+    TAG_REFERENCE
 }

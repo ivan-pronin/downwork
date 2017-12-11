@@ -18,7 +18,7 @@ public class BaseScraperConfiguration
 
     protected ScrapTarget scrapTarget = ScrapTarget.IDEALISTA;
     protected int maxAdsToProcess = 10;
-    protected int newestAdsCount = 10;
+    protected int newestAdsCount;
     protected boolean useProxy;
     protected List<Integer> proxySources = Arrays.asList(1);
     protected int maxProxyResponseTime = 8000;
