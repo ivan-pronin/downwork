@@ -2,6 +2,8 @@ package com.idealista.web;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,6 +25,8 @@ import com.idealista.web.controller.StorageProperties;
 @EnableConfigurationProperties(StorageProperties.class)
 public class Boot
 {
+    private static final Logger LOGGER = LogManager.getLogger(Boot.class);
+
     private static ConfigurableApplicationContext webContext;
 
     public static void main(String[] args) throws IOException, InterruptedException
@@ -44,6 +48,7 @@ public class Boot
 
         RealtyApp app = webContext.getBean(RealtyApp.class);
         app.printBootContextData();
+        app.killRunningProceccess();
         try
         {
             app.printInfo();

@@ -10,10 +10,19 @@ public class SqlDateParser
 
     public static Date parse(String dateOfListing)
     {
-        dateOfListing = dateOfListing.replace(" of", "");
-        String[] parts = dateOfListing.split(" ");
-        Month m = Month.valueOf(parts[1].toUpperCase());
-        LocalDate localDate = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), m, Integer.parseInt(parts[0]));
-        return Date.valueOf(localDate);
+        try
+        {
+            dateOfListing = dateOfListing.replace(" of", "");
+            String[] parts = dateOfListing.split(" ");
+            Month m = Month.valueOf(parts[1].toUpperCase());
+            LocalDate localDate = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), m,
+                    Integer.parseInt(parts[0]));
+            return Date.valueOf(localDate);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return Date.valueOf(LocalDate.ofEpochDay(0));
     }
 }

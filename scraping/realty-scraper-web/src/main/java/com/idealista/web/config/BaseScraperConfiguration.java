@@ -1,6 +1,6 @@
 package com.idealista.web.config;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class BaseScraperConfiguration
     protected int maxAdsToProcess = 10;
     protected int newestAdsCount;
     protected boolean useProxy;
-    protected List<Integer> proxySources = Arrays.asList(1);
+    protected List<Integer> proxySources = new ArrayList<>();
     protected int maxProxyResponseTime = 8000;
     protected boolean appendXlsTimestamp;
     protected String xlsFileName = "defaultXlsFileName.xls";
@@ -56,6 +56,14 @@ public class BaseScraperConfiguration
 
     public List<Integer> getProxySources()
     {
+        if (proxy1)
+        {
+            proxySources.add(1);
+        }
+        if (proxy2)
+        {
+            proxySources.add(2);
+        }
         return proxySources;
     }
 

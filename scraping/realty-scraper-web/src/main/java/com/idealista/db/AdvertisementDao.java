@@ -97,7 +97,6 @@ public class AdvertisementDao extends AbstractDao implements IGenericDao<Adverti
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int rowsAffected = namedJdbcTemplate.update(insertAdvertisementSql, namedParameters, keyHolder);
         long generatedId = (long) keyHolder.getKey();
-        System.out.println("KEY: " + generatedId);
 
         for (String tag : item.getTags())
         {
