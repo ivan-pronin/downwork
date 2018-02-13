@@ -13,9 +13,11 @@ public class FilterAttributes
      */
     public enum PublicationDateFilter
     {
-        NO_FILTER("#"), LAST_24_HOURS("con-publicado_ultimas-24-horas"), LAST_48_HOURS(
-                "con-publicado_ultimas-48-horas"), LAST_WEEK(
-                        "con-publicado_ultima-semana"), LAST_MONTH("con-publicado_ultimo-mes");
+        NO_FILTER("default"),
+        LAST_24_HOURS("con-publicado_ultimas-24-horas"),
+        LAST_48_HOURS("1"),
+        LAST_WEEK("2"),
+        LAST_MONTH("3");
 
         private String relativeUrl;
 

@@ -21,7 +21,7 @@ public class IdealistaStartPage extends BasePage implements IStartPage
 
     public void clickSearch()
     {
-        List<WebElement> link = searchActions.findElementsByXpath("//button[@class='btn action']");
+        List<WebElement> link = searchActions.findElementsByXpath("//*[@id='search-bottom']/button");
         if (!link.isEmpty())
         {
             link.get(0).click();
