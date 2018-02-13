@@ -3,7 +3,7 @@ package com.idealista.scraper.data;
 import java.net.URL;
 import java.util.Set;
 
-public interface IDataSource
+public interface ILocalFilesDataSource
 {
     Set<URL> getUrlsFromFile(String fileName);
 

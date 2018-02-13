@@ -23,7 +23,7 @@ public class IdealistaSearchPage extends BasePage implements ISearchPage
     {
         LOGGER.info("Applying search filter: {}", filterAttributes);
         List<WebElement> filterForm = searchActions.findElementsById("filter-form");
-        String xpath = "//label[@class='input-radio']//a[contains(@href,'%s')]";
+        String xpath = "//label[@class='input-radio']//input[@value='%s']/following-sibling::span";
         List<WebElement> publicationDateFilter = searchActions.findElementsByXpath(filterForm,
                 String.format(xpath, filterAttributes.getPublicationDateFilter().getRelativeUrl()));
         clickActions.scrollToElement(publicationDateFilter.get(0));

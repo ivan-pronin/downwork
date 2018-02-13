@@ -16,8 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.idealista.scraper.data.IDataSource;
+import com.idealista.db.AdvertisementDao;
 import com.idealista.scraper.data.IDataTypeService;
+import com.idealista.scraper.data.ILocalFilesDataSource;
 import com.idealista.scraper.data.xls.XlsExporter;
 import com.idealista.scraper.model.Advertisement;
 
@@ -30,10 +31,13 @@ public class TasksListener extends TimerTask
     private BlockingQueue<URL> adUrlsInProgress;
 
     @Autowired
-    private IDataSource dataSource;
+    private ILocalFilesDataSource dataSource;
 
     @Autowired
     private XlsExporter xlsExporter;
+
+    @Autowired
+    private AdvertisementDao advertisementDao;
 
     @Autowired
     private IDataTypeService dataTypeService;
@@ -69,6 +73,10 @@ public class TasksListener extends TimerTask
         {
             LOGGER.info("Prepared <{}> results for exporting", advertisements.size());
             xlsExporter.writeResultsToXls(advertisements);
+            for (Advertisement ad : advertisements)
+            {
+                advertisementDao.save(ad);
+            }
             Set<URL> urls = advertisements.stream().map(e -> e.getUrl()).collect(Collectors.toSet());
             dataSource.writeUrlsToFile(dataTypeService.getProcessedAdsFileName(), urls);
             dataSource.removeUrlsFromFile(dataTypeService.getNewAdsFileName(), urls);

@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.idealista.scraper.data.IDataSource;
+import com.idealista.scraper.data.ILocalFilesDataSource;
 import com.idealista.scraper.data.IDataTypeService;
 import com.idealista.scraper.executor.ExecutorServiceProvider;
 import com.idealista.scraper.model.Category;
@@ -46,7 +46,7 @@ public class AdUrlsFinder implements IAdUrlsFinder
     private ExecutorServiceProvider executorProvider;
 
     @Autowired
-    private IDataSource dataSource;
+    private ILocalFilesDataSource dataSource;
 
     @Autowired
     private IPaginator paginator;
@@ -102,7 +102,7 @@ public class AdUrlsFinder implements IAdUrlsFinder
         this.categoriesBaseUrls = categoriesBaseUrls;
     }
 
-    public void setDataSource(IDataSource dataSource)
+    public void setDataSource(ILocalFilesDataSource dataSource)
     {
         this.dataSource = dataSource;
     }

@@ -2,7 +2,8 @@ package com.idealista.web;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,6 +11,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
+import com.idealista.db.DBConfig;
 import com.idealista.scraper.AppConfig;
 import com.idealista.scraper.RealtyApp;
 import com.idealista.web.config.BaseScraperConfiguration;
@@ -19,14 +21,13 @@ import com.idealista.web.config.ScraperConfiguration;
 import com.idealista.web.controller.StorageProperties;
 
 @SpringBootApplication
-@Import({AppConfig.class})
+@Import({AppConfig.class, DBConfig.class})
 @EnableConfigurationProperties(StorageProperties.class)
 public class Boot
 {
-    private static ConfigurableApplicationContext webContext;
+    private static final Logger LOGGER = LogManager.getLogger(Boot.class);
 
-    @Autowired
-    private BaseScraperConfiguration scraperConfig;
+    private static ConfigurableApplicationContext webContext;
 
     public static void main(String[] args) throws IOException, InterruptedException
     {
@@ -47,6 +48,7 @@ public class Boot
 
         RealtyApp app = webContext.getBean(RealtyApp.class);
         app.printBootContextData();
+        app.killRunningProceccess();
         try
         {
             app.printInfo();

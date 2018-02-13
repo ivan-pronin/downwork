@@ -1,52 +1,69 @@
 buildscript {
-    repositories {
-        mavenCentral()
-    }
-	
-	ext['selenium.version']='3.4.0'
-	
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE")
-    }
+	repositories {
+		maven {
+			url "http://repo.spring.io/milestone/"
+		}
+		mavenCentral()
+	}
+
+	ext['selenium.version'] = '3.4.0'
+
+		dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+	}
 }
 
-plugins { id 'com.github.johnrengelman.shadow' version '2.0.1' }
+plugins {
+	id 'com.github.johnrengelman.shadow' version '2.0.1'
+}
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 ext {
-    springVersion = '4.3.10.RELEASE'
-	springBootVersion = '1.5.7.RELEASE'
-    seleniumVersion = '3.4.0'
-    log4jVersion = '2.8.2'
-    apachePoiVersion = '3.16'
+	springVersion = '4.3.10.RELEASE'
+		springBootVersion = '1.5.9.RELEASE'
+		seleniumVersion = '3.4.0'
+		log4jVersion = '2.8.2'
+		apachePoiVersion = '3.16'
 }
 
-repositories  { mavenCentral() }
+repositories {
+	maven {
+		url "http://repo.spring.io/milestone/"
+	}
+	mavenCentral()
+}
 
 jar {
-    baseName = 'realty-scraper-web'
-    version =  '0.3.0'
+	baseName = 'realty-scraper-web'
+		version = '0.3.0'
 }
 
 shadowJar {
-    baseName = 'script'
-    classifier = null
-    version = null
+	baseName = 'script'
+		classifier = null
+		version = null
 }
 
 dependencies {
-	compile "org.springframework.boot:spring-boot-starter-freemarker:$springBootVersion"
-    compile "org.springframework:spring-context:$springVersion"
-    compile "org.apache.logging.log4j:log4j-api:$log4jVersion"
-    compile "org.apache.logging.log4j:log4j-core:$log4jVersion"
-    compile "org.apache.poi:poi:$apachePoiVersion"
-    compile "org.apache.poi:poi-ooxml:$apachePoiVersion"
-    compile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
-    testCompile "org.springframework:spring-test:$springVersion"
-    testCompile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
-    testCompile 'junit:junit:4.12'
+	compile "org.springframework.boot:spring-boot-starter-freemarker"
+	compile "com.h2database:h2"
+	compile "org.springframework:spring-jdbc"
+	compile "org.springframework.boot:spring-boot-starter-test"
+	compile "org.springframework.boot:spring-boot-starter-web"
+	compile "com.fasterxml.jackson.core:jackson-databind"
+
+	compile "org.springframework:spring-context:$springVersion"
+	compile "org.apache.logging.log4j:log4j-api:$log4jVersion"
+	compile "org.apache.logging.log4j:log4j-core:$log4jVersion"
+	compile "org.apache.poi:poi:$apachePoiVersion"
+	compile "org.apache.poi:poi-ooxml:$apachePoiVersion"
+	compile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
+	testCompile "org.springframework:spring-test:$springVersion"
+	testCompile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
+	testCompile 'junit:junit:4.12'
 }

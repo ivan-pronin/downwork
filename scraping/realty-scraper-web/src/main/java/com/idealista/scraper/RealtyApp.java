@@ -3,6 +3,7 @@ package com.idealista.scraper;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
@@ -69,6 +70,8 @@ public class RealtyApp
 
     @Autowired
     private LaunchResult launchResult;
+
+    private static final String[] KILL_PROCESS = {"chrome", "chromedriver"};
 
     @PostConstruct
     private void initSystemProperties()
@@ -171,5 +174,22 @@ public class RealtyApp
     private static void logEntry(Object k, Object v)
     {
         LOGGER.info("{} = {}", k, v);
+    }
+
+    public void killRunningProceccess()
+    {
+        Arrays.stream(KILL_PROCESS).forEach(RealtyApp::killExeProcess);
+    }
+
+    private static void killExeProcess(String processName)
+    {
+        try
+        {
+            Runtime.getRuntime().exec(String.format("taskkill /F /IM %s.exe", processName));
+        }
+        catch (IOException e)
+        {
+            LOGGER.error("Failed to kill process: {}, {}", processName, e);
+        }
     }
 }

@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.idealista.scraper.AppConfig;
-import com.idealista.scraper.data.IDataSource;
+import com.idealista.scraper.data.ILocalFilesDataSource;
 import com.idealista.scraper.service.ScrapTarget;
 import com.idealista.scraper.util.FileUtils;
 import com.idealista.scraper.util.WaitUtils;
@@ -50,7 +50,7 @@ public class ProxyProvider implements IProxyProvider
     private ProxyFetcher proxyFetcher;
 
     @Autowired
-    private IDataSource dataSource;
+    private ILocalFilesDataSource dataSource;
 
     @Autowired
     private AppConfig appConfig;

@@ -50,7 +50,7 @@ public class WebDriverProvider implements IWebDriverProvider
             {
                 synchronized (this)
                 {
-                    if (localProxy.get().equals(proxy))
+                    if (!localProxy.get().equals(proxy))
                     {
                         proxy = proxyProvider.getNextWorkingProxy();
                     }

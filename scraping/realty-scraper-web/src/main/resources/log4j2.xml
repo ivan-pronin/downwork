@@ -91,7 +91,7 @@
 	<Loggers>
 	
 		<Root level="DEBUG">
-			<AppenderRef ref="Console" level="info"/>
+			<AppenderRef ref="Console" level="debug"/>
 			<AppenderRef ref="realtyAppender" level="info" />
  			<AppenderRef ref="debugAppender" level="debug" />
 			<AppenderRef ref="errorAppender" level="error" />
