@@ -22,15 +22,11 @@ public class IdealistaAdvertisementPage extends BasePage implements IAdvertiseme
 
     public String getAddress()
     {
-        List<WebElement> container = findContainer();
+        List<WebElement> container = findAddressContainer();
         if (!container.isEmpty())
         {
-            List<WebElement> address = searchActions.findElementsById(container, "addressPromo");
-            if (!address.isEmpty())
-            {
-                List<WebElement> ul = searchActions.findElementsByTagName(address, "ul");
-                return searchActions.getElementText(ul);
-            }
+            List<WebElement> ul = searchActions.findElementsByTagName(container, "ul");
+            return searchActions.getElementText(ul);
         }
         return null;
     }
@@ -47,7 +43,7 @@ public class IdealistaAdvertisementPage extends BasePage implements IAdvertiseme
 
     public String getAgentPhone()
     {
-        return searchActions.getElementText(searchActions.findElementsByXpath("//div[@class='phone first-phone']"));
+        return searchActions.getElementText(searchActions.findElementsByXpath("//div[@class='contact-phones']"));
     }
 
     public int getBathrooms()
@@ -110,8 +106,12 @@ public class IdealistaAdvertisementPage extends BasePage implements IAdvertiseme
 
     public String getListingAgent()
     {
-        return searchActions
-                .getElementText(searchActions.findElementsByXpath("//div[contains(@class,'advertiser-data')]"));
+        return removeProfessional(getListingAgentText());
+    }
+
+    private String removeProfessional(String elementText)
+    {
+        return elementText.replaceAll(getLocalizedProfessional(), "");
     }
 
     public String getListingDate()
@@ -146,14 +146,19 @@ public class IdealistaAdvertisementPage extends BasePage implements IAdvertiseme
     public String getPrice()
     {
         String text = searchActions.getElementText(
-                searchActions.findElementsByXpath("//div[@class='info-data']//span[@class='txt-big txt-bold']"));
+                searchActions.findElementsByXpath("//div[@class='info-data']//span[@class='h3-simulated txt-bold']"));
         return "" + RegexUtils.extractBigNumber(text);
     }
 
     public String getProfessional()
     {
-        String listingAgent = getListingAgent();
+        String listingAgent = getListingAgentText();
         return isProfessional(listingAgent);
+    }
+
+    private String getListingAgentText()
+    {
+        return searchActions.getElementText(searchActions.findElementsByXpath("//div[@class='professional-name']"));
     }
 
     public String getSize()
@@ -272,6 +277,11 @@ public class IdealistaAdvertisementPage extends BasePage implements IAdvertiseme
         return searchActions.findElementsByXpath("//div[@class='container']");
     }
 
+    private List<WebElement> findAddressContainer()
+    {
+        return searchActions.findElementsByXpath("//div[@id='mapWrapper']");
+    }
+
     private List<WebElement> findConstructionCharactefisticsList()
     {
         return searchActions.findElementsByXpath(String.format(SECTION_H2_TEXT_LOCATOR, getLocalizedConstruction()));
@@ -379,6 +389,20 @@ public class IdealistaAdvertisementPage extends BasePage implements IAdvertiseme
         if (language.equalsIgnoreCase(ES))
         {
             return "Características básicas";
+        }
+        return null;
+    }
+
+    private String getLocalizedProfessional()
+    {
+        String language = getLanguage();
+        if (language.equalsIgnoreCase(EN))
+        {
+            return "Professional";
+        }
+        if (language.equalsIgnoreCase(ES))
+        {
+            return "Profesional";
         }
         return null;
     }
